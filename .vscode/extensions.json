@@ -1,0 +1,16 @@
+{
+  "recommendations": [
+    "steoates.autoimport",
+    "formulahendry.auto-rename-tag",
+    "dsznajder.es7-react-js-snippets",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "eamodio.gitlens",
+    "Prisma.prisma",
+    "wix.vscode-import-cost",
+    "burkeholland.simple-react-snippets",
+    "ms-vscode.vscode-typescript-next",
+    "bradlc.vscode-tailwindcss",
+    "streetsidesoftware.code-spell-checker"
+  ]
+}

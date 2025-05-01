@@ -1,27 +1,51 @@
 {
   "name": "dyanmic-shop",
-  "version": "0.1.0",
+  "description": "Dynamic Shop",
+  "author": "Salman Ahmed<salmanahmed@gmail.com>",
+  "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=22.14.0",
+    "yarn": ">=1.22.22"
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "type-check": "tsc --incremental false --noEmit --pretty",
+    "generate:svgr": "svgr --no-prettier --out-dir src/assets/svgs src/assets/svgs/src --typescript --ignore-existing --ref --jsx-runtime automatic --no-dimensions && prettier --write ./src/assets/svgs"
   },
   "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.503.0",
+    "next": "15.3.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.1"
+    "tailwind-merge": "^3.2.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@svgr/cli": "^8.1.0",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "@eslint/eslintrc": "^3"
+    "lint-staged": "^15.5.1",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "@welldone-software/why-did-you-render": "^10.0.1"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx}": [
+      "tsc -p tsconfig.json --noEmit",
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,css}": [
+      "prettier --write"
+    ]
   }
 }
