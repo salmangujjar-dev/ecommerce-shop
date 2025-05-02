@@ -9,14 +9,22 @@
     "yarn": ">=1.22.22"
   },
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
+    "dev:turbo": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "type-check": "tsc --incremental false --noEmit --pretty",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "prisma:studio": "prisma studio",
     "generate:svgr": "svgr --no-prettier --out-dir src/assets/svgs src/assets/svgs/src --typescript --ignore-existing --ref --jsx-runtime automatic --no-dimensions && prettier --write ./src/assets/svgs"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "dependencies": {
+    "@prisma/client": "^6.7.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.503.0",
     "next": "15.3.1",
@@ -31,12 +39,14 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@welldone-software/why-did-you-render": "^10.0.1",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "lint-staged": "^15.5.1",
+    "prisma": "^6.7.0",
     "tailwindcss": "^4",
-    "typescript": "^5",
-    "@welldone-software/why-did-you-render": "^10.0.1"
+    "tsx": "^4.19.4",
+    "typescript": "^5"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
