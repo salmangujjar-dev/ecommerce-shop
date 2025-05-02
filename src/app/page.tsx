@@ -1,10 +1,16 @@
-import prisma from "@/lib/prisma";
+import { api } from "@/trpc/server";
+
+import Greeting from "./_components/Greeting";
 
 export default async function Home() {
-  const users = await prisma.user.findMany();
+  const users = await api.users.getAll();
+
+  const hello = await api.hello({ text: "server" });
 
   return (
     <div>
+      {<h1>{hello.greeting}</h1>}
+      <Greeting />
       <h1 className="text-2xl font-bold mb-4">Users</h1>
       <ul>
         {users.map((user) => (
@@ -17,4 +23,4 @@ export default async function Home() {
   );
 }
 
-export const revalidate = 10;
+// export const revalidate = 10;
