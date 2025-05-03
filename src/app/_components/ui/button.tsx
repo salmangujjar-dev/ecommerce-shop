@@ -5,7 +5,6 @@ import clsx from "clsx";
 
 import { Link } from "./link";
 
-
 const styles = {
   base: [
     // Base

@@ -1,5 +1,5 @@
 {
-  "name": "dyanmic-shop",
+  "name": "dynamic-shop",
   "description": "Dynamic Shop",
   "author": "Salman Ahmed<salmanahmed@gmail.com>",
   "version": "1.0.0",
@@ -19,7 +19,9 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "generate:svgr": "svgr --no-prettier --out-dir src/assets/svgs src/assets/svgs/src --typescript --ignore-existing --ref --jsx-runtime automatic --no-dimensions && prettier --write ./src/assets/svgs"
+    "generate:svgr": "svgr --no-prettier --out-dir src/assets/svgs src/assets/svgs/src --typescript --ignore-existing --ref --jsx-runtime automatic --no-dimensions && prettier --write ./src/assets/svgs",
+    "storybook": "storybook dev -p 6006",
+    "storybook:build": "storybook build"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -45,6 +47,9 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "storybook": "^8.6.12",
+    "@storybook/nextjs": "^8.6.12",
+    "@storybook/addon-essentials": "^8.6.12",
     "@svgr/cli": "^8.1.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

@@ -60,5 +60,12 @@
       "`([^`]*)`"
     ]
   ],
-  "cSpell.words": ["headlessui", "wdyr"]
+  "cSpell.words": [
+    "headlessui",
+    "wdyr",
+    "turbopack",
+    "svgs",
+    "welldone",
+    "autodocs"
+  ]
 }
