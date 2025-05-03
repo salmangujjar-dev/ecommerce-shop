@@ -15,8 +15,9 @@ const eslintConfig = [
   {
     rules: {
       "no-var": "off",
-      "no-unused-vars": "error",
+      "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/triple-slash-reference": "off",
       "import/order": [
         "error",
         {
@@ -31,13 +32,17 @@ const eslintConfig = [
           pathGroups: [
             {
               pattern: "server-only",
-              group: "external",
+              group: "builtin",
               position: "before",
             },
             {
-              pattern: "next/**",
-              group: "external",
-              patternOptions: { matchBase: true },
+              pattern: "next{,/**}",
+              group: "builtin",
+              position: "before",
+            },
+            {
+              pattern: "react{,/**}",
+              group: "builtin",
               position: "before",
             },
             {
@@ -47,13 +52,19 @@ const eslintConfig = [
               position: "after",
             },
             {
-              pattern: "@components/ui/**",
+              pattern: "@ui/**",
               group: "internal",
               patternOptions: { matchBase: true },
               position: "after",
             },
             {
-              pattern: "@components/**",
+              pattern: "@common/**",
+              group: "internal",
+              patternOptions: { matchBase: true },
+              position: "after",
+            },
+            {
+              pattern: "@store/**",
               group: "internal",
               patternOptions: { matchBase: true },
               position: "after",
