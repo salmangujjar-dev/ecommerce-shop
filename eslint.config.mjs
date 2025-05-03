@@ -30,6 +30,11 @@ const eslintConfig = [
           ],
           pathGroups: [
             {
+              pattern: "server-only",
+              group: "external",
+              position: "before",
+            },
+            {
               pattern: "next/**",
               group: "external",
               patternOptions: { matchBase: true },
@@ -55,6 +60,12 @@ const eslintConfig = [
             },
             {
               pattern: "@lib/**",
+              group: "internal",
+              patternOptions: { matchBase: true },
+              position: "after",
+            },
+            {
+              pattern: "~trpc/**",
               group: "internal",
               patternOptions: { matchBase: true },
               position: "after",

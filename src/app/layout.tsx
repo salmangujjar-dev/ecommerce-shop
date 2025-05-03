@@ -2,8 +2,9 @@ import { Inter } from "next/font/google";
 
 import type { Metadata } from "next";
 
-import { TRPCReactProvider } from "@/trpc/client";
-import { cn } from "@/utils/cn";
+import { TRPCReactProvider } from "~trpc/client";
+
+import { cn } from "@utils/cn";
 
 import "./globals.css";
 

@@ -1,12 +1,13 @@
-import "server-only"; // eslint-disable-line
+import "server-only";
 
 import { headers } from "next/headers";
 
 import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { cache } from "react";
 
-import { createTRPCContext } from "@/lib/trpc";
-import { createCaller, type AppRouter } from "@/trpc/router/root";
+import { createTRPCContext } from "@lib/trpc";
+
+import { createCaller, type AppRouter } from "~trpc/router/root";
 
 import { createQueryClient } from "./query-client";
 
