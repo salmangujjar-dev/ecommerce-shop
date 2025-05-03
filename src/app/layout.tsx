@@ -1,10 +1,9 @@
+import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import type { Metadata } from "next";
-
-import { TRPCReactProvider } from "~trpc/client";
-
 import { cn } from "@utils/cn";
+
+import Providers from "./providers";
 
 import "./globals.css";
 
@@ -23,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(inter.className, "antialiased min-h-screen")}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

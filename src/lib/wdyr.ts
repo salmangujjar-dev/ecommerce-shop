@@ -1,13 +1,15 @@
-/* eslint-disable */
-/// <reference types="@welldone-software/why-did-you-render" />
-
+"use client";
 import React from "react";
 
-if (process.env.NODE_ENV === "development") {
-  const whyDidYouRender = require("@welldone-software/why-did-you-render");
+import whyDidYouRender from "@welldone-software/why-did-you-render";
 
-  whyDidYouRender(React, {
-    trackHooks: true,
-    trackAllPureComponents: true,
-  });
-}
+whyDidYouRender(React, {
+  trackAllPureComponents: true,
+  trackHooks: true,
+  logOwnerReasons: true,
+  collapseGroups: true,
+  // include: [/./],
+
+  // This is for testing, remove it, if you don't want to log on different values
+  logOnDifferentValues: true,
+});

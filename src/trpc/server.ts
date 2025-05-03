@@ -2,8 +2,9 @@ import "server-only";
 
 import { headers } from "next/headers";
 
-import { createHydrationHelpers } from "@trpc/react-query/rsc";
 import { cache } from "react";
+
+import { createHydrationHelpers } from "@trpc/react-query/rsc";
 
 import { createTRPCContext } from "@lib/trpc";
 

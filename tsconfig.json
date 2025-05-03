@@ -24,7 +24,8 @@
     "paths": {
       "@assets/*": ["./src/assets/*"],
       "@api/*": ["./src/api/*"],
-      "@components/*": ["./src/_components/*"],
+      "@common/*": ["./src/app/_components/common/*"],
+      "@ui/*": ["./src/app/_components/ui/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
       "@app/*": ["./src/app/*"],
@@ -32,6 +33,7 @@
       "@constants/*": ["./src/constants/*"],
       "@utils/*": ["./src/utils/*"],
       "@public/*": ["./public/*"],
+      "@store/*": ["./src/store/*"],
       "~trpc/*": ["./src/trpc/*"]
     }
   },

@@ -1,6 +1,6 @@
-import { api } from "~trpc/server";
+import TestClientComponent from "@common/TestClientComponent";
 
-import Greeting from "./_components/Greeting";
+import { api } from "~trpc/server";
 
 export default async function Home() {
   const users = await api.users.getAll();
@@ -10,7 +10,7 @@ export default async function Home() {
   return (
     <div>
       {<h1>{hello.greeting}</h1>}
-      <Greeting />
+      <TestClientComponent />
       <h1 className="text-2xl font-bold mb-4">Users</h1>
       <ul>
         {users.map((user) => (
@@ -23,4 +23,4 @@ export default async function Home() {
   );
 }
 
-// export const revalidate = 10;
+export const revalidate = 10;
