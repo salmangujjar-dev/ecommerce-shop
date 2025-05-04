@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import React from "react";
 
 import { Preview } from "@storybook/react";
-// import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp } from "lucide-react";
+import { themes } from "@storybook/theming";
 
 import "../src/app/globals.css";
 
@@ -16,9 +16,23 @@ const inter = Inter({ subsets: ["latin"] });
 //   ArrowRight: ArrowRight,
 // };
 
+const isPreferDarkColorScheme = window.matchMedia(
+  "(prefers-color-scheme: dark)"
+);
+
 const preview: Preview = {
   tags: ["autodocs"],
   parameters: {
+    docs: {
+      theme: isPreferDarkColorScheme ? themes.dark : themes.light,
+    },
+    backgrounds: {
+      default: isPreferDarkColorScheme ? "dark" : "light",
+      values: [
+        { name: "light", value: "#ffffff" },
+        { name: "dark", value: "#333" },
+      ],
+    },
     nextjs: {
       appDirectory: true,
     },
@@ -30,21 +44,6 @@ const preview: Preview = {
       },
     },
   },
-  // argTypes: {
-  //   arrow: {
-  //     options: Object.keys(arrows),
-  //     mapping: arrows,
-  //     control: {
-  //       type: "select",
-  //       labels: {
-  //         ArrowUp: "Up",
-  //         ArrowDown: "Down",
-  //         ArrowLeft: "Left",
-  //         ArrowRight: "Right",
-  //       },
-  //     },
-  //   },
-  // },
   decorators: [
     (Story) => (
       <main className={inter.className}>
