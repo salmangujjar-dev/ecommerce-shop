@@ -24,8 +24,8 @@
     "paths": {
       "@assets/*": ["./src/assets/*"],
       "@api/*": ["./src/api/*"],
-      "@common/*": ["./src/app/_components/common/*"],
-      "@ui/*": ["./src/app/_components/ui/*"],
+      "@common/*": ["./src/components/common/*"],
+      "@ui/*": ["./src/components/ui/*"],
       "@hooks/*": ["./src/hooks/*"],
       "@lib/*": ["./src/lib/*"],
       "@app/*": ["./src/app/*"],
