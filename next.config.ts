@@ -30,6 +30,9 @@ const nextConfig: NextConfig = {
 
     return config;
   },
+  images: {
+    domains: ["tailwindcss.com"],
+  },
 };
 
 export default nextConfig;

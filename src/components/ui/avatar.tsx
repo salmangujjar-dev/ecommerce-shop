@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import React, { forwardRef } from "react";
 
 import * as Headless from "@headlessui/react";
@@ -56,8 +58,17 @@ export function Avatar({
           </text>
         </svg>
       )}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      {src && <img className={"size-full"} src={src} alt={alt} />}
+      {}
+      {src && (
+        <Image
+          width={0}
+          height={0}
+          sizes="100vw"
+          className={"size-full"}
+          src={src}
+          alt={alt}
+        />
+      )}
     </span>
   );
 }

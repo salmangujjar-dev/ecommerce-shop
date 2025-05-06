@@ -19,6 +19,7 @@ const eslintConfig = [
       "no-unused-vars": "off",
       "@typescript-eslint/no-unused-vars": ["error"],
       "@typescript-eslint/triple-slash-reference": "off",
+      "react/no-unescaped-entities": "off",
       "import/order": [
         "error",
         {

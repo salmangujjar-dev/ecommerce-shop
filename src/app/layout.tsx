@@ -10,8 +10,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Dynamic Shop",
-  description: "Dynamic Shop",
+  title: "E-Commerce Shop",
+  description: "E-Commerce Shop",
 };
 
 export default function RootLayout({

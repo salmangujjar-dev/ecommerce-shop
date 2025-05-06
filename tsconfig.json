@@ -30,7 +30,7 @@
       "@lib/*": ["./src/lib/*"],
       "@app/*": ["./src/app/*"],
       "@services/*": ["./src/services/*"],
-      "@constants/*": ["./src/constants/*"],
+      "@globals/*": ["./src/globals/*"],
       "@utils/*": ["./src/utils/*"],
       "@public/*": ["./public/*"],
       "@store/*": ["./src/store/*"],

@@ -1,12 +1,12 @@
 {
-  "name": "dynamic-shop",
-  "description": "Dynamic Shop",
+  "name": "ecommerce-shop",
+  "description": "E-Commerce Shop",
   "author": "Salman Ahmed<salmanahmed@gmail.com>",
   "version": "1.0.0",
   "private": true,
   "engines": {
-    "node": ">=22.14.0",
-    "yarn": ">=1.22.22"
+    "node": ">=16.14.0",
+    "yarn": ">=1.14.0"
   },
   "scripts": {
     "dev": "next dev",
