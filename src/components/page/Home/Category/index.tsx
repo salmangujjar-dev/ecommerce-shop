@@ -2,6 +2,8 @@ import Image from "next/image";
 
 import { FC } from "react";
 
+import { Link } from "@ui/link";
+
 import { CATEGORIES } from "./constant";
 
 const Category: FC = () => {
@@ -17,13 +19,13 @@ const Category: FC = () => {
         >
           Shop by Category
         </h2>
-        <a
+        <Link
           href="#"
           className="hidden text-sm font-semibold text-indigo-600 hover:text-indigo-500 sm:block"
         >
           Browse all categories
           <span aria-hidden="true"> &rarr;</span>
-        </a>
+        </Link>
       </div>
 
       <div className="mt-4 flow-root">
@@ -31,7 +33,7 @@ const Category: FC = () => {
           <div className="relative box-content h-80 overflow-x-auto py-2 xl:overflow-visible">
             <div className="absolute flex space-x-8 px-4 sm:px-6 lg:px-8 xl:relative xl:grid xl:grid-cols-5 xl:gap-x-8 xl:space-x-0 xl:px-0">
               {CATEGORIES.map((category) => (
-                <a
+                <Link
                   key={category.name}
                   href={category.href}
                   className="relative flex h-80 w-56 flex-col overflow-hidden rounded-lg p-6 hover:opacity-75 xl:w-auto"
@@ -53,7 +55,7 @@ const Category: FC = () => {
                   <span className="relative mt-auto text-center text-xl font-bold text-white">
                     {category.name}
                   </span>
-                </a>
+                </Link>
               ))}
             </div>
           </div>
@@ -61,13 +63,13 @@ const Category: FC = () => {
       </div>
 
       <div className="mt-6 px-4 sm:hidden">
-        <a
+        <Link
           href="#"
           className="block text-sm font-semibold text-indigo-600 hover:text-indigo-500"
         >
           Browse all categories
           <span aria-hidden="true"> &rarr;</span>
-        </a>
+        </Link>
       </div>
     </section>
   );

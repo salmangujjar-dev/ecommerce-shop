@@ -1,24 +1,24 @@
 export const PERKS = [
   {
-    name: "Free returns",
-    imageUrl:
-      "https://tailwindcss.com/plus-assets/img/ecommerce/icons/icon-returns-light.svg",
+    name: "Free Shipping",
     description:
-      "Not what you expected? Place it back in the parcel and attach the pre-paid postage stamp.",
+      "Shipping costs are included in our product pricing for a seamless and transparent checkout experience—no surprises at the end.",
+    imageUrl:
+      "https://tailwindcss.com/plus-assets/img/ecommerce/icons/icon-delivery-light.svg",
+  },
+  {
+    name: "24/7 Customer Support",
+    description:
+      "Our dedicated support team is available 24/7 to assist you with any questions or concerns, ensuring a smooth and responsive customer experience.",
+    imageUrl:
+      "https://tailwindcss.com/plus-assets/img/ecommerce/icons/icon-chat-light.svg",
   },
   {
     name: "Same day delivery",
     imageUrl:
       "https://tailwindcss.com/plus-assets/img/ecommerce/icons/icon-calendar-light.svg",
     description:
-      "We offer a delivery service that has never been done before. Checkout today and receive your products within hours.",
-  },
-  {
-    name: "All year discount",
-    imageUrl:
-      "https://tailwindcss.com/plus-assets/img/ecommerce/icons/icon-gift-card-light.svg",
-    description:
-      'Looking for a deal? You can use the code "ALLYEAR" at checkout and get money off all year round.',
+      "We offer a delivery service that has never been done before. Checkout today and receive your products within hours. Only Applicable to Lahore",
   },
   {
     name: "For the planet",

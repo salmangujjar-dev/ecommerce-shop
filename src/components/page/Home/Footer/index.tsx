@@ -1,5 +1,8 @@
 import { FC } from "react";
 
+import { Button } from "@ui/button";
+import { Link } from "@ui/link";
+
 import { FOOTER_NAVIGATION } from "./constant";
 
 const Footer: FC = () => {
@@ -17,12 +20,12 @@ const Footer: FC = () => {
                 <ul role="list" className="mt-6 space-y-6">
                   {FOOTER_NAVIGATION.shop.map((item) => (
                     <li key={item.name} className="text-sm">
-                      <a
+                      <Link
                         href={item.href}
                         className="text-gray-300 hover:text-white"
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -32,12 +35,12 @@ const Footer: FC = () => {
                 <ul role="list" className="mt-6 space-y-6">
                   {FOOTER_NAVIGATION.company.map((item) => (
                     <li key={item.name} className="text-sm">
-                      <a
+                      <Link
                         href={item.href}
                         className="text-gray-300 hover:text-white"
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -49,12 +52,12 @@ const Footer: FC = () => {
                 <ul role="list" className="mt-6 space-y-6">
                   {FOOTER_NAVIGATION.account.map((item) => (
                     <li key={item.name} className="text-sm">
-                      <a
+                      <Link
                         href={item.href}
                         className="text-gray-300 hover:text-white"
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -64,12 +67,12 @@ const Footer: FC = () => {
                 <ul role="list" className="mt-6 space-y-6">
                   {FOOTER_NAVIGATION.connect.map((item) => (
                     <li key={item.name} className="text-sm">
-                      <a
+                      <Link
                         href={item.href}
                         className="text-gray-300 hover:text-white"
                       >
                         {item.name}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                 </ul>
@@ -93,12 +96,9 @@ const Footer: FC = () => {
                 className="block w-full rounded-md bg-white px-4 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-white"
               />
               <div className="ml-4 shrink-0">
-                <button
-                  type="submit"
-                  className="flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-base font-medium text-white shadow-xs hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-hidden"
-                >
+                <Button type="submit" color="indigo">
                   Sign up
-                </button>
+                </Button>
               </div>
             </form>
           </div>

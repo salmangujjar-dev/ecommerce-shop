@@ -12,7 +12,7 @@ const styles = {
     // Sizing
     "px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/6",
     // Focus
-    "focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500",
+    "focus:not-data-focus:outline-hidden data-focus:outline-2 focus-visible:outline-none data-focus:outline-offset-2 data-focus:outline-blue-500",
     // Disabled
     "data-disabled:opacity-50",
     // Icon
@@ -59,6 +59,7 @@ const styles = {
     "[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:[--btn-icon:var(--color-zinc-500)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]",
   ],
   colors: {
+    transparent: [],
     "dark/zinc": [
       "text-white [--btn-bg:var(--color-zinc-900)] [--btn-border:var(--color-zinc-950)]/90 [--btn-hover-overlay:var(--color-white)]/10",
       "dark:text-white dark:[--btn-bg:var(--color-zinc-600)] dark:[--btn-hover-overlay:var(--color-white)]/5",
@@ -174,13 +175,14 @@ export const Button = forwardRef(function Button(
   ref: React.ForwardedRef<HTMLElement>
 ) {
   const classes = clsx(
-    className,
     styles.base,
     outline
       ? styles.outline
       : plain
       ? styles.plain
-      : clsx(styles.solid, styles.colors[color ?? "dark/zinc"])
+      : clsx(styles.solid, styles.colors[color ?? "blue"]),
+    color === "transparent" && "border-none before:!shadow-none",
+    className
   );
 
   return "href" in props ? (
@@ -192,11 +194,7 @@ export const Button = forwardRef(function Button(
       <TouchTarget>{children}</TouchTarget>
     </Link>
   ) : (
-    <Headless.Button
-      {...props}
-      className={clsx(classes, "cursor-default")}
-      ref={ref}
-    >
+    <Headless.Button {...props} className={clsx(classes)} ref={ref}>
       <TouchTarget>{children}</TouchTarget>
     </Headless.Button>
   );

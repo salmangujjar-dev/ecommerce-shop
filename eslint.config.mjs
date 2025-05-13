@@ -102,7 +102,7 @@ const eslintConfig = [
               position: "after",
             },
             {
-              pattern: "@constants/**",
+              pattern: "@globals/**",
               group: "internal",
               patternOptions: { matchBase: true },
               position: "after",
