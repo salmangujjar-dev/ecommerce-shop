@@ -1,3 +1,5 @@
+export const APP_NAME = "E-Commerce Shop";
+
 export const CURRENCIES = ["CAD", "USD", "AUD", "EUR", "GBP"];
 export const NAVIGATION = {
   categories: [

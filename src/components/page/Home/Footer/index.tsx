@@ -3,6 +3,8 @@ import { FC } from "react";
 import { Button } from "@ui/button";
 import { Link } from "@ui/link";
 
+import { APP_NAME } from "@globals/constant";
+
 import { FOOTER_NAVIGATION } from "./constant";
 
 const Footer: FC = () => {
@@ -86,7 +88,7 @@ const Footer: FC = () => {
             <p className="mt-6 text-sm text-gray-300">
               The latest deals and savings, sent to your inbox weekly.
             </p>
-            <form className="mt-2 flex sm:max-w-md">
+            <form className="mt-2 flex sm:max-w-md items-center">
               <input
                 id="email-address"
                 type="text"
@@ -96,7 +98,7 @@ const Footer: FC = () => {
                 className="block w-full rounded-md bg-white px-4 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:outline-offset-2 focus:outline-white"
               />
               <div className="ml-4 shrink-0">
-                <Button type="submit" color="indigo">
+                <Button type="submit" color="blue">
                   Sign up
                 </Button>
               </div>
@@ -106,7 +108,7 @@ const Footer: FC = () => {
 
         <div className="border-t border-gray-800 py-10">
           <p className="text-sm text-gray-400">
-            Copyright &copy; 2021 Your Company, Inc.
+            Copyright &copy; {new Date().getFullYear()} {APP_NAME}
           </p>
         </div>
       </div>

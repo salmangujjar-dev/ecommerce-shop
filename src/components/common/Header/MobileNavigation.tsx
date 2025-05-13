@@ -5,9 +5,9 @@ import { Dispatch, Fragment, SetStateAction } from "react";
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from "@headlessui/react";
 import { X } from "lucide-react";
 
-import { Button } from "@components/ui/button";
-import { Dialog } from "@components/ui/dialog";
-import { Link } from "@components/ui/link";
+import { Button } from "@ui/button";
+import { Dialog } from "@ui/dialog";
+import { Link } from "@ui/link";
 
 import { NAVIGATION } from "@globals/constant";
 
