@@ -9,7 +9,10 @@ import { FOOTER_NAVIGATION } from "./constant";
 
 const Footer: FC = () => {
   return (
-    <footer aria-labelledby="footer-heading" className="bg-gray-900">
+    <footer
+      aria-labelledby="footer-heading"
+      className="bg-gray-900 relative mt-auto w-full"
+    >
       <h2 id="footer-heading" className="sr-only">
         Footer
       </h2>
@@ -107,7 +110,7 @@ const Footer: FC = () => {
         </div>
 
         <div className="border-t border-gray-800 py-10">
-          <p className="text-sm text-gray-400">
+          <p className="text-sm text-gray-400 text-center">
             Copyright &copy; {new Date().getFullYear()} {APP_NAME}
           </p>
         </div>

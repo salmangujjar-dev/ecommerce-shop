@@ -21,7 +21,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "antialiased min-h-screen")}>
+      <body
+        className={cn(
+          inter.className,
+          "antialiased flex flex-col min-h-screen"
+        )}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>

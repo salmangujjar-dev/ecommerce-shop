@@ -29,7 +29,7 @@ export const NAVIGATION = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Tops", href: "#" },
+            { name: "Tops", href: "/category/tops" },
             { name: "Dresses", href: "#" },
             { name: "Pants", href: "#" },
             { name: "Denim", href: "#" },
@@ -91,7 +91,7 @@ export const NAVIGATION = {
           id: "clothing",
           name: "Clothing",
           items: [
-            { name: "Tops", href: "#" },
+            { name: "Tops", href: "/category/tops" },
             { name: "Pants", href: "#" },
             { name: "Sweaters", href: "#" },
             { name: "T-Shirts", href: "#" },

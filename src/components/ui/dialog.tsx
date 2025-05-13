@@ -44,8 +44,8 @@ export function Dialog({
       />
 
       <div
-        className={cn("fixed inset-0", {
-          ["w-screen overflow-y-auto pt-6 sm:pt-0"]: isCentralized,
+        className={cn("fixed inset-0 z-2 overflow-y-auto ", {
+          ["w-screen pt-6 sm:pt-0"]: isCentralized,
         })}
       >
         <div

@@ -1,3 +1,5 @@
+import Footer from "@components/page/Home/Footer";
+
 import Header from "@common/Header";
 
 const AppLayout = ({
@@ -7,9 +9,9 @@ const AppLayout = ({
 }>) => {
   return (
     <>
-      {/* Header */}
       <Header />
       {children}
+      <Footer />
     </>
   );
 };
