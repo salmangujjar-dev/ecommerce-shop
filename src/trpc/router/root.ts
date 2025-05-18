@@ -6,6 +6,7 @@ import {
   publicProcedure,
 } from "@lib/trpc";
 
+import { productRouter } from "./product";
 import { userRouter } from "./user";
 
 export const appRouter = createTRPCRouter({
@@ -17,6 +18,7 @@ export const appRouter = createTRPCRouter({
       };
     }),
   users: userRouter,
+  products: productRouter,
 });
 
 export type AppRouter = typeof appRouter;

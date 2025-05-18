@@ -1,6 +1,6 @@
-import Link from "next/link";
-
 import { X } from "lucide-react";
+
+import { Link } from "@ui/link";
 
 const NotFound = () => {
   return (
