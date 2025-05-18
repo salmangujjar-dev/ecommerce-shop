@@ -2,9 +2,11 @@ import Image from "next/image";
 
 import { StarIcon } from "lucide-react";
 
+import { Button } from "@ui/button";
 import { Link } from "@ui/link";
 
 import Filters from "@common/Filters";
+import ProductQuickView from "@common/ProductQuickView";
 
 import { api } from "~trpc/server";
 
@@ -47,46 +49,67 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
           {products.map((product) => (
             <div
               key={product.id}
-              className="group relative border-r border-b border-gray-200 p-4 sm:p-6"
+              className="flex flex-col border-r border-b border-gray-200 p-4 sm:p-6"
             >
-              <Image
-                width={0}
-                height={0}
-                sizes="100vw"
-                alt={product.imageAlt}
-                src={product.imageSrc}
-                className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75"
-              />
-              <div className="pt-10 pb-4 text-center">
-                <h3 className="text-sm font-medium text-gray-900">
-                  <Link href={product.href}>
-                    <span aria-hidden="true" className="absolute inset-0" />
-                    {product.name}
-                  </Link>
-                </h3>
-                <div className="mt-3 flex flex-col items-center">
-                  <p className="sr-only">{product.rating} out of 5 stars</p>
-                  <div className="flex items-center">
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={rating}
-                        aria-hidden="true"
-                        className={cn(
-                          product.rating > rating
-                            ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-200 hover:fill-yellow-400 hover:text-yellow-400",
-                          "size-5 shrink-0 cursor-pointer z-1"
-                        )}
-                      />
-                    ))}
+              <div className="group relative">
+                <div className="relative">
+                  <Image
+                    width={0}
+                    height={0}
+                    sizes="100vw"
+                    alt={product.imageAlt}
+                    src={product.imageSrc}
+                    className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75"
+                  />
+                  <div className="absolute inset-0 flex items-end p-4">
+                    <ProductQuickView productId={product.id}>
+                      <Button
+                        type="button"
+                        color="white"
+                        className="z-2 w-full bg-white/75 px-4 py-2 opacity-0 group-hover:opacity-100"
+                      >
+                        Quick View
+                        <span className="sr-only">, Women's Basic Tee</span>
+                      </Button>
+                    </ProductQuickView>
                   </div>
-                  <p className="mt-1 text-sm text-gray-500">
-                    {product.reviewCount} reviews
+                </div>
+                <div className="pt-10 pb-4 text-center">
+                  <h3 className="text-sm font-medium text-gray-900">
+                    <Link href={product.href}>
+                      <span aria-hidden="true" className="absolute inset-0" />
+                      {product.name}
+                    </Link>
+                  </h3>
+                  <div className="mt-3 flex flex-col items-center">
+                    <p className="sr-only">{product.rating} out of 5 stars</p>
+                    <div className="flex items-center">
+                      {[0, 1, 2, 3, 4].map((rating) => (
+                        <StarIcon
+                          key={rating}
+                          aria-hidden="true"
+                          className={cn(
+                            product.rating > rating
+                              ? "text-yellow-400 fill-yellow-400"
+                              : "text-gray-200 hover:fill-yellow-400 hover:text-yellow-400",
+                            "size-5 shrink-0 cursor-pointer z-1"
+                          )}
+                        />
+                      ))}
+                    </div>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {product.reviewCount} reviews
+                    </p>
+                  </div>
+                  <p className="mt-4 text-base font-medium text-gray-900">
+                    {product.price}
                   </p>
                 </div>
-                <p className="mt-4 text-base font-medium text-gray-900">
-                  {product.price}
-                </p>
+              </div>
+              <div className="mt-2">
+                <Button color="white" className="w-full bg-transparent">
+                  Add to cart<span className="sr-only">, {product.name}</span>
+                </Button>
               </div>
             </div>
           ))}

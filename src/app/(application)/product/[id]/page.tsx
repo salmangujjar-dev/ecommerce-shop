@@ -12,7 +12,7 @@ interface ProductPageProps {
 const ProductPage = async ({ params }: ProductPageProps) => {
   const { id } = await params;
 
-  const product = await api.products.getById({ id });
+  const product = await api.products.getById({ id: Number(id) });
 
   return (
     <>

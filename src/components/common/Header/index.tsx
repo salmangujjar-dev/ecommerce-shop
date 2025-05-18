@@ -63,11 +63,11 @@ const Header: FC = () => {
             <PopoverGroup className="hidden lg:ml-8 lg:block lg:self-stretch">
               <div className="flex h-full space-x-8">
                 {NAVIGATION.categories.map((category) => (
-                  <Popover key={category.name} className="flex z-10">
+                  <Popover key={category.name} className="flex z-1">
                     {({ close }) => (
                       <>
                         <div className="relative flex">
-                          <PopoverButton className="relative cursor-pointer focus-visible:outline-none z-10 -mb-px flex items-center border-b-2 border-transparent pt-px text-sm font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-open:border-indigo-600 data-open:text-indigo-600">
+                          <PopoverButton className="relative cursor-pointer focus-visible:outline-none z-1 -mb-px flex items-center border-b-2 border-transparent pt-px text-sm font-medium text-gray-700 transition-colors duration-200 ease-out hover:text-gray-800 data-open:border-indigo-600 data-open:text-indigo-600">
                             {category.name}
                           </PopoverButton>
                         </div>
@@ -169,14 +169,14 @@ const Header: FC = () => {
             <div className="ml-auto flex items-center">
               <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6">
                 <Link
-                  href="#"
+                  href="/login"
                   className="text-sm font-medium text-gray-700 hover:text-gray-800"
                 >
                   Sign in
                 </Link>
                 <span aria-hidden="true" className="h-6 w-px bg-gray-200" />
                 <Link
-                  href="#"
+                  href="/register"
                   className="text-sm font-medium text-gray-700 hover:text-gray-800"
                 >
                   Create account
@@ -214,7 +214,10 @@ const Header: FC = () => {
 
               {/* Cart */}
               <div className="ml-4 flow-root lg:ml-6">
-                <Link href="#" className="group -m-2 flex items-center p-2">
+                <Link
+                  href="/checkout"
+                  className="group -m-2 flex items-center p-2"
+                >
                   <ShoppingBagIcon
                     aria-hidden="true"
                     className="size-6 shrink-0 text-gray-400 group-hover:text-gray-500"

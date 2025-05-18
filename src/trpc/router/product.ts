@@ -4,10 +4,11 @@ import { createTRPCRouter, publicProcedure } from "@lib/trpc";
 
 export const productRouter = createTRPCRouter({
   getById: publicProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ input: { id } }) => {
       console.log({ id });
       const product = {
+        id: 1,
         name: "Basic Tee",
         price: "$35",
         rating: 3.9,
@@ -92,6 +93,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-01.jpg",
           imageAlt: "TODO",
           href: "/product/1",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 2,
@@ -103,6 +124,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-02.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 3,
@@ -114,6 +155,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-03.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 4,
@@ -125,6 +186,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-04.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 5,
@@ -136,6 +217,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-01.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 6,
@@ -147,6 +248,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-02.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 7,
@@ -158,6 +279,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-03.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 8,
@@ -169,6 +310,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-04.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
         {
           id: 9,
@@ -180,6 +341,26 @@ export const productRouter = createTRPCRouter({
             "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-04.jpg",
           imageAlt: "TODO",
           href: "#",
+          colors: [
+            {
+              name: "Black",
+              bgColor: "bg-gray-900",
+              selectedColor: "ring-gray-900",
+            },
+            {
+              name: "Heather Grey",
+              bgColor: "bg-gray-400",
+              selectedColor: "ring-gray-400",
+            },
+          ],
+          sizes: [
+            { name: "XXS", inStock: true },
+            { name: "XS", inStock: true },
+            { name: "S", inStock: true },
+            { name: "M", inStock: true },
+            { name: "L", inStock: true },
+            { name: "XL", inStock: false },
+          ],
         },
       ];
 

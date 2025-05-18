@@ -23,7 +23,7 @@ const MobileNavigation = ({ isOpen, setIsOpen }: IMobileNavigation) => {
       onClose={setIsOpen}
       isCentralized={false}
       className="relative !rounded-none flex w-full max-w-xs data-closed:!translate-y-none data-closed:data-enter:!scale-100 transform flex-col overflow-y-auto bg-white pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full"
-      classNames={{ root: "relative z-40 lg:hidden" }}
+      classNames={{ backdrop: "relative z-40 lg:hidden" }}
     >
       <div className="flex px-4 pt-5 pb-2">
         <Button
@@ -131,19 +131,25 @@ const MobileNavigation = ({ isOpen, setIsOpen }: IMobileNavigation) => {
 
       <div className="space-y-6 border-t border-gray-200 px-4 py-6">
         <div className="flow-root">
-          <Link href="#" className="-m-2 block p-2 font-medium text-gray-900">
+          <Link
+            href="/login"
+            className="-m-2 block p-2 font-medium text-gray-900"
+          >
             Sign in
           </Link>
         </div>
         <div className="flow-root">
-          <Link href="#" className="-m-2 block p-2 font-medium text-gray-900">
+          <Link
+            href="/register"
+            className="-m-2 block p-2 font-medium text-gray-900"
+          >
             Create account
           </Link>
         </div>
       </div>
 
       <div className="border-t border-gray-200 px-4 py-6">
-        <Link href="#" className="-m-2 flex items-center p-2">
+        <Link href="/checkout" className="-m-2 flex items-center p-2">
           <Image
             width={0}
             height={0}

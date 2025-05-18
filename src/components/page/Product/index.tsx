@@ -15,6 +15,7 @@ import {
 } from "@headlessui/react";
 import { DollarSign, Globe, Star } from "lucide-react";
 
+import Breadcrumb from "@ui/breadcrumb";
 import { Link } from "@ui/link";
 
 import { productRouter } from "~trpc/router/product";
@@ -36,55 +37,24 @@ const policies = [
   },
 ];
 
-interface ProductProp {
+interface ProductProps {
   product: Awaited<ReturnType<typeof productRouter.getById>>;
 }
 
-const Product = ({ product }: ProductProp) => {
+const Product = ({ product }: ProductProps) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
 
   return (
     <div className="bg-white">
       <div className="pt-6">
-        <nav
-          aria-label="Breadcrumb"
-          className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
-        >
-          <ol role="list" className="flex items-center space-x-4">
-            {product.breadcrumbs.map((breadcrumb) => (
-              <li key={breadcrumb.id}>
-                <div className="flex items-center">
-                  <Link
-                    href={breadcrumb.href}
-                    className="mr-4 text-sm font-medium text-gray-900"
-                  >
-                    {breadcrumb.name}
-                  </Link>
-                  <svg
-                    viewBox="0 0 6 20"
-                    aria-hidden="true"
-                    className="h-5 w-auto text-gray-300"
-                  >
-                    <path
-                      d="M4.878 4.34H3.551L.27 16.532h1.327l3.281-12.19z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                </div>
-              </li>
-            ))}
-            <li className="text-sm">
-              <Link
-                href={product.href}
-                aria-current="page"
-                className="font-medium text-gray-500 hover:text-gray-600"
-              >
-                {product.name}
-              </Link>
-            </li>
-          </ol>
-        </nav>
+        <Breadcrumb
+          breadcrumbs={product.breadcrumbs}
+          selectedBreadcrumb={{
+            name: product.name,
+            href: `/product/${product.id}`,
+          }}
+        />
         <div className="mx-auto mt-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8">
           <div className="lg:grid lg:auto-rows-min lg:grid-cols-12 lg:gap-x-8">
             <div className="lg:col-span-5 lg:col-start-8">
