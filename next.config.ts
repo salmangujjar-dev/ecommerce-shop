@@ -1,11 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
-import path from "path";
+import path from 'path';
 
 const nextConfig: NextConfig = {
-  output: "standalone",
+  output: 'standalone',
   compiler: {
-    removeConsole: process.env.NODE_ENV === "production",
+    removeConsole: process.env.NODE_ENV === 'production',
   },
   logging: {
     fetches: {
@@ -15,13 +15,13 @@ const nextConfig: NextConfig = {
   webpack(config, { dev, isServer }) {
     if (dev && !isServer) {
       const originalEntry = config.entry;
-      const wdyrSource = path.join(__dirname, "src/lib/wdyr.ts");
+      const wdyrSource = path.join(__dirname, 'src/lib/wdyr.ts');
 
       config.entry = async () => {
         const entries = await originalEntry();
 
-        if (entries["main-app"] && !entries["main-app"].includes(wdyrSource)) {
-          entries["main-app"].unshift(wdyrSource);
+        if (entries['main-app'] && !entries['main-app'].includes(wdyrSource)) {
+          entries['main-app'].unshift(wdyrSource);
         }
 
         return entries;
@@ -31,7 +31,7 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: ["tailwindcss.com", "images.unsplash.com"],
+    domains: ['tailwindcss.com', 'images.unsplash.com', 'flagcdn.com'],
   },
 };
 

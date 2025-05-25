@@ -1,17 +1,20 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 
-import { cn } from "@utils/cn";
+import { cn } from '@utils/cn';
 
-import Providers from "./providers";
+import { APP_DESCRIPTION, APP_NAME } from '@globals/constant';
 
-import "./globals.css";
+import Loader from './loader';
+import Providers from './providers';
 
-const inter = Inter({ subsets: ["latin"] });
+import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "E-Commerce Shop",
-  description: "E-Commerce Shop",
+  title: APP_NAME,
+  description: APP_DESCRIPTION,
 };
 
 export default function RootLayout({
@@ -20,13 +23,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         className={cn(
           inter.className,
-          "antialiased flex flex-col min-h-screen"
+          'antialiased flex flex-col min-h-screen'
         )}
       >
+        <Loader />
         <Providers>{children}</Providers>
       </body>
     </html>
