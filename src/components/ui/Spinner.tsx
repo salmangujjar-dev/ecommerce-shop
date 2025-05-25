@@ -1,6 +1,6 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef } from 'react';
 
-import { cn } from "@utils/cn";
+import { cn } from '@utils/cn';
 
 type SpinnerProps = {
   className?: string;
@@ -12,7 +12,7 @@ const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
       <div
         ref={ref}
         className={cn(
-          "w-12 h-12 border-4 box-border rounded-full border-blue-500 border-b-transparent animate-spin",
+          'w-12 h-12 border-4 box-border rounded-full border-blue-500 border-b-transparent animate-spin',
           className
         )}
       />
@@ -20,6 +20,6 @@ const Spinner = forwardRef<HTMLDivElement, SpinnerProps>(
   }
 );
 
-Spinner.displayName = "Spinner";
+Spinner.displayName = 'Spinner';
 
 export default Spinner;

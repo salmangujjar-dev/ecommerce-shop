@@ -6,14 +6,14 @@
  * https://catalyst.tailwindui.com/docs#client-side-router-integration
  */
 
-import NextLink, { type LinkProps } from "next/link";
+import NextLink, { type LinkProps } from 'next/link';
 
-import React, { forwardRef } from "react";
+import React, { forwardRef } from 'react';
 
-import * as Headless from "@headlessui/react";
+import * as Headless from '@headlessui/react';
 
 export const Link = forwardRef(function Link(
-  props: LinkProps & React.ComponentPropsWithoutRef<"a">,
+  props: LinkProps & React.ComponentPropsWithoutRef<'a'>,
   ref: React.ForwardedRef<HTMLAnchorElement>
 ) {
   return (

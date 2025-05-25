@@ -1,16 +1,16 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from '@storybook/react';
 import {
   Alert,
   AlertTitle,
   AlertDescription,
   AlertBody,
   AlertActions,
-} from "./alert";
-import { Button } from "./button";
-import { useArgs } from "@storybook/preview-api";
+} from './alert';
+import { Button } from './button';
+import { useArgs } from '@storybook/preview-api';
 
 const meta = {
-  title: "Alert",
+  title: 'Alert',
   component: Alert,
   args: {
     open: false,
@@ -36,7 +36,7 @@ export const Default = {
 
     return (
       <>
-        <Button type="button" onClick={handleOpen}>
+        <Button type='button' onClick={handleOpen}>
           Open Alert
         </Button>
         <Alert {...args} open={args.open} onClose={handleClose}>

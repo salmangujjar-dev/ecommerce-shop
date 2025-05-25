@@ -1,16 +1,16 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from '@storybook/react';
 import {
   Dialog,
   DialogTitle,
   DialogDescription,
   DialogBody,
   DialogActions,
-} from "./dialog";
-import { Button } from "./button";
-import { useArgs } from "@storybook/preview-api";
+} from './dialog';
+import { Button } from './button';
+import { useArgs } from '@storybook/preview-api';
 
 const meta = {
-  title: "Dialog",
+  title: 'Dialog',
   component: Dialog,
   args: {
     open: false,
@@ -36,7 +36,7 @@ export const Default = {
 
     return (
       <>
-        <Button type="button" onClick={handleOpen}>
+        <Button type='button' onClick={handleOpen}>
           Open Dialogue
         </Button>
         <Dialog {...args} open={args.open} onClose={handleClose}>

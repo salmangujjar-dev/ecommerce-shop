@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from '@storybook/react';
 import {
   Table,
   TableHeader,
@@ -6,10 +6,10 @@ import {
   TableRow,
   TableCell,
   TableHead,
-} from "./table";
+} from './table';
 
 const meta = {
-  title: "Table",
+  title: 'Table',
   component: Table,
 } satisfies Meta<typeof Table>;
 
@@ -53,12 +53,12 @@ export const Default: Story = {
 
 export const WithCustomClass: Story = {
   render: () => (
-    <Table className="border-collapse">
+    <Table className='border-collapse'>
       <TableHeader>
         <TableRow>
-          <TableHead className="bg-gray-100">Product</TableHead>
-          <TableHead className="bg-gray-100">Price</TableHead>
-          <TableHead className="bg-gray-100">Stock</TableHead>
+          <TableHead className='bg-gray-100'>Product</TableHead>
+          <TableHead className='bg-gray-100'>Price</TableHead>
+          <TableHead className='bg-gray-100'>Stock</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -89,7 +89,7 @@ export const Empty: Story = {
       </TableHeader>
       <TableBody>
         <TableRow>
-          <TableCell colSpan={3} className="text-center text-gray-500">
+          <TableCell colSpan={3} className='text-center text-gray-500'>
             No data available
           </TableCell>
         </TableRow>

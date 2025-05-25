@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import prisma from "@lib/prisma";
-import { createTRPCRouter, publicProcedure } from "@lib/trpc";
+import prisma from '@lib/prisma';
+import { createTRPCRouter, publicProcedure } from '@lib/trpc';
 
 export const reviewRouter = createTRPCRouter({
   getByProductId: publicProcedure
@@ -19,7 +19,7 @@ export const reviewRouter = createTRPCRouter({
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
     }),
@@ -43,7 +43,7 @@ export const reviewRouter = createTRPCRouter({
           },
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
       });
     }),

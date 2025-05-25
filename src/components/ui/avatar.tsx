@@ -1,12 +1,12 @@
-import Image from "next/image";
+import Image from 'next/image';
 
-import React, { forwardRef } from "react";
+import React, { forwardRef } from 'react';
 
-import * as Headless from "@headlessui/react";
-import clsx from "clsx";
+import * as Headless from '@headlessui/react';
+import clsx from 'clsx';
 
-import { TouchTarget } from "./button";
-import { Link } from "./link";
+import { TouchTarget } from './button';
+import { Link } from './link';
 
 type AvatarProps = {
   src?: string | null;
@@ -20,39 +20,39 @@ export function Avatar({
   src = null,
   square = false,
   initials,
-  alt = "",
+  alt = '',
   className,
   ...props
-}: AvatarProps & React.ComponentPropsWithoutRef<"span">) {
+}: AvatarProps & React.ComponentPropsWithoutRef<'span'>) {
   return (
     <span
-      data-slot="avatar"
+      data-slot='avatar'
       {...props}
       className={clsx(
         className,
         // Basic layout
-        "inline-grid shrink-0 align-middle [--avatar-radius:20%] *:col-start-1 *:row-start-1",
-        "outline -outline-offset-1 outline-black/10 dark:outline-white/10",
+        'inline-grid shrink-0 align-middle [--avatar-radius:20%] *:col-start-1 *:row-start-1',
+        'outline -outline-offset-1 outline-black/10 dark:outline-white/10',
         // Border radius
         square
-          ? "rounded-(--avatar-radius) *:rounded-(--avatar-radius)"
-          : "rounded-full *:rounded-full"
+          ? 'rounded-(--avatar-radius) *:rounded-(--avatar-radius)'
+          : 'rounded-full *:rounded-full'
       )}
     >
       {initials && (
         <svg
-          className="size-full fill-current p-[5%] text-[48px] font-medium uppercase select-none"
-          viewBox="0 0 100 100"
-          aria-hidden={alt ? undefined : "true"}
+          className='size-full fill-current p-[5%] text-[48px] font-medium uppercase select-none'
+          viewBox='0 0 100 100'
+          aria-hidden={alt ? undefined : 'true'}
         >
           {alt && <title>{alt}</title>}
           <text
-            x="50%"
-            y="50%"
-            alignmentBaseline="middle"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            dy=".125em"
+            x='50%'
+            y='50%'
+            alignmentBaseline='middle'
+            dominantBaseline='middle'
+            textAnchor='middle'
+            dy='.125em'
           >
             {initials}
           </text>
@@ -63,8 +63,8 @@ export function Avatar({
         <Image
           width={0}
           height={0}
-          sizes="100vw"
-          className={"size-full"}
+          sizes='100vw'
+          className={'size-full'}
           src={src}
           alt={alt}
         />
@@ -83,18 +83,18 @@ export const AvatarButton = forwardRef(function AvatarButton(
     ...props
   }: AvatarProps &
     (
-      | Omit<Headless.ButtonProps, "as" | "className">
-      | Omit<React.ComponentPropsWithoutRef<typeof Link>, "className">
+      | Omit<Headless.ButtonProps, 'as' | 'className'>
+      | Omit<React.ComponentPropsWithoutRef<typeof Link>, 'className'>
     ),
   ref: React.ForwardedRef<HTMLElement>
 ) {
   const classes = clsx(
     className,
-    square ? "rounded-[20%]" : "rounded-full",
-    "relative inline-grid focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500"
+    square ? 'rounded-[20%]' : 'rounded-full',
+    'relative inline-grid focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500'
   );
 
-  return "href" in props ? (
+  return 'href' in props ? (
     <Link
       {...props}
       className={classes}

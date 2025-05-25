@@ -1,7 +1,7 @@
 const CommonUtils = {
   asCurrency: ({
     amount,
-    locales = "en-US",
+    locales = 'en-US',
     opts = {},
   }: {
     amount: number;
@@ -9,8 +9,8 @@ const CommonUtils = {
     opts?: Intl.NumberFormatOptions;
   }) => {
     return new Intl.NumberFormat(locales, {
-      style: "currency",
-      currency: "USD",
+      style: 'currency',
+      currency: 'USD',
       ...opts,
     }).format(amount);
   },

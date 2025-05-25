@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { cloneElement, ReactElement, useCallback, useState } from "react";
+import { cloneElement, ReactElement, useCallback, useState } from 'react';
 
-import { X } from "lucide-react";
+import { X } from 'lucide-react';
 
-import Product from "@components/page/Product";
+import Product from '@components/page/Product';
 
-import { Dialog } from "@ui/dialog";
-import Spinner from "@ui/Spinner";
+import { Dialog } from '@ui/dialog';
+import Spinner from '@ui/Spinner';
 
-import { trpc } from "~trpc/client";
+import { trpc } from '~trpc/client';
 
 interface ProductQuickViewProps {
   children: ReactElement;
@@ -33,13 +33,13 @@ const ProductQuickView = ({ children, productId }: ProductQuickViewProps) => {
       {cloneElement(children as ReactElement<{ onClick?: () => void }>, {
         onClick: () => setIsOpen(true),
       })}
-      <Dialog open={isOpen} size="5xl" onClose={onClose}>
+      <Dialog open={isOpen} size='5xl' onClose={onClose}>
         <X
-          className="ml-auto cursor-pointer text-primary-500"
+          className='ml-auto cursor-pointer text-primary-500'
           onClick={onClose}
         />
         {isLoading ? (
-          <Spinner className="mx-auto" />
+          <Spinner className='mx-auto' />
         ) : !product ? (
           <h1>Product not found</h1>
         ) : (

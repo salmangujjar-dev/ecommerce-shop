@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { Input, InputGroup } from "./input";
-import { Mail } from "lucide-react";
+import { Meta, StoryObj } from '@storybook/react';
+import { Input, InputGroup } from './input';
+import { Mail } from 'lucide-react';
 
 const meta = {
-  title: "Input",
+  title: 'Input',
   component: Input,
 } satisfies Meta<typeof Input>;
 
@@ -12,7 +12,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default = {
   args: {
-    placeholder: "Enter text...",
+    placeholder: 'Enter text...',
   },
 } satisfies Story;
 
@@ -20,12 +20,12 @@ export const WithIcon = {
   render: () => (
     <InputGroup>
       <Mail
-        data-slot="icon" /* important */
-        className="w-4 h-4"
+        data-slot='icon' /* important */
+        className='w-4 h-4'
         strokeWidth={1.5}
-        stroke="currentColor"
+        stroke='currentColor'
       />
-      <Input placeholder="With icon" />
+      <Input placeholder='With icon' />
     </InputGroup>
   ),
 } satisfies Story;

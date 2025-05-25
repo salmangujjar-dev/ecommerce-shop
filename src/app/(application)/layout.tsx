@@ -1,6 +1,6 @@
-import Footer from "@components/page/Home/Footer";
+import Footer from '@components/page/Home/Footer';
 
-import Header from "@common/Header";
+import Header from '@common/Header';
 
 const AppLayout = ({
   children,

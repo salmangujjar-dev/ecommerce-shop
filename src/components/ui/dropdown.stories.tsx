@@ -1,4 +1,4 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from '@storybook/react';
 import {
   Dropdown,
   DropdownButton,
@@ -10,10 +10,10 @@ import {
   DropdownLabel,
   DropdownDescription,
   DropdownShortcut,
-} from "./dropdown";
+} from './dropdown';
 
 const meta = {
-  title: "Dropdown",
+  title: 'Dropdown',
   component: Dropdown,
 } satisfies Meta<typeof Dropdown>;
 
@@ -68,11 +68,11 @@ export const WithDescriptions = {
         <DropdownDivider />
         <DropdownItem>
           <DropdownLabel>Settings</DropdownLabel>
-          <DropdownShortcut keys={["⌘", "S"]} />
+          <DropdownShortcut keys={['⌘', 'S']} />
         </DropdownItem>
         <DropdownItem>
           <DropdownLabel>Logout</DropdownLabel>
-          <DropdownShortcut keys={["⌘", "Q"]} />
+          <DropdownShortcut keys={['⌘', 'Q']} />
         </DropdownItem>
       </DropdownMenu>
     </Dropdown>

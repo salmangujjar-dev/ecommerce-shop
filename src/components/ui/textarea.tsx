@@ -1,19 +1,22 @@
-import React, { forwardRef } from 'react'
+import React, { forwardRef } from 'react';
 
-import * as Headless from '@headlessui/react'
-import clsx from 'clsx'
+import * as Headless from '@headlessui/react';
+import clsx from 'clsx';
 
 export const Textarea = forwardRef(function Textarea(
   {
     className,
     resizable = true,
     ...props
-  }: { className?: string; resizable?: boolean } & Omit<Headless.TextareaProps, 'as' | 'className'>,
+  }: { className?: string; resizable?: boolean } & Omit<
+    Headless.TextareaProps,
+    'as' | 'className'
+  >,
   ref: React.ForwardedRef<HTMLTextAreaElement>
 ) {
   return (
     <span
-      data-slot="control"
+      data-slot='control'
       className={clsx([
         className,
         // Basic layout
@@ -51,5 +54,5 @@ export const Textarea = forwardRef(function Textarea(
         ])}
       />
     </span>
-  )
-})
+  );
+});

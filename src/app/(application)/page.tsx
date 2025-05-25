@@ -1,11 +1,11 @@
-import Category from "@components/page/Home/Category";
-import Featured from "@components/page/Home/Featured";
-import Hero from "@components/page/Home/Hero";
-import Perks from "@components/page/Home/Perks";
+import Category from '@components/page/Home/Category';
+import Featured from '@components/page/Home/Featured';
+import Hero from '@components/page/Home/Hero';
+import Perks from '@components/page/Home/Perks';
 
 const App = () => {
   return (
-    <div className="bg-white">
+    <div className='bg-white'>
       {/* Hero section */}
       <Hero />
 

@@ -1,5 +1,5 @@
-import prisma from "@lib/prisma";
-import { createTRPCRouter, publicProcedure } from "@lib/trpc";
+import prisma from '@lib/prisma';
+import { createTRPCRouter, publicProcedure } from '@lib/trpc';
 
 export const userRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {

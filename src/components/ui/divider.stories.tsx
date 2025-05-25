@@ -1,8 +1,8 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { Divider } from "./divider";
+import { Meta, StoryObj } from '@storybook/react';
+import { Divider } from './divider';
 
 const meta = {
-  title: "Divider",
+  title: 'Divider',
   component: Divider,
 } satisfies Meta<typeof Divider>;
 

@@ -1,12 +1,12 @@
-import { Meta, StoryObj } from "@storybook/react";
+import { Meta, StoryObj } from '@storybook/react';
 import {
   DescriptionList,
   DescriptionTerm,
   DescriptionDetails,
-} from "./description-list";
+} from './description-list';
 
 const meta = {
-  title: "DescriptionList",
+  title: 'DescriptionList',
   component: DescriptionList,
 } satisfies Meta<typeof DescriptionList>;
 

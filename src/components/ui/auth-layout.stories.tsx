@@ -1,10 +1,10 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { AuthLayout } from "./auth-layout";
-import { Button } from "./button";
-import { Input } from "./input";
+import { Meta, StoryObj } from '@storybook/react';
+import { AuthLayout } from './auth-layout';
+import { Button } from './button';
+import { Input } from './input';
 
 const meta = {
-  title: "AuthLayout",
+  title: 'AuthLayout',
   component: AuthLayout,
 } satisfies Meta<typeof AuthLayout>;
 
@@ -14,28 +14,28 @@ type Story = StoryObj<typeof AuthLayout>;
 export const Default: Story = {
   render: () => (
     <AuthLayout>
-      <div className="mx-auto w-full max-w-sm lg:w-96">
+      <div className='mx-auto w-full max-w-sm lg:w-96'>
         <div>
-          <h2 className="mt-6 text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className='mt-6 text-2xl font-bold leading-9 tracking-tight text-gray-900'>
             Sign in to your account
           </h2>
         </div>
 
-        <div className="mt-10">
-          <form className="space-y-6">
+        <div className='mt-10'>
+          <form className='space-y-6'>
             <div>
               <label
-                htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                htmlFor='email'
+                className='block text-sm font-medium leading-6 text-gray-900'
               >
                 Email address
               </label>
-              <div className="mt-2">
+              <div className='mt-2'>
                 <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id='email'
+                  name='email'
+                  type='email'
+                  autoComplete='email'
                   required
                 />
               </div>
@@ -43,24 +43,24 @@ export const Default: Story = {
 
             <div>
               <label
-                htmlFor="password"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                htmlFor='password'
+                className='block text-sm font-medium leading-6 text-gray-900'
               >
                 Password
               </label>
-              <div className="mt-2">
+              <div className='mt-2'>
                 <Input
-                  id="password"
-                  name="password"
-                  type="password"
-                  autoComplete="current-password"
+                  id='password'
+                  name='password'
+                  type='password'
+                  autoComplete='current-password'
                   required
                 />
               </div>
             </div>
 
             <div>
-              <Button type="submit" className="w-full">
+              <Button type='submit' className='w-full'>
                 Sign in
               </Button>
             </div>

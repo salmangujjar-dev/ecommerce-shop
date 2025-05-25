@@ -1,15 +1,15 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { Checkbox, CheckboxField, CheckboxGroup } from "./checkbox";
-import { Description, Label } from "./fieldset";
-import { ComponentProps } from "react";
+import { Meta, StoryObj } from '@storybook/react';
+import { Checkbox, CheckboxField, CheckboxGroup } from './checkbox';
+import { Description, Label } from './fieldset';
+import { ComponentProps } from 'react';
 
 const meta = {
-  title: "Checkbox",
+  title: 'Checkbox',
   component: Checkbox,
   args: {
     defaultChecked: true,
-    name: "acknowledgement",
-    "aria-label": "I agree",
+    name: 'acknowledgement',
+    'aria-label': 'I agree',
   },
 } satisfies Meta<typeof Checkbox>;
 
@@ -18,13 +18,13 @@ type Story = StoryObj<typeof meta>;
 
 export const Default = {
   args: {
-    children: "Checkbox",
+    children: 'Checkbox',
   },
 } satisfies Story;
 
 export const WithLabel = {
   args: {
-    label: "I agree to the terms and conditions",
+    label: 'I agree to the terms and conditions',
   },
   render: (args) => {
     return (
@@ -38,9 +38,9 @@ export const WithLabel = {
 
 export const WithDescription = {
   args: {
-    label: "I agree to the terms and conditions",
+    label: 'I agree to the terms and conditions',
     description:
-      "By checking this box, you agree to our Terms of Service and Privacy Policy.",
+      'By checking this box, you agree to our Terms of Service and Privacy Policy.',
   },
   render: (args) => {
     return (
@@ -59,12 +59,12 @@ export const Group = {
   render: () => (
     <CheckboxGroup>
       <CheckboxField>
-        <Checkbox name="show_on_events_page" defaultChecked />
+        <Checkbox name='show_on_events_page' defaultChecked />
         <Label>Show on events page</Label>
         <Description>Make this event visible on your profile.</Description>
       </CheckboxField>
       <CheckboxField>
-        <Checkbox name="allow_embedding" />
+        <Checkbox name='allow_embedding' />
         <Label>Allow embedding</Label>
         <Description>
           Allow others to embed your event details on their own site.

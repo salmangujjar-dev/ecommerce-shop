@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import prisma from "@lib/prisma";
-import { createTRPCRouter, publicProcedure } from "@lib/trpc";
+import prisma from '@lib/prisma';
+import { createTRPCRouter, publicProcedure } from '@lib/trpc';
 
 export const categoryRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {

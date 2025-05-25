@@ -1,7 +1,7 @@
-import Product from "@components/page/Product";
-import Reviews from "@components/page/Product/Reviews";
+import Product from '@components/page/Product';
+import Reviews from '@components/page/Product/Reviews';
 
-import { api } from "~trpc/server";
+import { api } from '~trpc/server';
 
 interface ProductPageProps {
   params: {

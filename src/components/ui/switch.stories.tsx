@@ -1,9 +1,9 @@
-import { Meta, StoryObj } from "@storybook/react";
-import { Switch } from "./switch";
-import { useArgs } from "@storybook/preview-api";
+import { Meta, StoryObj } from '@storybook/react';
+import { Switch } from './switch';
+import { useArgs } from '@storybook/preview-api';
 
 const meta = {
-  title: "Switch",
+  title: 'Switch',
   component: Switch,
 } satisfies Meta<typeof Switch>;
 
@@ -27,9 +27,9 @@ export const WithLabel: Story = {
   render: function Render(args) {
     const [, setArgs] = useArgs();
     return (
-      <div className="flex items-center gap-2">
+      <div className='flex items-center gap-2'>
         <Switch {...args} onChange={(checked) => setArgs({ checked })} />
-        <span className="text-sm">Enable notifications</span>
+        <span className='text-sm'>Enable notifications</span>
       </div>
     );
   },

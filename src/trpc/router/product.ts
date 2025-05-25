@@ -1,9 +1,9 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-import prisma from "@lib/prisma";
-import { createTRPCRouter, publicProcedure } from "@lib/trpc";
+import prisma from '@lib/prisma';
+import { createTRPCRouter, publicProcedure } from '@lib/trpc';
 
-import type { Prisma } from "../../../prisma/generated";
+import type { Prisma } from '../../../prisma/generated';
 
 export const productRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
@@ -93,8 +93,8 @@ export const productRouter = createTRPCRouter({
         minPrice: z.number().optional(),
         maxPrice: z.number().optional(),
         search: z.string().optional(),
-        sortBy: z.enum(["price", "rating", "createdAt"]).optional(),
-        sortOrder: z.enum(["asc", "desc"]).optional(),
+        sortBy: z.enum(['price', 'rating', 'createdAt']).optional(),
+        sortOrder: z.enum(['asc', 'desc']).optional(),
         page: z.number().min(1).default(1),
         limit: z.number().min(1).max(100).default(10),
       })
@@ -128,15 +128,15 @@ export const productRouter = createTRPCRouter({
         }),
         ...(genderSlug && {
           gender: {
-            OR: [{ slug: genderSlug }, { slug: "unisex" }],
+            OR: [{ slug: genderSlug }, { slug: 'unisex' }],
           },
         }),
         ...(minPrice && { price: { gte: minPrice } }),
         ...(maxPrice && { price: { lte: maxPrice } }),
         ...(search && {
           OR: [
-            { name: { contains: search, mode: "insensitive" as const } },
-            { description: { contains: search, mode: "insensitive" as const } },
+            { name: { contains: search, mode: 'insensitive' as const } },
+            { description: { contains: search, mode: 'insensitive' as const } },
           ],
         }),
       };
@@ -154,7 +154,7 @@ export const productRouter = createTRPCRouter({
               select: { reviews: true },
             },
           },
-          orderBy: sortBy ? { [sortBy]: sortOrder || "desc" } : undefined,
+          orderBy: sortBy ? { [sortBy]: sortOrder || 'desc' } : undefined,
           skip,
           take: limit,
         }),

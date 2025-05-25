@@ -1,9 +1,9 @@
-import { createCallerFactory, createTRPCRouter } from "@lib/trpc";
+import { createCallerFactory, createTRPCRouter } from '@lib/trpc';
 
-import { categoryRouter } from "./category";
-import { productRouter } from "./product";
-import { reviewRouter } from "./review";
-import { userRouter } from "./user";
+import { categoryRouter } from './category';
+import { productRouter } from './product';
+import { reviewRouter } from './review';
+import { userRouter } from './user';
 
 export const appRouter = createTRPCRouter({
   categories: categoryRouter,
