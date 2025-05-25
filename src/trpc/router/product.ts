@@ -1,369 +1,330 @@
 import { z } from "zod";
 
+import prisma from "@lib/prisma";
 import { createTRPCRouter, publicProcedure } from "@lib/trpc";
 
-export const productRouter = createTRPCRouter({
-  getById: publicProcedure
-    .input(z.object({ id: z.number() }))
-    .query(async ({ input: { id } }) => {
-      console.log({ id });
-      const product = {
-        id: 1,
-        name: "Basic Tee",
-        price: "$35",
-        rating: 3.9,
-        reviewCount: 512,
-        href: "/products/1",
-        breadcrumbs: [
-          { id: 1, name: "Men", href: "/men" },
-          { id: 2, name: "Clothing", href: "/men-clothing" },
-        ],
-        images: [
-          {
-            id: 1,
-            src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-03-product-01.jpg",
-            alt: "Back of women's Basic Tee in black.",
-            primary: true,
-          },
-          {
-            id: 2,
-            src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-product-shot-01.jpg",
-            alt: "Side profile of women's Basic Tee in black.",
-            primary: false,
-          },
-          {
-            id: 3,
-            src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-product-shot-02.jpg",
-            alt: "Front of women's Basic Tee in black.",
-            primary: false,
-          },
-        ],
-        colors: [
-          {
-            name: "Black",
-            bgColor: "bg-gray-900",
-            selectedColor: "ring-gray-900",
-          },
-          {
-            name: "Heather Grey",
-            bgColor: "bg-gray-400",
-            selectedColor: "ring-gray-400",
-          },
-        ],
-        sizes: [
-          { name: "XXS", inStock: true },
-          { name: "XS", inStock: true },
-          { name: "S", inStock: true },
-          { name: "M", inStock: true },
-          { name: "L", inStock: true },
-          { name: "XL", inStock: false },
-        ],
-        description: `
-          <p>The Basic tee is an honest new take on a classic. The tee uses super soft, pre-shrunk cotton for true comfort and a dependable fit. They are hand cut and sewn locally, with a special dye technique that gives each tee it's own look.</p>
-          <p>Looking to stock your closet? The Basic tee also comes in a 3-pack or 5-pack at a bundle discount.</p>
-        `,
-        details: [
-          "Only the best materials",
-          "Ethically and locally made",
-          "Pre-washed and pre-shrunk",
-          "Machine wash cold with similar colors",
-        ],
-      };
+import type { Prisma } from "../../../prisma/generated";
 
-      return product;
+export const productRouter = createTRPCRouter({
+  getAll: publicProcedure.query(async () => {
+    const products = await prisma.product.findMany({
+      include: {
+        category: true,
+        gender: true,
+        images: true,
+        colors: true,
+        sizes: true,
+        _count: {
+          select: { reviews: true },
+        },
+      },
+    });
+    return products.map((product) => ({
+      ...product,
+      price: Number(product.price) || 0,
+    }));
+  }),
+
+  getById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const product = await prisma.product.findUnique({
+        where: { id: input.id },
+        include: {
+          category: true,
+          gender: true,
+          images: true,
+          colors: {
+            include: {
+              color: true,
+            },
+          },
+          sizes: true,
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  username: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return product ? { ...product, price: Number(product.price) || 0 } : null;
     }),
+
+  getBySlug: publicProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async ({ input }) => {
+      const product = await prisma.product.findUnique({
+        where: { slug: input.slug },
+        include: {
+          category: true,
+          gender: true,
+          images: true,
+          colors: true,
+          sizes: true,
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  username: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return product ? { ...product, price: Number(product.price) || 0 } : null;
+    }),
+
   getByFilter: publicProcedure
     .input(
       z.object({
-        gender: z.string({ message: "Gender is required" }),
-        category: z.string().optional(),
-        query: z.string().optional(),
+        categoryId: z.string().optional(),
+        categorySlug: z.string().optional(),
+        genderSlug: z.string().optional(),
+        genderId: z.string().optional(),
+        minPrice: z.number().optional(),
+        maxPrice: z.number().optional(),
+        search: z.string().optional(),
+        sortBy: z.enum(["price", "rating", "createdAt"]).optional(),
+        sortOrder: z.enum(["asc", "desc"]).optional(),
+        page: z.number().min(1).default(1),
+        limit: z.number().min(1).max(100).default(10),
       })
     )
-    .query(async ({ input: { gender, category, query } }) => {
-      console.log(gender, category, query);
-      const PRODUCTS = [
-        {
-          id: 1,
-          name: "Organize Basic Set (Walnut)",
-          price: "$149",
-          rating: 5,
-          reviewCount: 38,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-01.jpg",
-          imageAlt: "TODO",
-          href: "/product/1",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 2,
-          name: "Organize Pen Holder",
-          price: "$15",
-          rating: 5,
-          reviewCount: 18,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-02.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 3,
-          name: "Organize Sticky Note Holder",
-          price: "$15",
-          rating: 5,
-          reviewCount: 14,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-03.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 4,
-          name: "Organize Phone Holder",
-          price: "$15",
-          rating: 4,
-          reviewCount: 21,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-04.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 5,
-          name: "Organize Basic Set (Walnut)",
-          price: "$149",
-          rating: 5,
-          reviewCount: 38,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-01.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 6,
-          name: "Organize Pen Holder",
-          price: "$15",
-          rating: 5,
-          reviewCount: 18,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-02.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 7,
-          name: "Organize Sticky Note Holder",
-          price: "$15",
-          rating: 5,
-          reviewCount: 14,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-03.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 8,
-          name: "Organize Phone Holder",
-          price: "$15",
-          rating: 4,
-          reviewCount: 21,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-04.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-        {
-          id: 9,
-          name: "Organize Phone Holder",
-          price: "$15",
-          rating: 4,
-          reviewCount: 21,
-          imageSrc:
-            "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-04.jpg",
-          imageAlt: "TODO",
-          href: "#",
-          colors: [
-            {
-              name: "Black",
-              bgColor: "bg-gray-900",
-              selectedColor: "ring-gray-900",
-            },
-            {
-              name: "Heather Grey",
-              bgColor: "bg-gray-400",
-              selectedColor: "ring-gray-400",
-            },
-          ],
-          sizes: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
-          ],
-        },
-      ];
+    .query(async ({ input }) => {
+      const {
+        categoryId,
+        categorySlug,
+        genderSlug,
+        genderId,
+        minPrice,
+        maxPrice,
+        search,
+        sortBy,
+        sortOrder,
+        page,
+        limit,
+      } = input;
+      const skip = (page - 1) * limit;
 
-      return PRODUCTS;
+      console.log(categorySlug);
+      console.log(genderSlug);
+
+      const where: Prisma.ProductWhereInput = {
+        ...(categoryId && { categoryId }),
+        ...(genderId && { genderId }),
+        ...(categorySlug && {
+          category: {
+            slug: categorySlug,
+          },
+        }),
+        ...(genderSlug && {
+          gender: {
+            OR: [{ slug: genderSlug }, { slug: "unisex" }],
+          },
+        }),
+        ...(minPrice && { price: { gte: minPrice } }),
+        ...(maxPrice && { price: { lte: maxPrice } }),
+        ...(search && {
+          OR: [
+            { name: { contains: search, mode: "insensitive" as const } },
+            { description: { contains: search, mode: "insensitive" as const } },
+          ],
+        }),
+      };
+
+      const [products, total] = await Promise.all([
+        prisma.product.findMany({
+          where,
+          include: {
+            category: true,
+            gender: true,
+            images: true,
+            colors: true,
+            sizes: true,
+            _count: {
+              select: { reviews: true },
+            },
+          },
+          orderBy: sortBy ? { [sortBy]: sortOrder || "desc" } : undefined,
+          skip,
+          take: limit,
+        }),
+        prisma.product.count({ where }),
+      ]);
+
+      return {
+        products: products.map((product) => ({
+          ...product,
+          price: Number(product.price),
+        })),
+        total,
+        page,
+        totalPages: Math.ceil(total / limit),
+      };
+    }),
+
+  create: publicProcedure
+    .input(
+      z.object({
+        name: z.string(),
+        slug: z.string(),
+        description: z.string(),
+        price: z.number(),
+        categoryId: z.string(),
+        genderId: z.string(),
+        details: z.array(z.string()),
+        images: z.array(
+          z.object({
+            src: z.string(),
+            alt: z.string(),
+            primary: z.boolean().optional(),
+          })
+        ),
+        colors: z.array(z.string()),
+        sizes: z.array(
+          z.object({
+            name: z.string(),
+            inStock: z.boolean().optional(),
+          })
+        ),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { images, colors, sizes, ...productData } = input;
+
+      return prisma.product.create({
+        data: {
+          ...productData,
+          images: {
+            create: images,
+          },
+          colors: {
+            create: colors.map((colorId) => ({
+              color: {
+                connect: { id: colorId },
+              },
+            })),
+          },
+          sizes: {
+            create: sizes,
+          },
+        },
+        include: {
+          category: true,
+          gender: true,
+          images: true,
+          colors: {
+            include: {
+              color: true,
+            },
+          },
+          sizes: true,
+        },
+      });
+    }),
+
+  update: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        name: z.string().optional(),
+        slug: z.string().optional(),
+        description: z.string().optional(),
+        price: z.number().optional(),
+        categoryId: z.string().optional(),
+        genderId: z.string().optional(),
+        details: z.array(z.string()).optional(),
+        images: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              src: z.string(),
+              alt: z.string(),
+              primary: z.boolean().optional(),
+            })
+          )
+          .optional(),
+        colors: z.array(z.string()).optional(),
+        sizes: z
+          .array(
+            z.object({
+              id: z.string().optional(),
+              name: z.string(),
+              inStock: z.boolean().optional(),
+            })
+          )
+          .optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { id, images, colors, sizes, ...productData } = input;
+
+      // Handle nested updates
+      const updateData: Prisma.ProductUpdateInput = { ...productData };
+
+      if (images) {
+        updateData.images = {
+          deleteMany: {},
+          create: images.map((img) => ({
+            src: img.src,
+            alt: img.alt,
+            primary: img.primary,
+          })),
+        };
+      }
+
+      if (colors) {
+        updateData.colors = {
+          deleteMany: {},
+          create: colors.map((colorId) => ({
+            color: {
+              connect: { id: colorId },
+            },
+          })),
+        };
+      }
+
+      if (sizes) {
+        updateData.sizes = {
+          deleteMany: {},
+          create: sizes.map((size) => ({
+            name: size.name,
+            inStock: size.inStock,
+          })),
+        };
+      }
+
+      return prisma.product.update({
+        where: { id },
+        data: updateData,
+        include: {
+          category: true,
+          gender: true,
+          images: true,
+          colors: {
+            include: {
+              color: true,
+            },
+          },
+          sizes: true,
+        },
+      });
+    }),
+
+  delete: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      return prisma.product.delete({
+        where: { id: input.id },
+      });
     }),
 });

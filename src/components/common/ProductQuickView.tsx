@@ -13,13 +13,13 @@ import { trpc } from "~trpc/client";
 
 interface ProductQuickViewProps {
   children: ReactElement;
-  productId: number;
+  productId: string;
 }
 
 const ProductQuickView = ({ children, productId }: ProductQuickViewProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: product } = trpc.products.getById.useQuery(
+  const { data: product, isLoading } = trpc.products.getById.useQuery(
     { id: productId },
     { enabled: isOpen }
   );
@@ -38,10 +38,12 @@ const ProductQuickView = ({ children, productId }: ProductQuickViewProps) => {
           className="ml-auto cursor-pointer text-primary-500"
           onClick={onClose}
         />
-        {product ? (
-          <Product product={product} />
-        ) : (
+        {isLoading ? (
           <Spinner className="mx-auto" />
+        ) : !product ? (
+          <h1>Product not found</h1>
+        ) : (
+          <Product product={product} />
         )}
       </Dialog>
     </>

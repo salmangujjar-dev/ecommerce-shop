@@ -16,6 +16,121 @@ model User {
   isActive  Boolean  @default(false)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
+  reviews   Review[]
 
   @@map("users")
+}
+
+model Gender {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  products  Product[]
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+
+  @@map("genders")
+}
+
+model Category {
+  id            String     @id @default(cuid())
+  name          String
+  slug          String     @unique
+  description   String?
+  parentId      String?
+  parent        Category?  @relation("CategoryToSubcategory", fields: [parentId], references: [id])
+  subcategories Category[] @relation("CategoryToSubcategory")
+  products      Product[]
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  @@map("categories")
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  name        String
+  slug        String         @unique
+  description String         @db.Text
+  price       Decimal        @db.Decimal(10, 2)
+  rating      Float          @default(0)
+  reviewCount Int            @default(0)
+  genderId    String
+  gender      Gender         @relation(fields: [genderId], references: [id])
+  categoryId  String
+  category    Category       @relation(fields: [categoryId], references: [id])
+  images      ProductImage[]
+  colors      ProductColor[]
+  sizes       ProductSize[]
+  reviews     Review[]
+  details     String[]       @db.Text
+  createdAt   DateTime       @default(now()) @map("created_at")
+  updatedAt   DateTime       @updatedAt @map("updated_at")
+
+  @@map("products")
+}
+
+model ProductImage {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  src       String
+  alt       String
+  primary   Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([productId, primary], name: "one_primary_per_product")
+  @@map("product_images")
+}
+
+model Color {
+  id            String         @id @default(cuid())
+  name          String         @unique
+  slug          String         @unique
+  bgColor       String
+  selectedColor String
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  products      ProductColor[]
+
+  @@map("colors")
+}
+
+model ProductColor {
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  colorId   String
+  color     Color    @relation(fields: [colorId], references: [id])
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@unique([productId, colorId])
+  @@map("product_colors")
+}
+
+model ProductSize {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name      String
+  inStock   Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("product_sizes")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rating    Int
+  comment   String?  @db.Text
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("reviews")
 }

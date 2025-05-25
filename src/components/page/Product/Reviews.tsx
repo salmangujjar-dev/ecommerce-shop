@@ -51,16 +51,16 @@ const Reviews = () => {
 
           <div className="mt-3 flex items-center">
             <div>
-              <div className="flex items-center">
+              <div className="flex items-center" dir="rtl">
                 {[0, 1, 2, 3, 4].map((rating) => (
                   <Star
                     key={rating}
                     aria-hidden="true"
                     className={cn(
-                      reviews.average > rating
+                      (reviews.average ?? 0) > rating
                         ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-300",
-                      "size-5 shrink-0"
+                        : "text-gray-200 hover:fill-yellow-400 hover:text-yellow-400",
+                      "size-5 shrink-0 cursor-pointer peer peer-hover:fill-yellow-500 peer-hover:text-yellow-400"
                     )}
                   />
                 ))}
@@ -156,7 +156,7 @@ const Reviews = () => {
                       <h4 className="text-sm font-bold text-gray-900">
                         {review.author}
                       </h4>
-                      <div className="mt-1 flex items-center">
+                      <div className="mt-1 flex items-center" dir="rtl">
                         {[0, 1, 2, 3, 4].map((rating) => (
                           <Star
                             key={rating}
@@ -164,8 +164,8 @@ const Reviews = () => {
                             className={cn(
                               review.rating > rating
                                 ? "text-yellow-400 fill-yellow-400"
-                                : "text-gray-300",
-                              "size-5 shrink-0"
+                                : "text-gray-200 hover:fill-yellow-400 hover:text-yellow-400",
+                              "size-5 shrink-0 cursor-pointer peer peer-hover:fill-yellow-500 peer-hover:text-yellow-400"
                             )}
                           />
                         ))}

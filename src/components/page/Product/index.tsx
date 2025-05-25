@@ -13,7 +13,7 @@ import {
   TabPanel,
   TabPanels,
 } from "@headlessui/react";
-import { DollarSign, Globe, Star } from "lucide-react";
+import { DollarSign, Globe, StarIcon } from "lucide-react";
 
 import Breadcrumb from "@ui/breadcrumb";
 import { Link } from "@ui/link";
@@ -21,6 +21,7 @@ import { Link } from "@ui/link";
 import { productRouter } from "~trpc/router/product";
 
 import { cn } from "@utils/cn";
+import CommonUtils from "@utils/common";
 
 import { FacebookIcon, InstagramIcon, XIcon } from "@assets/svgs";
 
@@ -38,7 +39,7 @@ const policies = [
 ];
 
 interface ProductProps {
-  product: Awaited<ReturnType<typeof productRouter.getById>>;
+  product: NonNullable<Awaited<ReturnType<typeof productRouter.getById>>>;
 }
 
 const Product = ({ product }: ProductProps) => {
@@ -49,7 +50,10 @@ const Product = ({ product }: ProductProps) => {
     <div className="bg-white">
       <div className="pt-6">
         <Breadcrumb
-          breadcrumbs={product.breadcrumbs}
+          breadcrumbs={[
+            { name: product.gender.name, href: product.gender.slug },
+            { name: product.category.name, href: product.category.slug },
+          ]}
           selectedBreadcrumb={{
             name: product.name,
             href: `/product/${product.id}`,
@@ -63,7 +67,7 @@ const Product = ({ product }: ProductProps) => {
                   {product.name}
                 </h1>
                 <p className="text-xl font-medium text-gray-900">
-                  {product.price}
+                  {CommonUtils.asCurrency({ amount: Number(product.price) })}
                 </p>
               </div>
               {/* Reviews */}
@@ -74,16 +78,16 @@ const Product = ({ product }: ProductProps) => {
                     {product.rating}
                     <span className="sr-only"> out of 5 stars</span>
                   </p>
-                  <div className="ml-1 flex items-center">
+                  <div className="ml-1 flex items-center" dir="rtl">
                     {[0, 1, 2, 3, 4].map((rating) => (
-                      <Star
+                      <StarIcon
                         key={rating}
                         aria-hidden="true"
                         className={cn(
-                          product.rating > rating
+                          (product.rating ?? 0) > rating
                             ? "text-yellow-400 fill-yellow-400"
-                            : "text-gray-200 hover:text-yellow-400 hover:fill-yellow-400",
-                          "size-5 shrink-0 cursor-pointer"
+                            : "text-gray-200 hover:fill-yellow-400 hover:text-yellow-400",
+                          "size-5 shrink-0 cursor-pointer peer peer-hover:fill-yellow-500 peer-hover:text-yellow-400"
                         )}
                       />
                     ))}
@@ -169,18 +173,18 @@ const Product = ({ product }: ProductProps) => {
                     >
                       {product.colors.map((color) => (
                         <Radio
-                          key={color.name}
+                          key={color.color.name}
                           value={color}
-                          aria-label={color.name}
+                          aria-label={color.color.name}
                           className={cn(
-                            color.selectedColor,
+                            color.color.selectedColor,
                             "relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-hidden data-checked:ring-2 data-focus:data-checked:ring-3 data-focus:data-checked:ring-offset-1"
                           )}
                         >
                           <span
                             aria-hidden="true"
                             className={cn(
-                              color.bgColor,
+                              color.color.bgColor,
                               "size-8 rounded-full border border-black/10"
                             )}
                           />

@@ -17,7 +17,10 @@ const eslintConfig = [
     rules: {
       "no-var": "off",
       "no-unused-vars": "off",
-      "@typescript-eslint/no-unused-vars": ["error"],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
+      ],
       "@typescript-eslint/triple-slash-reference": "off",
       "react/no-unescaped-entities": "off",
       "import/order": [

@@ -2,6 +2,8 @@ import Image from "next/image";
 
 import { ChevronDownIcon, TrashIcon } from "lucide-react";
 
+import CommonUtils from "@utils/common";
+
 const products = [
   {
     id: 1,
@@ -385,7 +387,9 @@ const CheckoutPage = () => {
 
                       <div className="flex flex-1 items-end justify-between pt-2">
                         <p className="mt-1 text-sm font-medium text-gray-900">
-                          {product.price}
+                          {CommonUtils.asCurrency({
+                            amount: Number(product.price),
+                          })}
                         </p>
 
                         <div className="ml-4">

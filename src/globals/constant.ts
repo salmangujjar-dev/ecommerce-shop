@@ -44,7 +44,7 @@ export const NAVIGATION = {
           id: "accessories",
           name: "Accessories",
           items: [
-            { name: "Watches", href: "#" },
+            { name: "Watches", href: "/women-accessories?q=watches" },
             { name: "Wallets", href: "#" },
             { name: "Bags", href: "#" },
             { name: "Sunglasses", href: "#" },

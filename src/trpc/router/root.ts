@@ -1,24 +1,15 @@
-import { z } from "zod";
+import { createCallerFactory, createTRPCRouter } from "@lib/trpc";
 
-import {
-  createCallerFactory,
-  createTRPCRouter,
-  publicProcedure,
-} from "@lib/trpc";
-
+import { categoryRouter } from "./category";
 import { productRouter } from "./product";
+import { reviewRouter } from "./review";
 import { userRouter } from "./user";
 
 export const appRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(async ({ input }) => {
-      return {
-        greeting: `hello ${input.text}`,
-      };
-    }),
-  users: userRouter,
+  categories: categoryRouter,
   products: productRouter,
+  reviews: reviewRouter,
+  users: userRouter,
 });
 
 export type AppRouter = typeof appRouter;
