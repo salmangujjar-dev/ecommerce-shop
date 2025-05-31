@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 
-import { FC, useState } from 'react';
+import { FC, Fragment, useState } from 'react';
 
 import {
   PopoverGroup,
@@ -12,20 +12,31 @@ import {
 } from '@headlessui/react';
 import { Menu, Search, ShoppingBagIcon } from 'lucide-react';
 
+import { logoutAction } from '@app/(application)/(authentication)/action';
+
+import { Avatar } from '@ui/avatar';
 import { Button } from '@ui/button';
 import {
   Dropdown,
   DropdownButton,
   DropdownMenu,
   DropdownItem,
+  DropdownLabel,
+  DropdownDescription,
+  DropdownDivider,
+  DropdownShortcut,
 } from '@ui/dropdown';
 import { Link } from '@ui/link';
+
+import { useSession } from '@lib/session/provider';
 
 import { CURRENCIES, NAVIGATION } from '@globals/constant';
 
 import MobileNavigation from './MobileNavigation';
 
 const Header: FC = () => {
+  const { isAuthenticated } = useSession();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -175,21 +186,23 @@ const Header: FC = () => {
             </PopoverGroup>
 
             <div className='ml-auto flex items-center'>
-              <div className='hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6'>
-                <Link
-                  href='/login'
-                  className='text-sm font-medium text-gray-700 hover:text-gray-800'
-                >
-                  Sign in
-                </Link>
-                <span aria-hidden='true' className='h-6 w-px bg-gray-200' />
-                <Link
-                  href='/register'
-                  className='text-sm font-medium text-gray-700 hover:text-gray-800'
-                >
-                  Create account
-                </Link>
-              </div>
+              {!isAuthenticated && (
+                <div className='hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6'>
+                  <Link
+                    href='/login'
+                    className='text-sm font-medium text-gray-700 hover:text-gray-800'
+                  >
+                    Sign in
+                  </Link>
+                  <span aria-hidden='true' className='h-6 w-px bg-gray-200' />
+                  <Link
+                    href='/register'
+                    className='text-sm font-medium text-gray-700 hover:text-gray-800'
+                  >
+                    Create account
+                  </Link>
+                </div>
+              )}
 
               <div className='hidden lg:ml-8 lg:flex'>
                 <Dropdown>
@@ -256,6 +269,32 @@ const Header: FC = () => {
                   <span className='sr-only'>items in cart, view bag</span>
                 </Link>
               </div>
+
+              {/* User Avatar */}
+              {isAuthenticated && (
+                <Dropdown>
+                  <DropdownButton as={Fragment} className='ml-4'>
+                    <Avatar initials='TA' />
+                  </DropdownButton>
+                  <DropdownMenu modal={false} anchor='bottom end'>
+                    <DropdownItem>
+                      <DropdownLabel>Profile</DropdownLabel>
+                      <DropdownDescription>
+                        Manage your account settings
+                      </DropdownDescription>
+                    </DropdownItem>
+                    <DropdownDivider />
+                    <DropdownItem>
+                      <DropdownLabel>Settings</DropdownLabel>
+                      <DropdownShortcut keys={['⌘', 'S']} />
+                    </DropdownItem>
+                    <DropdownItem onClick={logoutAction}>
+                      <DropdownLabel>Logout</DropdownLabel>
+                      <DropdownShortcut keys={['⌘', 'Q']} />
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )}
             </div>
           </div>
         </div>

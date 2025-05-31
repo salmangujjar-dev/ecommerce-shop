@@ -1,11 +1,42 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { Button } from '@ui/button';
+import { Checkbox } from '@ui/checkbox';
+import Spinner from '@ui/Spinner';
+
+import { APP_NAME } from '@globals/constant';
 
 import { GoogleIcon } from '@assets/svgs';
 
+import { registerAction } from '../action';
+import { registerSchema } from '../validation';
+
 const Register = () => {
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitSuccessful, isSubmitting },
+  } = useForm<z.infer<typeof registerSchema>>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      terms: false,
+    },
+  });
+
+  const onSubmit = handleSubmit(
+    async (data: z.infer<typeof registerSchema>) => {
+      await registerAction(data);
+    }
+  );
+
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8'>
@@ -14,7 +45,7 @@ const Register = () => {
             width={0}
             height={0}
             sizes='100vw'
-            alt='Your Company'
+            alt={APP_NAME}
             src='https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600'
             className='mx-auto h-10 w-auto'
           />
@@ -25,7 +56,7 @@ const Register = () => {
 
         <div className='mt-10 sm:mx-auto sm:w-full sm:max-w-[480px]'>
           <div className='bg-white px-6 py-12 shadow-sm sm:rounded-lg sm:px-12'>
-            <form action='#' method='POST' className='space-y-6'>
+            <form onSubmit={onSubmit} className='space-y-6'>
               <div>
                 <label
                   htmlFor='name'
@@ -36,13 +67,16 @@ const Register = () => {
                 <div className='mt-2'>
                   <input
                     id='name'
-                    name='name'
                     type='text'
                     required
                     autoComplete='name'
                     className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                    {...register('name')}
                   />
                 </div>
+                {errors.name?.message && (
+                  <p className='text-red-500 text-sm'>{errors.name.message}</p>
+                )}
               </div>
 
               <div>
@@ -55,13 +89,16 @@ const Register = () => {
                 <div className='mt-2'>
                   <input
                     id='email'
-                    name='email'
                     type='email'
                     required
                     autoComplete='email'
                     className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                    {...register('email')}
                   />
                 </div>
+                {errors.email?.message && (
+                  <p className='text-red-500 text-sm'>{errors.email.message}</p>
+                )}
               </div>
 
               <div>
@@ -74,70 +111,59 @@ const Register = () => {
                 <div className='mt-2'>
                   <input
                     id='password'
-                    name='password'
                     type='password'
                     required
                     autoComplete='current-password'
                     className='block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                    {...register('password')}
                   />
                 </div>
+                {errors.password?.message && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
 
-              <div className='flex items-center justify-between'>
-                <div className='flex gap-3'>
-                  <div className='flex h-6 shrink-0 items-center'>
-                    <div className='group grid size-4 grid-cols-1'>
-                      <input
-                        id='remember-me'
-                        name='remember-me'
-                        type='checkbox'
-                        className='col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto'
-                      />
-                      <svg
-                        fill='none'
-                        viewBox='0 0 14 14'
-                        className='pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25'
-                      >
-                        <path
-                          d='M3 8L6 11L11 3.5'
-                          strokeWidth={2}
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          className='opacity-0 group-has-checked:opacity-100'
-                        />
-                        <path
-                          d='M3 7H11'
-                          strokeWidth={2}
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          className='opacity-0 group-has-indeterminate:opacity-100'
-                        />
-                      </svg>
-                    </div>
-                  </div>
+              <div className='flex gap-3 items-start'>
+                <Checkbox
+                  id='terms'
+                  color='blue'
+                  className='select-none mt-1'
+                  defaultChecked={false}
+                  {...register('terms')}
+                  onChange={(checked) => {
+                    setValue('terms', checked);
+                  }}
+                />
+                <div className='flex flex-col gap-y-1'>
                   <label
-                    htmlFor='remember-me'
+                    htmlFor='terms'
                     className='block text-sm/6 text-gray-900'
                   >
-                    Remember me
+                    I accept the{' '}
+                    <Link
+                      href='/terms'
+                      className='font-semibold text-indigo-600 hover:text-indigo-500'
+                    >
+                      Terms & Conditions
+                    </Link>
                   </label>
-                </div>
-
-                <div className='text-sm/6'>
-                  <Link
-                    href='/forgot-password'
-                    className='font-semibold text-indigo-600 hover:text-indigo-500'
-                  >
-                    Forgot password?
-                  </Link>
+                  {errors.terms?.message && (
+                    <p className='text-red-500 text-sm'>
+                      {errors.terms.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
               <div>
                 <Button
                   type='submit'
-                  className='flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                  className='w-full flex items-center'
+                  disabled={isSubmitting || isSubmitSuccessful}
                 >
+                  {isSubmitting && <Spinner size='sm' color='border-white' />}
                   Register
                 </Button>
               </div>
@@ -171,7 +197,7 @@ const Register = () => {
           <p className='mt-10 text-center text-sm/6 text-gray-500'>
             Already have an account?{' '}
             <Link
-              href='/register'
+              href='/login'
               className='font-semibold text-indigo-600 hover:text-indigo-500'
             >
               Login
