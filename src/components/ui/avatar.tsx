@@ -40,23 +40,12 @@ export function Avatar({
       )}
     >
       {initials && (
-        <svg
-          className='size-full fill-current p-[5%] text-[48px] font-medium uppercase select-none'
-          viewBox='0 0 100 100'
-          aria-hidden={alt ? undefined : 'true'}
+        <div
+          className='rounded-full select-none bg-blue-500 w-10 h-10 content-center text-center text-white cursor-pointer'
+          title={alt}
         >
-          {alt && <title>{alt}</title>}
-          <text
-            x='50%'
-            y='50%'
-            alignmentBaseline='middle'
-            dominantBaseline='middle'
-            textAnchor='middle'
-            dy='.125em'
-          >
-            {initials}
-          </text>
-        </svg>
+          {initials}
+        </div>
       )}
       {}
       {src && (

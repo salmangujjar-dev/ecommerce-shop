@@ -11,12 +11,14 @@ interface BreadCrumb {
 
 interface BreadcrumbProps {
   className?: string;
+  preHref?: string;
   breadcrumbs: BreadCrumb[];
   selectedBreadcrumb: BreadCrumb | null;
 }
 
 const Breadcrumb = ({
   className,
+  preHref = '',
   breadcrumbs,
   selectedBreadcrumb,
 }: BreadcrumbProps) => {
@@ -30,7 +32,7 @@ const Breadcrumb = ({
           <li key={idx}>
             <div className='flex items-center'>
               <Link
-                href={breadcrumb.href}
+                href={preHref.concat(breadcrumb.href)}
                 className='mr-4 capitalize text-sm font-medium text-gray-900'
               >
                 {breadcrumb.name}
@@ -44,7 +46,7 @@ const Breadcrumb = ({
         {selectedBreadcrumb && (
           <li className='text-sm'>
             <Link
-              href={selectedBreadcrumb.href}
+              href={preHref.concat(selectedBreadcrumb.href)}
               aria-current='page'
               className='font-medium capitalize text-gray-500 hover:text-gray-600'
             >
