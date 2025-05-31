@@ -50,13 +50,14 @@ const Product = ({ product }: ProductProps) => {
     <div className='bg-white'>
       <div className='pt-6'>
         <Breadcrumb
+          preHref='/shop/'
           breadcrumbs={[
             { name: product.gender.name, href: product.gender.slug },
             { name: product.category.name, href: product.category.slug },
           ]}
           selectedBreadcrumb={{
             name: product.name,
-            href: `/product/${product.id}`,
+            href: `product/${product.id}`,
           }}
         />
         <div className='mx-auto mt-8 max-w-2xl px-4 sm:px-6 lg:max-w-7xl lg:px-8'>

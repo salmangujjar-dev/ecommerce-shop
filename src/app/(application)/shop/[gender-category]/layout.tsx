@@ -26,12 +26,13 @@ const CategoryLayout = async ({
         </h2>
         <Breadcrumb
           className='ml-0'
-          breadcrumbs={[{ name: gender, href: `/${gender}` }]}
+          preHref='/shop/'
+          breadcrumbs={[{ name: gender, href: `${gender}` }]}
           selectedBreadcrumb={
             category
               ? {
                   name: category,
-                  href: `/${genderWithCategory}`,
+                  href: `${genderWithCategory}`,
                 }
               : null
           }
