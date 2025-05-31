@@ -1,20 +1,28 @@
-import { initTRPC } from '@trpc/server';
+import { initTRPC, TRPCError } from '@trpc/server';
+import { JWTPayload } from 'jose';
 import superjson from 'superjson';
 import { ZodError } from 'zod';
 
+import { JWTService } from '@services/JWT';
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
+  const token = opts.headers.get('cookie')?.split('token=')[1]?.split(';')[0];
+  const user = token ? await JWTService.decrypt(token) : undefined;
+
   return {
     ...opts,
+    user: user as (JWTPayload & UserJWTPayload) | undefined,
   };
 };
 
+export type Context = Awaited<ReturnType<typeof createTRPCContext>>;
 /**
  * Initialization of tRPC backend
  * Should be done only once per backend!
  * Avoid exporting the entire t-object since it's not very descriptive.
  * For instance, the use of a t variable is common in i18n libraries.
  */
-const t = initTRPC.create({
+const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
     return {
@@ -65,3 +73,17 @@ export const createCallerFactory = t.createCallerFactory;
  */
 export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
+
+const isAuthed = t.middleware(({ next, ctx }) => {
+  if (!ctx.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  return next({
+    ctx: {
+      user: ctx.user,
+    },
+  });
+});
+
+export const protectedProcedure = t.procedure.use(isAuthed);

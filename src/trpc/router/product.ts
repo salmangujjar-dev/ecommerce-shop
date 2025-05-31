@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 import prisma from '@lib/prisma';
-import { createTRPCRouter, publicProcedure } from '@lib/trpc';
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from '@lib/trpc';
 
 import type { Prisma } from '../../../prisma/generated';
 
@@ -172,7 +176,7 @@ export const productRouter = createTRPCRouter({
       };
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -232,7 +236,7 @@ export const productRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -320,7 +324,7 @@ export const productRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.product.delete({

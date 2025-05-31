@@ -1,7 +1,11 @@
 import { z } from 'zod';
 
 import prisma from '@lib/prisma';
-import { createTRPCRouter, publicProcedure } from '@lib/trpc';
+import {
+  createTRPCRouter,
+  publicProcedure,
+  protectedProcedure,
+} from '@lib/trpc';
 
 export const categoryRouter = createTRPCRouter({
   getAll: publicProcedure.query(async () => {
@@ -51,7 +55,7 @@ export const categoryRouter = createTRPCRouter({
       });
     }),
 
-  create: publicProcedure
+  create: protectedProcedure
     .input(
       z.object({
         name: z.string(),
@@ -66,7 +70,7 @@ export const categoryRouter = createTRPCRouter({
       });
     }),
 
-  update: publicProcedure
+  update: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -83,7 +87,7 @@ export const categoryRouter = createTRPCRouter({
       });
     }),
 
-  delete: publicProcedure
+  delete: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.category.delete({
