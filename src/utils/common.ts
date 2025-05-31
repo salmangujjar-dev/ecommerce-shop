@@ -14,6 +14,24 @@ const CommonUtils = {
       ...opts,
     }).format(amount);
   },
+  numberToMilliseconds: (input: `${number}${'d' | 'h' | 'm'}`) => {
+    const unit = input.slice(-1) as 'd' | 'h' | 'm';
+    let result = Number(input.slice(0, -1));
+
+    switch (unit) {
+      case 'd':
+        result = result * 24 * 60 * 60 * 1000;
+        break;
+      case 'h':
+        result = result * 60 * 60 * 1000;
+        break;
+      case 'm':
+        result = result * 60 * 1000;
+        break;
+    }
+
+    return result;
+  },
 };
 
 export default CommonUtils;
