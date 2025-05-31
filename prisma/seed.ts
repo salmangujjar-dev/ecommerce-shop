@@ -1,20 +1,20 @@
-import { PrismaClient } from "../prisma/generated";
+import { PrismaClient } from '../prisma/generated';
 
 const prisma = new PrismaClient();
 
 async function seedGender() {
   const genders = [
     {
-      name: "Men",
-      slug: "men",
+      name: 'Men',
+      slug: 'men',
     },
     {
-      name: "Women",
-      slug: "women",
+      name: 'Women',
+      slug: 'women',
     },
     {
-      name: "Unisex",
-      slug: "unisex",
+      name: 'Unisex',
+      slug: 'unisex',
     },
   ];
   return await Promise.all(
@@ -26,7 +26,7 @@ async function seedGender() {
       })
     )
   ).then((res) => {
-    console.log("✅ Genders created");
+    console.log('✅ Genders created');
     return res;
   });
 }
@@ -34,68 +34,68 @@ async function seedGender() {
 async function seedCategories() {
   const mainCategories = [
     {
-      name: "Clothing",
-      slug: "clothing",
-      description: "All types of clothing",
+      name: 'Clothing',
+      slug: 'clothing',
+      description: 'All types of clothing',
       subcategories: [
         {
-          name: "T-Shirts",
-          slug: "tshirts",
-          description: "Classic and modern t-shirts",
+          name: 'T-Shirts',
+          slug: 'tshirts',
+          description: 'Classic and modern t-shirts',
         },
         {
-          name: "Jeans",
-          slug: "jeans",
-          description: "Premium denim jeans",
+          name: 'Jeans',
+          slug: 'jeans',
+          description: 'Premium denim jeans',
         },
         {
-          name: "Jackets",
-          slug: "jackets",
-          description: "Stylish jackets and outerwear",
+          name: 'Jackets',
+          slug: 'jackets',
+          description: 'Stylish jackets and outerwear',
         },
       ],
     },
     {
-      name: "Shoes",
-      slug: "shoes",
-      description: "All types of shoes",
+      name: 'Shoes',
+      slug: 'shoes',
+      description: 'All types of shoes',
       subcategories: [
         {
-          name: "Sneakers",
-          slug: "sneakers",
-          description: "Casual and athletic sneakers",
+          name: 'Sneakers',
+          slug: 'sneakers',
+          description: 'Casual and athletic sneakers',
         },
         {
-          name: "Boots",
-          slug: "boots",
-          description: "Stylish and durable boots",
+          name: 'Boots',
+          slug: 'boots',
+          description: 'Stylish and durable boots',
         },
         {
-          name: "Sandals",
-          slug: "sandals",
-          description: "Comfortable sandals for summer",
+          name: 'Sandals',
+          slug: 'sandals',
+          description: 'Comfortable sandals for summer',
         },
       ],
     },
     {
-      name: "Accessories",
-      slug: "accessories",
-      description: "All types of accessories",
+      name: 'Accessories',
+      slug: 'accessories',
+      description: 'All types of accessories',
       subcategories: [
         {
-          name: "Watches",
-          slug: "watches",
-          description: "Luxury and casual watches",
+          name: 'Watches',
+          slug: 'watches',
+          description: 'Luxury and casual watches',
         },
         {
-          name: "Bags",
-          slug: "bags",
-          description: "Stylish bags and backpacks",
+          name: 'Bags',
+          slug: 'bags',
+          description: 'Stylish bags and backpacks',
         },
         {
-          name: "Jewelry",
-          slug: "jewelry",
-          description: "Elegant jewelry pieces",
+          name: 'Jewelry',
+          slug: 'jewelry',
+          description: 'Elegant jewelry pieces',
         },
       ],
     },
@@ -128,7 +128,7 @@ async function seedCategories() {
       );
     })
   ).then((res) => {
-    console.log("✅ Categories and subcategories created");
+    console.log('✅ Categories and subcategories created');
     return res;
   });
 }
@@ -136,16 +136,16 @@ async function seedCategories() {
 async function seedColors() {
   const colors = [
     {
-      name: "Black",
-      slug: "black",
-      bgColor: "#000000",
-      selectedColor: "#000000",
+      name: 'Black',
+      slug: 'black',
+      bgColor: '#000000',
+      selectedColor: '#000000',
     },
     {
-      name: "Heather Grey",
-      slug: "heather-gray",
-      bgColor: "#9CA3AF",
-      selectedColor: "#9CA3AF",
+      name: 'Heather Grey',
+      slug: 'heather-gray',
+      bgColor: '#9CA3AF',
+      selectedColor: '#9CA3AF',
     },
   ];
 
@@ -158,24 +158,25 @@ async function seedColors() {
       })
     )
   ).then((res) => {
-    console.log("✅ Colors created");
+    console.log('✅ Colors created');
     return res;
   });
 }
 
 async function seedUser() {
   const user = await prisma.user.upsert({
-    where: { email: "john.doe@example.com" },
+    where: { email: 'john.doe@example.com' },
     update: {},
     create: {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      username: "johndoe",
+      name: 'John Doe',
+      email: 'john.doe@example.com',
+      username: 'johndoe',
+      password: 'test',
       isActive: true,
     },
   });
 
-  console.log("✅ User created");
+  console.log('✅ User created');
   return user;
 }
 
@@ -188,36 +189,36 @@ async function main() {
   ]);
 
   const unisexGender = await prisma.gender.findUnique({
-    where: { slug: "unisex" },
+    where: { slug: 'unisex' },
   });
 
   const accessoriesCategory = await prisma.category.findUnique({
-    where: { slug: "accessories" },
+    where: { slug: 'accessories' },
   });
 
   if (unisexGender && accessoriesCategory) {
     const basicSet = await prisma.product.upsert({
-      where: { slug: "organize-basic-set-walnut" },
+      where: { slug: 'organize-basic-set-walnut' },
       update: {},
       create: {
-        name: "Organize Basic Set (Walnut)",
-        slug: "organize-basic-set-walnut",
+        name: 'Organize Basic Set (Walnut)',
+        slug: 'organize-basic-set-walnut',
         description:
-          "A beautiful walnut organizer set for your desk. Perfect for keeping your workspace tidy and stylish.",
+          'A beautiful walnut organizer set for your desk. Perfect for keeping your workspace tidy and stylish.',
         price: 149.0,
         genderId: unisexGender.id,
         categoryId: accessoriesCategory.id,
         details: [
-          "Made from premium walnut wood",
-          "Includes multiple compartments",
-          "Perfect for desk organization",
-          "Handcrafted with care",
+          'Made from premium walnut wood',
+          'Includes multiple compartments',
+          'Perfect for desk organization',
+          'Handcrafted with care',
         ],
         images: {
           create: [
             {
-              src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-01.jpg",
-              alt: "Organize Basic Set (Walnut)",
+              src: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-01.jpg',
+              alt: 'Organize Basic Set (Walnut)',
               primary: true,
             },
           ],
@@ -227,12 +228,12 @@ async function main() {
         },
         sizes: {
           create: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
+            { name: 'XXS', inStock: true },
+            { name: 'XS', inStock: true },
+            { name: 'S', inStock: true },
+            { name: 'M', inStock: true },
+            { name: 'L', inStock: true },
+            { name: 'XL', inStock: false },
           ],
         },
       },
@@ -246,41 +247,41 @@ async function main() {
           userId: user.id,
           rating: 5,
           comment:
-            "Excellent quality and craftsmanship. The walnut finish is beautiful!",
+            'Excellent quality and craftsmanship. The walnut finish is beautiful!',
         },
         {
           productId: basicSet.id,
           userId: user.id,
           rating: 4,
           comment:
-            "Great organizer, but a bit pricey. Still worth it for the quality.",
+            'Great organizer, but a bit pricey. Still worth it for the quality.',
         },
       ],
     });
 
     // Create Organize Pen Holder
     const penHolder = await prisma.product.upsert({
-      where: { slug: "organize-pen-holder" },
+      where: { slug: 'organize-pen-holder' },
       update: {},
       create: {
-        name: "Organize Pen Holder",
-        slug: "organize-pen-holder",
+        name: 'Organize Pen Holder',
+        slug: 'organize-pen-holder',
         description:
-          "A sleek and functional pen holder to keep your desk organized. Made from high-quality materials.",
+          'A sleek and functional pen holder to keep your desk organized. Made from high-quality materials.',
         price: 15.0,
         genderId: unisexGender.id,
         categoryId: accessoriesCategory.id,
         details: [
-          "Durable construction",
-          "Multiple pen slots",
-          "Stable base",
-          "Modern design",
+          'Durable construction',
+          'Multiple pen slots',
+          'Stable base',
+          'Modern design',
         ],
         images: {
           create: [
             {
-              src: "https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-02.jpg",
-              alt: "Organize Pen Holder",
+              src: 'https://tailwindcss.com/plus-assets/img/ecommerce-images/category-page-05-image-card-02.jpg',
+              alt: 'Organize Pen Holder',
               primary: true,
             },
           ],
@@ -290,12 +291,12 @@ async function main() {
         },
         sizes: {
           create: [
-            { name: "XXS", inStock: true },
-            { name: "XS", inStock: true },
-            { name: "S", inStock: true },
-            { name: "M", inStock: true },
-            { name: "L", inStock: true },
-            { name: "XL", inStock: false },
+            { name: 'XXS', inStock: true },
+            { name: 'XS', inStock: true },
+            { name: 'S', inStock: true },
+            { name: 'M', inStock: true },
+            { name: 'L', inStock: true },
+            { name: 'XL', inStock: false },
           ],
         },
       },
@@ -309,21 +310,21 @@ async function main() {
           userId: user.id,
           rating: 5,
           comment:
-            "Perfect size and very sturdy. Holds all my pens and pencils!",
+            'Perfect size and very sturdy. Holds all my pens and pencils!',
         },
         {
           productId: penHolder.id,
           userId: user.id,
           rating: 4,
-          comment: "Good quality for the price. Would recommend.",
+          comment: 'Good quality for the price. Would recommend.',
         },
       ],
     });
   }
 
-  console.log("✅ Example products created");
-  console.log("✅ Reviews created");
-  console.log("🌱 Seed completed successfully");
+  console.log('✅ Example products created');
+  console.log('✅ Reviews created');
+  console.log('🌱 Seed completed successfully');
 }
 
 main()

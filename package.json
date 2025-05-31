@@ -8,6 +8,7 @@
     "node": ">=16.14.0",
     "yarn": ">=1.14.0"
   },
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "dev:turbo": "next dev --turbopack",
@@ -28,22 +29,27 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.2.2",
+    "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.7.0",
     "@tanstack/react-query": "^5.75.1",
     "@trpc/client": "^11.1.2",
     "@trpc/next": "^11.1.2",
     "@trpc/react-query": "^11.1.2",
     "@trpc/server": "^11.1.2",
+    "bcrypt-ts": "^7.0.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.9.4",
+    "jose": "^6.0.11",
     "lucide-react": "^0.503.0",
     "next": "15.3.1",
     "nprogress": "^0.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.4",
     "superjson": "^2.2.2",
     "tailwind-merge": "^3.2.0",
-    "zod": "^3.24.3",
+    "zod": "^3.25.42",
     "zustand": "^5.0.4"
   },
   "devDependencies": {
