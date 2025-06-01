@@ -1,6 +1,3 @@
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
-
 import {
   Disclosure,
   DisclosureButton,
@@ -18,9 +15,12 @@ import {
 } from '@app/(application)/shop/[gender-category]/constant';
 
 import { Button } from '@ui/button';
+import { Checkbox } from '@ui/checkbox';
 import { Link } from '@ui/link';
 
 import { cn } from '@utils/cn';
+
+import { clearAllFilters } from './actions';
 
 interface FiltersProps {
   filters: typeof FILTERS;
@@ -29,16 +29,6 @@ interface FiltersProps {
 }
 
 const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
-  const handleClearAll = async () => {
-    // const headerList = await headers();
-    // const pathname = headerList.get('x-current-pathname');
-
-    // if (pathname) {
-    //   redirect(pathname);
-    // }
-    console.log('wow');
-  };
-
   return (
     <Disclosure
       as='section'
@@ -63,7 +53,7 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                 type='button'
                 color='transparent'
                 className='text-gray-500'
-                onClick={handleClearAll}
+                onClick={clearAllFilters}
               >
                 Clear all
               </Button>
@@ -115,34 +105,13 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                   <div key={option.value} className='flex gap-3'>
                     <div className='flex h-5 shrink-0 items-center'>
                       <div className='group grid size-4 grid-cols-1'>
-                        <input
+                        <Checkbox
                           defaultValue={option.value}
                           defaultChecked={option.checked}
                           id={`price-${optionIdx}`}
                           name='price[]'
-                          type='checkbox'
-                          className='col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto'
+                          color='indigo'
                         />
-                        <svg
-                          fill='none'
-                          viewBox='0 0 14 14'
-                          className='pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25'
-                        >
-                          <path
-                            d='M3 8L6 11L11 3.5'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-checked:opacity-100'
-                          />
-                          <path
-                            d='M3 7H11'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-indeterminate:opacity-100'
-                          />
-                        </svg>
                       </div>
                     </div>
                     <label
@@ -162,34 +131,13 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                   <div key={option.value} className='flex gap-3'>
                     <div className='flex h-5 shrink-0 items-center'>
                       <div className='group grid size-4 grid-cols-1'>
-                        <input
+                        <Checkbox
                           defaultValue={option.value}
                           defaultChecked={option.checked}
                           id={`color-${optionIdx}`}
                           name='color[]'
-                          type='checkbox'
-                          className='col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto'
+                          color='indigo'
                         />
-                        <svg
-                          fill='none'
-                          viewBox='0 0 14 14'
-                          className='pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25'
-                        >
-                          <path
-                            d='M3 8L6 11L11 3.5'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-checked:opacity-100'
-                          />
-                          <path
-                            d='M3 7H11'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-indeterminate:opacity-100'
-                          />
-                        </svg>
                       </div>
                     </div>
                     <label
@@ -211,34 +159,13 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                   <div key={option.value} className='flex gap-3'>
                     <div className='flex h-5 shrink-0 items-center'>
                       <div className='group grid size-4 grid-cols-1'>
-                        <input
+                        <Checkbox
                           defaultValue={option.value}
                           defaultChecked={option.checked}
                           id={`size-${optionIdx}`}
                           name='size[]'
-                          type='checkbox'
-                          className='col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto'
+                          color='indigo'
                         />
-                        <svg
-                          fill='none'
-                          viewBox='0 0 14 14'
-                          className='pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25'
-                        >
-                          <path
-                            d='M3 8L6 11L11 3.5'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-checked:opacity-100'
-                          />
-                          <path
-                            d='M3 7H11'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-indeterminate:opacity-100'
-                          />
-                        </svg>
                       </div>
                     </div>
                     <label
@@ -258,34 +185,13 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                   <div key={option.value} className='flex gap-3'>
                     <div className='flex h-5 shrink-0 items-center'>
                       <div className='group grid size-4 grid-cols-1'>
-                        <input
+                        <Checkbox
                           defaultValue={option.value}
                           defaultChecked={option.checked}
                           id={`category-${optionIdx}`}
                           name='category[]'
-                          type='checkbox'
-                          className='col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto'
+                          color='indigo'
                         />
-                        <svg
-                          fill='none'
-                          viewBox='0 0 14 14'
-                          className='pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25'
-                        >
-                          <path
-                            d='M3 8L6 11L11 3.5'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-checked:opacity-100'
-                          />
-                          <path
-                            d='M3 7H11'
-                            strokeWidth={2}
-                            strokeLinecap='round'
-                            strokeLinejoin='round'
-                            className='opacity-0 group-has-indeterminate:opacity-100'
-                          />
-                        </svg>
                       </div>
                     </div>
                     <label

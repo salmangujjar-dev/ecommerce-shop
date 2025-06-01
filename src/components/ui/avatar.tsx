@@ -41,7 +41,7 @@ export function Avatar({
     >
       {initials && (
         <div
-          className='rounded-full select-none bg-blue-500 w-10 h-10 content-center text-center text-white cursor-pointer'
+          className='rounded-full select-none bg-indigo-500 w-10 h-10 content-center text-center text-white cursor-pointer'
           title={alt}
         >
           {initials}

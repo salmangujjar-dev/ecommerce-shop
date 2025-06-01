@@ -12,6 +12,7 @@ import {
   PaginationPrevious,
 } from '@ui/pagination';
 
+import AddToCartBtn from '@common/AddToCartBtn';
 import Filters from '@common/Filters';
 import ProductQuickView from '@common/ProductQuickView';
 
@@ -154,9 +155,7 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
                   </div>
                 </div>
                 <div className='mt-2'>
-                  <Button color='white' className='w-full bg-transparent'>
-                    Add to cart<span className='sr-only'>, {product.name}</span>
-                  </Button>
+                  <AddToCartBtn product={product} />
                 </div>
               </div>
             );
