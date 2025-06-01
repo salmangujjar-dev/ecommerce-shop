@@ -24,7 +24,12 @@ import { FILTERS, SORT_OPTIONS } from './constant';
 
 interface CategoryPageProps {
   params: Promise<{ 'gender-category': string }>;
-  searchParams: Promise<{ q?: string; page?: string; limit?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    page?: string;
+    limit?: string;
+    sort?: string;
+  }>;
 }
 
 const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
@@ -35,6 +40,13 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
   const queryParam = searchParam?.q;
   const pageParam = searchParam?.page ?? 1;
   const limitParam = searchParam?.limit ?? 10;
+  const sortParam =
+    (searchParam?.sort as
+      | 'popularity'
+      | 'newest'
+      | 'price_asc'
+      | 'price_desc'
+      | 'rating') ?? 'newest';
 
   const {
     products,
@@ -47,12 +59,17 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
     search: queryParam,
     page: Number(pageParam),
     limit: Number(limitParam),
+    sort: sortParam,
   });
 
   return (
     <>
       {/* Filters */}
-      <Filters filters={FILTERS} sortOptions={SORT_OPTIONS} />
+      <Filters
+        filters={FILTERS}
+        sortOptions={SORT_OPTIONS}
+        currentSort={sortParam}
+      />
 
       {/* Product grid */}
       <section
@@ -62,6 +79,12 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
         <h2 id='products-heading' className='sr-only'>
           Products
         </h2>
+
+        {products.length === 0 && (
+          <h1 className='text-center mt-6 font-bold text-4xl'>
+            No Products Found
+          </h1>
+        )}
 
         <div className='-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4'>
           {products.map((product) => {
@@ -142,7 +165,6 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
       </section>
 
       {/* Pagination */}
-
       <div
         aria-label='Pagination'
         className='mx-auto mt-6 flex max-w-7xl justify-between px-4 text-sm font-medium text-gray-700 sm:px-6 lg:px-8'

@@ -1,12 +1,14 @@
+import { headers } from 'next/headers';
+import { redirect } from 'next/navigation';
+
 import {
   Disclosure,
   DisclosureButton,
-  Button,
   DisclosurePanel,
-  MenuButton,
-  MenuItems,
-  MenuItem,
   Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
 } from '@headlessui/react';
 import { FunnelIcon, ChevronDownIcon } from 'lucide-react';
 
@@ -15,6 +17,7 @@ import {
   type SORT_OPTIONS,
 } from '@app/(application)/shop/[gender-category]/constant';
 
+import { Button } from '@ui/button';
 import { Link } from '@ui/link';
 
 import { cn } from '@utils/cn';
@@ -22,9 +25,20 @@ import { cn } from '@utils/cn';
 interface FiltersProps {
   filters: typeof FILTERS;
   sortOptions: typeof SORT_OPTIONS;
+  currentSort?: string;
 }
 
-const Filters = ({ filters, sortOptions }: FiltersProps) => {
+const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
+  const handleClearAll = async () => {
+    // const headerList = await headers();
+    // const pathname = headerList.get('x-current-pathname');
+
+    // if (pathname) {
+    //   redirect(pathname);
+    // }
+    console.log('wow');
+  };
+
   return (
     <Disclosure
       as='section'
@@ -35,8 +49,8 @@ const Filters = ({ filters, sortOptions }: FiltersProps) => {
         Filters
       </h2>
       <div className='relative col-start-1 row-start-1 py-4'>
-        <div className='mx-auto flex max-w-7xl items-center divide-x divide-gray-200 px-4 text-sm sm:px-6 lg:px-8'>
-          <div className='pr-6'>
+        <div className='mx-auto flex max-w-7xl items-center justify-between divide-x divide-gray-200 px-4 text-sm sm:px-6 lg:px-8'>
+          <div className='flex items-center'>
             <DisclosureButton className='group flex cursor-pointer items-center font-medium text-gray-700'>
               <FunnelIcon
                 aria-hidden='true'
@@ -44,11 +58,50 @@ const Filters = ({ filters, sortOptions }: FiltersProps) => {
               />
               2 Filters
             </DisclosureButton>
+            <div className='pl-6'>
+              <Button
+                type='button'
+                color='transparent'
+                className='text-gray-500'
+                onClick={handleClearAll}
+              >
+                Clear all
+              </Button>
+            </div>
           </div>
           <div className='pl-6'>
-            <Button type='button' color='transparent' className='text-gray-500'>
-              Clear all
-            </Button>
+            <Menu as='div' className='relative inline-block text-left'>
+              <MenuButton className='group cursor-pointer inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900'>
+                Sort
+                <ChevronDownIcon
+                  className='-mr-1 ml-1 size-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
+                  aria-hidden='true'
+                />
+              </MenuButton>
+              <MenuItems
+                transition
+                modal={false}
+                className='cursor-pointer absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in'
+              >
+                <div className='py-1'>
+                  {sortOptions.map((option) => (
+                    <MenuItem key={option.value}>
+                      <Link
+                        href={`?sort=${option.value}`}
+                        className={cn(
+                          'block px-4 py-2 text-sm',
+                          currentSort === option.value
+                            ? 'font-medium text-gray-900'
+                            : 'text-gray-500'
+                        )}
+                      >
+                        {option.label}
+                      </Link>
+                    </MenuItem>
+                  ))}
+                </div>
+              </MenuItems>
+            </Menu>
           </div>
         </div>
       </div>
@@ -248,44 +301,6 @@ const Filters = ({ filters, sortOptions }: FiltersProps) => {
           </div>
         </div>
       </DisclosurePanel>
-      <div className='col-start-1 row-start-1 py-4'>
-        <div className='mx-auto flex max-w-7xl justify-end px-4 sm:px-6 lg:px-8'>
-          <Menu as='div' className='relative inline-block'>
-            <div className='flex'>
-              <MenuButton className='group cursor-pointer inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900'>
-                Sort
-                <ChevronDownIcon
-                  aria-hidden='true'
-                  className='-mr-1 ml-1 size-5 shrink-0 text-gray-400 group-hover:text-gray-500'
-                />
-              </MenuButton>
-            </div>
-
-            <MenuItems
-              transition
-              className='absolute right-0 z-10 mt-2 w-40 origin-top-right rounded-md bg-white shadow-2xl ring-1 ring-black/5 transition focus:outline-hidden data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in'
-            >
-              <div className='py-1'>
-                {sortOptions.map((option) => (
-                  <MenuItem key={option.name}>
-                    <Link
-                      href={option.href}
-                      className={cn(
-                        option.current
-                          ? 'font-medium text-gray-900'
-                          : 'text-gray-500',
-                        'block px-4 py-2 text-sm data-focus:bg-gray-100 data-focus:outline-hidden'
-                      )}
-                    >
-                      {option.name}
-                    </Link>
-                  </MenuItem>
-                ))}
-              </div>
-            </MenuItems>
-          </Menu>
-        </div>
-      </div>
     </Disclosure>
   );
 };

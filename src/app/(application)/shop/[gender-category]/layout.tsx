@@ -16,7 +16,7 @@ const CategoryLayout = async ({
   const [gender, category] = genderWithCategory?.split('-') || '';
 
   return (
-    <main className='mx-auto max-w-7xl overflow-hidden my-10 sm:px-6 lg:px-8'>
+    <main className='mx-auto w-full max-w-7xl my-10 sm:px-6 lg:px-8'>
       <div className='flex flex-col items-center mb-10 gap-y-2'>
         <h1 className='text-5xl font-bold tracking-widest text-primary-900 uppercase'>
           {gender}

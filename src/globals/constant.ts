@@ -1,6 +1,29 @@
 export const APP_NAME = 'E-Commerce Shop';
 export const APP_DESCRIPTION = 'E-Commerce Shop';
 
+export const SORT_OPTIONS = [
+  {
+    label: 'Most Popular',
+    value: 'popularity',
+  },
+  {
+    label: 'Newest',
+    value: 'newest',
+  },
+  {
+    label: 'Price: Low to High',
+    value: 'price_asc',
+  },
+  {
+    label: 'Price: High to Low',
+    value: 'price_desc',
+  },
+  {
+    label: 'Best Rating',
+    value: 'rating',
+  },
+];
+
 export const CURRENCIES = [
   {
     label: 'PKR',

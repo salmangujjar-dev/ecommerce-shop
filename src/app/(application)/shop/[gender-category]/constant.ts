@@ -31,9 +31,24 @@ export const FILTERS = {
 };
 
 export const SORT_OPTIONS = [
-  { name: 'Most Popular', href: '#', current: true },
-  { name: 'Best Rating', href: '#', current: false },
-  { name: 'Newest', href: '#', current: false },
-  { name: 'Price: Low to High', href: '#', current: false },
-  { name: 'Price: High to Low', href: '#', current: false },
+  {
+    label: 'Most Popular',
+    value: 'popularity',
+  },
+  {
+    label: 'Newest',
+    value: 'newest',
+  },
+  {
+    label: 'Price: Low to High',
+    value: 'price_asc',
+  },
+  {
+    label: 'Price: High to Low',
+    value: 'price_desc',
+  },
+  {
+    label: 'Best Rating',
+    value: 'rating',
+  },
 ];
