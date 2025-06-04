@@ -4,7 +4,9 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { TRPCError } from '@trpc/server';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import z from 'zod';
 
 import { Button } from '@ui/button';
@@ -21,6 +23,7 @@ const Login = () => {
     register,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors, isSubmitSuccessful, isSubmitting, isDirty },
   } = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -30,9 +33,20 @@ const Login = () => {
   });
 
   const onSubmit = handleSubmit(async (data: z.infer<typeof loginSchema>) => {
-    await loginAction(data);
+    try {
+      await loginAction(data);
+    } catch (error) {
+      const errorMessage =
+        error instanceof TRPCError ? error.message : 'Something went wrong';
+      toast.error(errorMessage);
+      setError('root.server', {
+        type: 'server',
+        message: errorMessage,
+      });
+    }
   });
 
+  console.log({ isSubmitting, isSubmitSuccessful, isDirty });
   return (
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8'>

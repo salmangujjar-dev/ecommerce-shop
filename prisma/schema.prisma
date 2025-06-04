@@ -53,7 +53,7 @@ model Payment {
   createdAt     DateTime      @default(now()) @map("created_at")
   updatedAt     DateTime      @updatedAt @map("updated_at")
   order         Order         @relation(fields: [orderId], references: [id])
-  orderId       String?       @unique
+  orderId       String        @unique
 
   @@map("payments")
 }
@@ -61,8 +61,8 @@ model Payment {
 model Order {
   id              String      @id @default(cuid())
   description     String?     @db.VarChar(200)
-  payment         Payment
-  products        Product[]
+  payment         Payment?
+  products        Product[]   @relation("OrderToProduct")
   status          OrderStatus @default(PENDING)
   total           Decimal     @db.Decimal(10, 2)
   shippingAddress Json?
@@ -117,6 +117,7 @@ model Product {
   sizes       ProductSize[]
   reviews     Review[]
   details     String[]       @db.Text
+  orders      Order[]        @relation("OrderToProduct")
   createdAt   DateTime       @default(now()) @map("created_at")
   updatedAt   DateTime       @updatedAt @map("updated_at")
 

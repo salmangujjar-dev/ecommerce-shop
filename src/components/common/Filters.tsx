@@ -29,6 +29,8 @@ interface FiltersProps {
 }
 
 const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
+  console.log({ filters });
+  console.log({ currentSort });
   return (
     <Disclosure
       as='section'
@@ -62,7 +64,11 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
           <div className='pl-6'>
             <Menu as='div' className='relative inline-block text-left'>
               <MenuButton className='group cursor-pointer inline-flex justify-center text-sm font-medium text-gray-700 hover:text-gray-900'>
-                Sort
+                Sort By:{' '}
+                {
+                  sortOptions.find((option) => option.value === currentSort)
+                    ?.label
+                }
                 <ChevronDownIcon
                   className='-mr-1 ml-1 size-5 flex-shrink-0 text-gray-400 group-hover:text-gray-500'
                   aria-hidden='true'

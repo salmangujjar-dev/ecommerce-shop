@@ -1,3 +1,4 @@
+import { TRPCError } from '@trpc/server';
 import { compare, hash } from 'bcrypt-ts';
 
 import {
@@ -21,7 +22,10 @@ export const authRouter = createTRPCRouter({
       });
 
       if (existingUser) {
-        throw new Error('User with this email already exists');
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: "User with this email doesn't exists",
+        });
       }
 
       const hashedPassword = await hash(password, 10);
@@ -49,11 +53,17 @@ export const authRouter = createTRPCRouter({
     });
 
     if (!user) {
-      throw new Error("User with this email doesn't exists");
+      throw new TRPCError({
+        code: 'NOT_FOUND',
+        message: "User with this email doesn't exists",
+      });
     }
 
     if (!(await compare(password, user.password))) {
-      throw new Error('Incorrect Credentials');
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: 'Incorrect Credentials',
+      });
     }
 
     const token = await JWTService.encrypt({ id: user.id }, { rememberMe });
