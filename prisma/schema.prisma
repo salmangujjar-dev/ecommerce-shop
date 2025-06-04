@@ -8,6 +8,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  IN_PROCESS
+  DELIVERED
+}
+
+enum PaymentMethod {
+  CASH
+  CARD
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
 model User {
   id        String   @id @default(cuid())
   name      String   @db.VarChar(30)
@@ -18,8 +38,40 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   reviews   Review[]
+  orders    Order[]
 
   @@map("users")
+}
+
+model Payment {
+  id            String        @id @default(cuid())
+  method        PaymentMethod @default(CASH)
+  status        PaymentStatus @default(PENDING)
+  amount        Decimal       @db.Decimal(10, 2)
+  transactionId String?       @unique
+  metadata      Json?
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  order         Order         @relation(fields: [orderId], references: [id])
+  orderId       String?       @unique
+
+  @@map("payments")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  description     String?     @db.VarChar(200)
+  payment         Payment
+  products        Product[]
+  status          OrderStatus @default(PENDING)
+  total           Decimal     @db.Decimal(10, 2)
+  shippingAddress Json?
+  createdAt       DateTime    @default(now()) @map("created_at")
+  updatedAt       DateTime    @updatedAt @map("updated_at")
+  user            User        @relation(fields: [userId], references: [id])
+  userId          String
+
+  @@map("orders")
 }
 
 model Gender {
