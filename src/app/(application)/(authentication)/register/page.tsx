@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { TRPCError } from '@trpc/server';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -40,7 +39,7 @@ const Register = () => {
         await registerAction(data);
       } catch (error) {
         const errorMessage =
-          error instanceof TRPCError ? error.message : 'Something went wrong';
+          error instanceof Error ? error.message : 'Something went wrong';
         toast.error(errorMessage);
         setError('root.server', {
           type: 'server',
