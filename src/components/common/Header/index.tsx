@@ -28,14 +28,20 @@ import {
 } from '@ui/dropdown';
 import { Link } from '@ui/link';
 
+import useCartStore from '@store/cart';
+
 import { useSession } from '@lib/session/provider';
+
+import StringUtils from '@utils/string';
 
 import { CURRENCIES, NAVIGATION } from '@globals/constant';
 
 import MobileNavigation from './MobileNavigation';
 
 const Header: FC = () => {
-  const { isAuthenticated } = useSession();
+  const { isAuthenticated, user } = useSession();
+
+  const cartStore = useCartStore();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -264,7 +270,7 @@ const Header: FC = () => {
                     className='size-6 shrink-0 text-gray-400 group-hover:text-gray-500'
                   />
                   <span className='ml-2 text-sm font-medium text-gray-700 group-hover:text-gray-800'>
-                    0
+                    {cartStore.items.length}
                   </span>
                   <span className='sr-only'>items in cart, view bag</span>
                 </Link>
@@ -274,7 +280,7 @@ const Header: FC = () => {
               {isAuthenticated && (
                 <Dropdown>
                   <DropdownButton as={Fragment} className='ml-4'>
-                    <Avatar initials='TA' />
+                    <Avatar initials={StringUtils.getInitials(user?.name)} />
                   </DropdownButton>
                   <DropdownMenu modal={false} anchor='bottom end'>
                     <DropdownItem>

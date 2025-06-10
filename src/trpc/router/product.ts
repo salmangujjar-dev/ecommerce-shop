@@ -60,6 +60,42 @@ export const productRouter = createTRPCRouter({
       return product ? { ...product, price: Number(product.price) || 0 } : null;
     }),
 
+  getByIds: publicProcedure
+    .input(z.object({ ids: z.array(z.string()) }))
+    .query(async ({ input }) => {
+      const products = await prisma.product.findMany({
+        where: { id: { in: input.ids } },
+        include: {
+          category: true,
+          gender: true,
+          images: true,
+          colors: {
+            include: {
+              color: true,
+            },
+          },
+          sizes: true,
+          reviews: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  name: true,
+                  username: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      return products
+        ? products.map((product) => ({
+            ...product,
+            price: Number(product.price),
+          }))
+        : null;
+    }),
+
   getBySlug: publicProcedure
     .input(z.object({ slug: z.string() }))
     .query(async ({ input }) => {

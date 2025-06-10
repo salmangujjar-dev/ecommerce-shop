@@ -18,6 +18,8 @@ import { DollarSign, Globe, StarIcon } from 'lucide-react';
 import Breadcrumb from '@ui/breadcrumb';
 import { Link } from '@ui/link';
 
+import AddToCartBtn from '@common/AddToCartBtn';
+
 import { productRouter } from '~trpc/router/product';
 
 import { cn } from '@utils/cn';
@@ -232,12 +234,7 @@ const Product = ({ product }: ProductProps) => {
                   </fieldset>
                 </div>
 
-                <button
-                  type='submit'
-                  className='mt-8 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:outline-hidden'
-                >
-                  Add to cart
-                </button>
+                <AddToCartBtn product={product} className='mt-8' />
               </form>
 
               {/* Product details */}
