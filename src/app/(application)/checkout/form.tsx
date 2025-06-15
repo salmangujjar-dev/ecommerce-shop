@@ -2,12 +2,15 @@ import { useEffect, useState } from 'react';
 
 import { ChevronDownIcon } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
+import z from 'zod';
 
 import { Input } from '@ui/input';
+import { Link } from '@ui/link';
+import { Radio, RadioField, RadioGroup } from '@ui/radio';
 
 import { fetchCountries, type Country } from '../../../lib/api/location';
 
-// type CheckoutFormProps = {};
+import { checkoutSchema } from './validation';
 
 const paymentMethods = [
   { id: 'card', title: 'Credit Card/Debit Card' },
@@ -15,7 +18,12 @@ const paymentMethods = [
 ];
 
 const CheckoutForm = () => {
-  const { register, setValue } = useFormContext();
+  const {
+    register,
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext<z.infer<typeof checkoutSchema>>();
   const [countries, setCountries] = useState<Country[]>([]);
   const [isLoadingCountries, setIsLoadingCountries] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,6 +37,10 @@ const CheckoutForm = () => {
         setCountries(countriesData);
       } catch (err) {
         setError('Failed to load countries. Please try again.');
+        setCountries([
+          { name: 'Pakistan', code: 'PK' },
+          { name: 'United States', code: 'US' },
+        ]);
         console.error('Error loading countries:', err);
       } finally {
         setIsLoadingCountries(false);
@@ -36,6 +48,8 @@ const CheckoutForm = () => {
     };
     loadCountries();
   }, []);
+
+  const paymentType = watch('paymentType');
 
   return (
     <div>
@@ -46,18 +60,22 @@ const CheckoutForm = () => {
 
         <div className='mt-4'>
           <label
-            htmlFor='email-address'
+            htmlFor='email'
             className='block text-sm/6 font-medium text-gray-700'
           >
-            Email address
+            Email address <span className='text-red-500'>*</span>
           </label>
           <div className='mt-2'>
             <Input
               id='email'
               type='email'
               autoComplete='email'
+              required
               {...register('email')}
             />
+            {errors.email?.message && (
+              <p className='text-red-500 text-sm'>{errors.email.message}</p>
+            )}
           </div>
         </div>
       </div>
@@ -73,7 +91,7 @@ const CheckoutForm = () => {
               htmlFor='firstName'
               className='block text-sm/6 font-medium text-gray-700'
             >
-              First name
+              First name <span className='text-red-500'>*</span>
             </label>
             <div className='mt-2'>
               <Input
@@ -83,6 +101,11 @@ const CheckoutForm = () => {
                 autoComplete='given-name'
                 {...register('firstName')}
               />
+              {errors.firstName?.message && (
+                <p className='text-red-500 text-sm'>
+                  {errors.firstName.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -100,6 +123,11 @@ const CheckoutForm = () => {
                 autoComplete='family-name'
                 {...register('lastName')}
               />
+              {errors.lastName?.message && (
+                <p className='text-red-500 text-sm'>
+                  {errors.lastName.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -108,15 +136,19 @@ const CheckoutForm = () => {
               htmlFor='address'
               className='block text-sm/6 font-medium text-gray-700'
             >
-              Address
+              Address <span className='text-red-500'>*</span>
             </label>
             <div className='mt-2'>
               <Input
                 id='address'
                 type='text'
                 autoComplete='street-address'
+                required
                 {...register('address')}
               />
+              {errors.address?.message && (
+                <p className='text-red-500 text-sm'>{errors.address.message}</p>
+              )}
             </div>
           </div>
 
@@ -129,6 +161,11 @@ const CheckoutForm = () => {
             </label>
             <div className='mt-2'>
               <Input id='apartment' type='text' {...register('apartment')} />
+              {errors.apartment?.message && (
+                <p className='text-red-500 text-sm'>
+                  {errors.apartment.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -137,13 +174,14 @@ const CheckoutForm = () => {
               htmlFor='country'
               className='block text-sm/6 font-medium text-gray-700'
             >
-              Country
+              Country <span className='text-red-500'>*</span>
             </label>
             <div className='mt-2 grid grid-cols-1'>
               <select
                 id='country'
                 autoComplete='country-name'
                 className='col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                required
                 {...register('country')}
                 onChange={(e) => {
                   setValue('country', e.target.value);
@@ -162,6 +200,9 @@ const CheckoutForm = () => {
                 className='pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end text-gray-500 sm:size-4'
               />
             </div>
+            {errors.country?.message && (
+              <p className='text-red-500 text-sm'>{errors.country.message}</p>
+            )}
           </div>
 
           <div>
@@ -169,16 +210,20 @@ const CheckoutForm = () => {
               htmlFor='city'
               className='block text-sm/6 font-medium text-gray-700'
             >
-              City
+              City <span className='text-red-500'>*</span>
             </label>
             <div className='mt-2'>
               <Input
                 id='city'
                 type='text'
                 autoComplete='address-level2'
+                required
                 {...register('city')}
               />
             </div>
+            {errors.city?.message && (
+              <p className='text-red-500 text-sm'>{errors.city.message}</p>
+            )}
           </div>
 
           {error && (
@@ -192,15 +237,19 @@ const CheckoutForm = () => {
               htmlFor='region'
               className='block text-sm/6 font-medium text-gray-700'
             >
-              State / Province
+              State / Province <span className='text-red-500'>*</span>
             </label>
             <div className='mt-2'>
               <Input
                 id='region'
                 type='text'
                 autoComplete='address-level1'
+                required
                 {...register('region')}
               />
+              {errors.region?.message && (
+                <p className='text-red-500 text-sm'>{errors.region.message}</p>
+              )}
             </div>
           </div>
 
@@ -218,6 +267,11 @@ const CheckoutForm = () => {
                 autoComplete='postal-code'
                 {...register('postalCode')}
               />
+              {errors.postalCode?.message && (
+                <p className='text-red-500 text-sm'>
+                  {errors.postalCode.message}
+                </p>
+              )}
             </div>
           </div>
 
@@ -226,15 +280,19 @@ const CheckoutForm = () => {
               htmlFor='phone'
               className='block text-sm/6 font-medium text-gray-700'
             >
-              Phone
+              Phone <span className='text-red-500'>*</span>
             </label>
             <div className='mt-2'>
               <Input
                 id='phone'
                 type='text'
                 autoComplete='tel'
+                required
                 {...register('phone')}
               />
+              {errors.phone?.message && (
+                <p className='text-red-500 text-sm'>{errors.phone.message}</p>
+              )}
             </div>
           </div>
         </div>
@@ -242,100 +300,139 @@ const CheckoutForm = () => {
 
       {/* Payment */}
       <div className='mt-10 border-t border-gray-200 pt-10'>
-        <h2 className='text-lg font-medium text-gray-900'>Payment</h2>
+        <h2 className='text-lg font-medium text-gray-900'>
+          Payment <span className='text-red-500'>*</span>
+        </h2>
 
-        <fieldset className='mt-4'>
-          <legend className='sr-only'>Payment type</legend>
-          <div className='space-y-4 sm:flex sm:items-center sm:space-y-0 sm:space-x-10'>
-            {paymentMethods.map((paymentMethod, paymentMethodIdx) => (
-              <div key={paymentMethod.id} className='flex items-center'>
-                <input
-                  defaultChecked={paymentMethodIdx === 0}
-                  id={paymentMethod.id}
-                  type='radio'
-                  className='relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden'
-                  {...register('paymentType')}
-                />
-                <label
-                  htmlFor={paymentMethod.id}
-                  className='ml-3 block text-sm/6 font-medium text-gray-700'
-                >
-                  {paymentMethod.title}
-                </label>
-              </div>
+        <fieldset aria-label='Payment Type' className='mt-4'>
+          <RadioGroup
+            className='flex items-center space-y-0 text-sm/6'
+            {...register('paymentType')}
+            value={paymentType}
+            onChange={(e) => {
+              setValue('paymentType', e as 'cod' | 'card');
+            }}
+          >
+            {paymentMethods.map((paymentMethod) => (
+              <RadioField key={paymentMethod.id} className='gap-x-2 flex-1'>
+                <Radio value={paymentMethod.id} color='blue' />
+                <span data-slot='label'>{paymentMethod.title}</span>
+              </RadioField>
             ))}
-          </div>
+          </RadioGroup>
         </fieldset>
 
-        <div className='mt-6 grid grid-cols-4 gap-x-4 gap-y-6'>
-          <div className='col-span-4'>
-            <label
-              htmlFor='cardNumber'
-              className='block text-sm/6 font-medium text-gray-700'
-            >
-              Card number
-            </label>
-            <div className='mt-2'>
-              <Input
-                id='cardNumber'
-                type='text'
-                autoComplete='cc-number'
-                {...register('cardNumber')}
-              />
+        {paymentType === 'card' && (
+          <div className='mt-6 grid grid-cols-4 gap-x-4 gap-y-6'>
+            <div className='col-span-4'>
+              <label
+                htmlFor='cardNumber'
+                className='block text-sm/6 font-medium text-gray-700'
+              >
+                Card number <span className='text-red-500'>*</span>
+              </label>
+              <div className='mt-2'>
+                <Input
+                  id='cardNumber'
+                  type='text'
+                  autoComplete='cc-number'
+                  required
+                  {...register('cardNumber')}
+                />
+                {errors.cardNumber?.message && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.cardNumber.message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className='col-span-4'>
-            <label
-              htmlFor='nameOnCard'
-              className='block text-sm/6 font-medium text-gray-700'
-            >
-              Name on card
-            </label>
-            <div className='mt-2'>
-              <Input
-                id='nameOnCard'
-                type='text'
-                autoComplete='cc-name'
-                {...register('nameOnCard')}
-              />
+            <div className='col-span-4'>
+              <label
+                htmlFor='nameOnCard'
+                className='block text-sm/6 font-medium text-gray-700'
+              >
+                Name on card <span className='text-red-500'>*</span>
+              </label>
+              <div className='mt-2'>
+                <Input
+                  id='nameOnCard'
+                  type='text'
+                  autoComplete='cc-name'
+                  required
+                  {...register('nameOnCard')}
+                />
+                {errors.nameOnCard?.message && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.nameOnCard.message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div className='col-span-3'>
-            <label
-              htmlFor='expirationDate'
-              className='block text-sm/6 font-medium text-gray-700'
-            >
-              Expiration date (MM/YY)
-            </label>
-            <div className='mt-2'>
-              <Input
-                id='expirationDate'
-                type='text'
-                autoComplete='cc-exp'
-                {...register('expirationDate')}
-              />
+            <div className='col-span-3'>
+              <label
+                htmlFor='expirationDate'
+                className='block text-sm/6 font-medium text-gray-700'
+              >
+                Expiration date (MM/YY) <span className='text-red-500'>*</span>
+              </label>
+              <div className='mt-2'>
+                <Input
+                  id='expirationDate'
+                  type='text'
+                  autoComplete='cc-exp'
+                  required
+                  {...register('expirationDate')}
+                />
+                {errors.expirationDate?.message && (
+                  <p className='text-red-500 text-sm'>
+                    {errors.expirationDate.message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
 
-          <div>
-            <label
-              htmlFor='cvc'
-              className='block text-sm/6 font-medium text-gray-700'
-            >
-              CVC
-            </label>
-            <div className='mt-2'>
-              <Input
-                id='cvc'
-                type='text'
-                autoComplete='csc'
-                {...register('cvc')}
-              />
+            <div>
+              <label
+                htmlFor='cvc'
+                className='block text-sm/6 font-medium text-gray-700'
+              >
+                CVC <span className='text-red-500'>*</span>
+              </label>
+              <div className='mt-2'>
+                <Input
+                  id='cvc'
+                  type='text'
+                  autoComplete='csc'
+                  required
+                  {...register('cvc')}
+                />
+                {errors.cvc?.message && (
+                  <p className='text-red-500 text-sm'>{errors.cvc.message}</p>
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
+      </div>
+
+      {/* Terms and Privacy Links */}
+      <div className='mt-8 text-sm text-gray-500'>
+        <p>
+          By placing your order, you agree to our{' '}
+          <Link href='/terms' className='text-indigo-600 hover:text-indigo-500'>
+            Terms and Conditions
+          </Link>{' '}
+          and{' '}
+          <Link
+            href='/privacy-policy'
+            className='text-indigo-600 hover:text-indigo-500'
+          >
+            Privacy Policy
+          </Link>
+          .
+        </p>
       </div>
     </div>
   );

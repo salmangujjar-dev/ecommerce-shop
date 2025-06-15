@@ -158,7 +158,11 @@ const CheckoutSummary = ({
         </dl>
 
         <div className='border-t border-gray-200 px-4 py-6 sm:px-6'>
-          <Button disabled={items.length === 0} className='w-full text-4xl'>
+          <Button
+            type='submit'
+            disabled={items.length === 0}
+            className='w-full text-4xl'
+          >
             Confirm order
           </Button>
         </div>

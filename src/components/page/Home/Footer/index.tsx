@@ -52,7 +52,7 @@ const Footer: FC = () => {
               </div>
             </div>
             <div className='space-y-12 md:grid md:grid-cols-2 md:gap-8 md:space-y-0'>
-              <div>
+              {/* <div>
                 <h3 className='text-sm font-medium text-white'>Account</h3>
                 <ul role='list' className='mt-6 space-y-6'>
                   {FOOTER_NAVIGATION.account.map((item) => (
@@ -66,7 +66,7 @@ const Footer: FC = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div> */}
               <div>
                 <h3 className='text-sm font-medium text-white'>Connect</h3>
                 <ul role='list' className='mt-6 space-y-6'>

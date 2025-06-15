@@ -74,7 +74,7 @@ const Register = () => {
                   htmlFor='name'
                   className='block text-sm/6 font-medium text-gray-900'
                 >
-                  Full Name
+                  Full Name <span className='text-red-500'>*</span>
                 </label>
                 <div className='mt-2'>
                   <input
@@ -96,7 +96,7 @@ const Register = () => {
                   htmlFor='email'
                   className='block text-sm/6 font-medium text-gray-900'
                 >
-                  Email address
+                  Email address <span className='text-red-500'>*</span>
                 </label>
                 <div className='mt-2'>
                   <input
@@ -118,7 +118,7 @@ const Register = () => {
                   htmlFor='password'
                   className='block text-sm/6 font-medium text-gray-900'
                 >
-                  Password
+                  Password <span className='text-red-500'>*</span>
                 </label>
                 <div className='mt-2'>
                   <input
@@ -159,7 +159,8 @@ const Register = () => {
                       className='font-semibold text-indigo-600 hover:text-indigo-500'
                     >
                       Terms & Conditions
-                    </Link>
+                    </Link>{' '}
+                    <span className='text-red-500'>*</span>
                   </label>
                   {errors.terms?.message && (
                     <p className='text-red-500 text-sm'>

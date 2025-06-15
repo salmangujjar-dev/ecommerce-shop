@@ -11,14 +11,14 @@ export const FOOTER_NAVIGATION = {
     { name: 'Sustainability', href: '#' },
     { name: 'Press', href: '#' },
     { name: 'Careers', href: '#' },
-    { name: 'Terms & Conditions', href: '#' },
-    { name: 'Privacy', href: '#' },
+    { name: 'Terms & Conditions', href: '/terms' },
+    { name: 'Privacy', href: '/privacy-policy' },
   ],
-  account: [
-    { name: 'Manage Account', href: '#' },
-    { name: 'Returns & Exchanges', href: '#' },
-    { name: 'Redeem a Gift Card', href: '#' },
-  ],
+  // account: [
+  //   { name: 'Manage Account', href: '#' },
+  //   { name: 'Returns & Exchanges', href: '#' },
+  //   { name: 'Redeem a Gift Card', href: '#' },
+  // ],
   connect: [
     { name: 'Contact Us', href: '#' },
     { name: 'Facebook', href: '#' },

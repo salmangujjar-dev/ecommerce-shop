@@ -81,6 +81,12 @@ const Product = ({ product }: ProductProps) => {
                     {product.rating}
                     <span className='sr-only'> out of 5 stars</span>
                   </p>
+                  <div
+                    aria-hidden='true'
+                    className='ml-4 text-sm text-gray-300'
+                  >
+                    ·
+                  </div>
                   <div className='ml-1 flex items-center' dir='rtl'>
                     {[0, 1, 2, 3, 4].map((rating) => (
                       <StarIcon
@@ -95,20 +101,24 @@ const Product = ({ product }: ProductProps) => {
                       />
                     ))}
                   </div>
-                  <div
-                    aria-hidden='true'
-                    className='ml-4 text-sm text-gray-300'
-                  >
-                    ·
-                  </div>
-                  <div className='ml-4 flex'>
-                    <Link
-                      href='#reviews'
-                      className='text-sm font-medium text-indigo-600 hover:text-indigo-500'
-                    >
-                      See all {product.reviewCount} reviews
-                    </Link>
-                  </div>
+                  {product.reviewCount > 0 && (
+                    <>
+                      <div
+                        aria-hidden='true'
+                        className='ml-4 text-sm text-gray-300'
+                      >
+                        ·
+                      </div>
+                      <div className='ml-4 flex'>
+                        <Link
+                          href='#reviews'
+                          className='text-sm font-medium text-indigo-600 hover:text-indigo-500'
+                        >
+                          See all {product.reviewCount} reviews
+                        </Link>
+                      </div>
+                    </>
+                  )}
                 </div>
               </div>
             </div>

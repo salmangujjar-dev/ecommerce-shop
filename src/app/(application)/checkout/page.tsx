@@ -2,8 +2,10 @@
 
 import { useCallback } from 'react';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import z from 'zod';
 
 import { Button } from '@ui/button';
 
@@ -11,11 +13,21 @@ import useCartStore from '@store/cart';
 
 import CheckoutForm from './form';
 import CheckoutSummary from './summary';
+import { checkoutSchema } from './validation';
 
 const CheckoutPage = () => {
-  const formMethods = useForm();
+  const formMethods = useForm<z.infer<typeof checkoutSchema>>({
+    defaultValues: {
+      paymentType: 'card',
+    },
+    resolver: zodResolver(checkoutSchema),
+  });
 
   const cartStore = useCartStore();
+
+  const _handleSubmit = useCallback((data: unknown) => {
+    console.log(data);
+  }, []);
 
   const updateItem = useCallback(
     (id: string, quantity: number) => {
@@ -47,7 +59,10 @@ const CheckoutPage = () => {
       <div className='mx-auto max-w-2xl px-4 pt-16 pb-24 sm:px-6 lg:max-w-7xl lg:px-8'>
         <h2 className='sr-only'>Checkout</h2>
         <FormProvider {...formMethods}>
-          <form className='lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16'>
+          <form
+            onSubmit={formMethods.handleSubmit(_handleSubmit)}
+            className='lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16'
+          >
             <CheckoutForm />
 
             {/* Order summary */}
