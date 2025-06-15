@@ -1,7 +1,5 @@
 import Image from 'next/image';
 
-import { StarIcon } from 'lucide-react';
-
 import { Button } from '@ui/button';
 import { Link } from '@ui/link';
 import {
@@ -15,10 +13,10 @@ import {
 import AddToCartBtn from '@common/AddToCartBtn';
 import Filters from '@common/Filters';
 import ProductQuickView from '@common/ProductQuickView';
+import Rating from '@common/Rating';
 
 import { api } from '~trpc/server';
 
-import { cn } from '@utils/cn';
 import CommonUtils from '@utils/common';
 
 import { FILTERS, SORT_OPTIONS } from './constant';
@@ -129,20 +127,7 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
                       <p className='sr-only'>
                         {product.rating ?? 0} out of 5 stars
                       </p>
-                      <div className='flex items-center' dir='rtl'>
-                        {[0, 1, 2, 3, 4].map((rating) => (
-                          <StarIcon
-                            key={rating}
-                            aria-hidden='true'
-                            className={cn(
-                              (product.rating ?? 0) > rating
-                                ? 'text-yellow-400 fill-yellow-400'
-                                : 'text-gray-200 hover:fill-yellow-400 hover:text-yellow-400',
-                              'size-5 shrink-0 cursor-pointer z-1 peer peer-hover:fill-yellow-500 peer-hover:text-yellow-400'
-                            )}
-                          />
-                        ))}
-                      </div>
+                      <Rating rating={3.5} />
                       <p className='mt-1 text-sm text-gray-500'>
                         {product._count?.reviews ?? 0} reviews
                       </p>

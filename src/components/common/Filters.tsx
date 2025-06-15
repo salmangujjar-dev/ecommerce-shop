@@ -20,7 +20,7 @@ import { Link } from '@ui/link';
 
 import { cn } from '@utils/cn';
 
-import { clearAllFilters } from './actions';
+import { clearAllFilters } from './AddToCartBtn/actions';
 
 interface FiltersProps {
   filters: typeof FILTERS;

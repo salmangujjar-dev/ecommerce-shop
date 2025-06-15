@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import z from 'zod';
 
 import { Button } from '@ui/button';
+import Spinner from '@ui/Spinner';
 
 import useCartStore from '@store/cart';
 
@@ -45,7 +46,15 @@ const CheckoutPage = () => {
     [cartStore]
   );
 
-  if (cartStore.items.length === 0) {
+  if (!cartStore._hasHydrated) {
+    return (
+      <div className='flex justify-center items-center h-52'>
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (cartStore._hasHydrated && cartStore.items.length === 0) {
     return (
       <div className='flex justify-center gap-y-2 flex-col items-center h-52'>
         <h1 className='text-2xl font-bold'>No items in cart</h1>

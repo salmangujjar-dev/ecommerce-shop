@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { Star } from 'lucide-react';
+import { StarIcon } from 'lucide-react';
 
 import { Link } from '@ui/link';
 
@@ -53,7 +53,7 @@ const Reviews = () => {
             <div>
               <div className='flex items-center' dir='rtl'>
                 {[0, 1, 2, 3, 4].map((rating) => (
-                  <Star
+                  <StarIcon
                     key={rating}
                     aria-hidden='true'
                     className={cn(
@@ -87,7 +87,7 @@ const Reviews = () => {
                       aria-hidden='true'
                       className='ml-1 flex flex-1 items-center'
                     >
-                      <Star
+                      <StarIcon
                         aria-hidden='true'
                         className={cn(
                           count.count > 0
@@ -158,7 +158,7 @@ const Reviews = () => {
                       </h4>
                       <div className='mt-1 flex items-center' dir='rtl'>
                         {[0, 1, 2, 3, 4].map((rating) => (
-                          <Star
+                          <StarIcon
                             key={rating}
                             aria-hidden='true'
                             className={cn(

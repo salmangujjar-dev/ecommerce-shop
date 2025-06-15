@@ -13,12 +13,13 @@ import {
   TabPanel,
   TabPanels,
 } from '@headlessui/react';
-import { DollarSign, Globe, StarIcon } from 'lucide-react';
+import { DollarSign, Globe } from 'lucide-react';
 
 import Breadcrumb from '@ui/breadcrumb';
 import { Link } from '@ui/link';
 
 import AddToCartBtn from '@common/AddToCartBtn';
+import Rating from '@common/Rating';
 
 import { productRouter } from '~trpc/router/product';
 
@@ -47,7 +48,7 @@ interface ProductProps {
 const Product = ({ product }: ProductProps) => {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
-
+  console.log({ product });
   return (
     <div className='bg-white'>
       <div className='pt-6'>
@@ -83,38 +84,29 @@ const Product = ({ product }: ProductProps) => {
                   </p>
                   <div
                     aria-hidden='true'
-                    className='ml-4 text-sm text-gray-300'
+                    className='mx-2 text-sm text-gray-300'
                   >
                     ·
                   </div>
-                  <div className='ml-1 flex items-center' dir='rtl'>
-                    {[0, 1, 2, 3, 4].map((rating) => (
-                      <StarIcon
-                        key={rating}
-                        aria-hidden='true'
-                        className={cn(
-                          (product.rating ?? 0) > rating
-                            ? 'text-yellow-400 fill-yellow-400'
-                            : 'text-gray-200 hover:fill-yellow-400 hover:text-yellow-400',
-                          'size-5 shrink-0 cursor-pointer peer peer-hover:fill-yellow-500 peer-hover:text-yellow-400'
-                        )}
-                      />
-                    ))}
-                  </div>
-                  {product.reviewCount > 0 && (
+                  <Rating
+                    rating={product.rating}
+                    isCssInteractive
+                    isModalInteractive
+                  />
+                  {product.reviews.length > 0 && (
                     <>
                       <div
                         aria-hidden='true'
-                        className='ml-4 text-sm text-gray-300'
+                        className='ml-2 text-sm text-gray-300'
                       >
                         ·
                       </div>
-                      <div className='ml-4 flex'>
+                      <div className='ml-2 flex'>
                         <Link
                           href='#reviews'
                           className='text-sm font-medium text-indigo-600 hover:text-indigo-500'
                         >
-                          See all {product.reviewCount} reviews
+                          See all {product.reviews.length} reviews
                         </Link>
                       </div>
                     </>

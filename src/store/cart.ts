@@ -7,6 +7,7 @@ export interface CartItem {
 }
 
 interface CartState {
+  _hasHydrated: boolean;
   items: CartItem[];
   addItem: (id: string) => void;
   removeItem: (id: string) => void;
@@ -17,6 +18,7 @@ interface CartState {
 const useCartStore = create<CartState>()(
   persist(
     (set) => ({
+      _hasHydrated: false,
       items: [],
       addItem: (id) =>
         set((state) => {
@@ -44,6 +46,11 @@ const useCartStore = create<CartState>()(
     }),
     {
       name: 'cart-storage',
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          state._hasHydrated = true;
+        }
+      },
     }
   )
 );
