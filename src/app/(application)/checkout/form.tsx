@@ -1,5 +1,11 @@
+import { useEffect, useState } from 'react';
+
 import { ChevronDownIcon } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
+
+import { Input } from '@ui/input';
+
+import { fetchCountries, type Country } from '../../../lib/api/location';
 
 // type CheckoutFormProps = {};
 
@@ -9,7 +15,27 @@ const paymentMethods = [
 ];
 
 const CheckoutForm = () => {
-  const { register } = useFormContext();
+  const { register, setValue } = useFormContext();
+  const [countries, setCountries] = useState<Country[]>([]);
+  const [isLoadingCountries, setIsLoadingCountries] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const loadCountries = async () => {
+      try {
+        setIsLoadingCountries(true);
+        setError(null);
+        const countriesData = await fetchCountries();
+        setCountries(countriesData);
+      } catch (err) {
+        setError('Failed to load countries. Please try again.');
+        console.error('Error loading countries:', err);
+      } finally {
+        setIsLoadingCountries(false);
+      }
+    };
+    loadCountries();
+  }, []);
 
   return (
     <div>
@@ -26,11 +52,10 @@ const CheckoutForm = () => {
             Email address
           </label>
           <div className='mt-2'>
-            <input
+            <Input
               id='email'
               type='email'
               autoComplete='email'
-              className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
               {...register('email')}
             />
           </div>
@@ -45,36 +70,35 @@ const CheckoutForm = () => {
         <div className='mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4'>
           <div>
             <label
-              htmlFor='first-name'
+              htmlFor='firstName'
               className='block text-sm/6 font-medium text-gray-700'
             >
               First name
             </label>
             <div className='mt-2'>
-              <input
-                id='first-name'
-                name='first-name'
+              <Input
+                id='firstName'
                 type='text'
+                required
                 autoComplete='given-name'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('firstName')}
               />
             </div>
           </div>
 
           <div>
             <label
-              htmlFor='last-name'
+              htmlFor='lastName'
               className='block text-sm/6 font-medium text-gray-700'
             >
               Last name
             </label>
             <div className='mt-2'>
-              <input
-                id='last-name'
-                name='last-name'
+              <Input
+                id='lastName'
                 type='text'
                 autoComplete='family-name'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('lastName')}
               />
             </div>
           </div>
@@ -87,12 +111,11 @@ const CheckoutForm = () => {
               Address
             </label>
             <div className='mt-2'>
-              <input
+              <Input
                 id='address'
-                name='address'
                 type='text'
                 autoComplete='street-address'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('address')}
               />
             </div>
           </div>
@@ -105,30 +128,7 @@ const CheckoutForm = () => {
               Apartment, suite, etc.
             </label>
             <div className='mt-2'>
-              <input
-                id='apartment'
-                name='apartment'
-                type='text'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
-              />
-            </div>
-          </div>
-
-          <div>
-            <label
-              htmlFor='city'
-              className='block text-sm/6 font-medium text-gray-700'
-            >
-              City
-            </label>
-            <div className='mt-2'>
-              <input
-                id='city'
-                name='city'
-                type='text'
-                autoComplete='address-level2'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
-              />
+              <Input id='apartment' type='text' {...register('apartment')} />
             </div>
           </div>
 
@@ -142,13 +142,20 @@ const CheckoutForm = () => {
             <div className='mt-2 grid grid-cols-1'>
               <select
                 id='country'
-                name='country'
                 autoComplete='country-name'
                 className='col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('country')}
+                onChange={(e) => {
+                  setValue('country', e.target.value);
+                }}
+                disabled={isLoadingCountries}
               >
-                <option>United States</option>
-                <option>Canada</option>
-                <option>Mexico</option>
+                <option value=''>Select a country</option>
+                {countries.map((country) => (
+                  <option key={country.name} value={country.name}>
+                    {country.name}
+                  </option>
+                ))}
               </select>
               <ChevronDownIcon
                 aria-hidden='true'
@@ -159,36 +166,57 @@ const CheckoutForm = () => {
 
           <div>
             <label
+              htmlFor='city'
+              className='block text-sm/6 font-medium text-gray-700'
+            >
+              City
+            </label>
+            <div className='mt-2'>
+              <Input
+                id='city'
+                type='text'
+                autoComplete='address-level2'
+                {...register('city')}
+              />
+            </div>
+          </div>
+
+          {error && (
+            <div className='col-span-2 mt-2'>
+              <p className='text-sm text-red-600'>{error}</p>
+            </div>
+          )}
+
+          <div>
+            <label
               htmlFor='region'
               className='block text-sm/6 font-medium text-gray-700'
             >
               State / Province
             </label>
             <div className='mt-2'>
-              <input
+              <Input
                 id='region'
-                name='region'
                 type='text'
                 autoComplete='address-level1'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('region')}
               />
             </div>
           </div>
 
           <div>
             <label
-              htmlFor='postal-code'
+              htmlFor='postalCode'
               className='block text-sm/6 font-medium text-gray-700'
             >
               Postal code
             </label>
             <div className='mt-2'>
-              <input
-                id='postal-code'
-                name='postal-code'
+              <Input
+                id='postalCode'
                 type='text'
                 autoComplete='postal-code'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('postalCode')}
               />
             </div>
           </div>
@@ -201,12 +229,11 @@ const CheckoutForm = () => {
               Phone
             </label>
             <div className='mt-2'>
-              <input
+              <Input
                 id='phone'
-                name='phone'
                 type='text'
                 autoComplete='tel'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('phone')}
               />
             </div>
           </div>
@@ -225,9 +252,9 @@ const CheckoutForm = () => {
                 <input
                   defaultChecked={paymentMethodIdx === 0}
                   id={paymentMethod.id}
-                  name='payment-type'
                   type='radio'
                   className='relative size-4 appearance-none rounded-full border border-gray-300 bg-white before:absolute before:inset-1 before:rounded-full before:bg-white not-checked:before:hidden checked:border-indigo-600 checked:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:before:bg-gray-400 forced-colors:appearance-auto forced-colors:before:hidden'
+                  {...register('paymentType')}
                 />
                 <label
                   htmlFor={paymentMethod.id}
@@ -243,54 +270,51 @@ const CheckoutForm = () => {
         <div className='mt-6 grid grid-cols-4 gap-x-4 gap-y-6'>
           <div className='col-span-4'>
             <label
-              htmlFor='card-number'
+              htmlFor='cardNumber'
               className='block text-sm/6 font-medium text-gray-700'
             >
               Card number
             </label>
             <div className='mt-2'>
-              <input
-                id='card-number'
-                name='card-number'
+              <Input
+                id='cardNumber'
                 type='text'
                 autoComplete='cc-number'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('cardNumber')}
               />
             </div>
           </div>
 
           <div className='col-span-4'>
             <label
-              htmlFor='name-on-card'
+              htmlFor='nameOnCard'
               className='block text-sm/6 font-medium text-gray-700'
             >
               Name on card
             </label>
             <div className='mt-2'>
-              <input
-                id='name-on-card'
-                name='name-on-card'
+              <Input
+                id='nameOnCard'
                 type='text'
                 autoComplete='cc-name'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('nameOnCard')}
               />
             </div>
           </div>
 
           <div className='col-span-3'>
             <label
-              htmlFor='expiration-date'
+              htmlFor='expirationDate'
               className='block text-sm/6 font-medium text-gray-700'
             >
               Expiration date (MM/YY)
             </label>
             <div className='mt-2'>
-              <input
-                id='expiration-date'
-                name='expiration-date'
+              <Input
+                id='expirationDate'
                 type='text'
                 autoComplete='cc-exp'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('expirationDate')}
               />
             </div>
           </div>
@@ -303,12 +327,11 @@ const CheckoutForm = () => {
               CVC
             </label>
             <div className='mt-2'>
-              <input
+              <Input
                 id='cvc'
-                name='cvc'
                 type='text'
                 autoComplete='csc'
-                className='block w-full rounded-md bg-white px-3 py-2 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6'
+                {...register('cvc')}
               />
             </div>
           </div>

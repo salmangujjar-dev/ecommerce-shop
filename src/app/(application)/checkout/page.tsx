@@ -5,6 +5,8 @@ import { useCallback } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
+import { Button } from '@ui/button';
+
 import useCartStore from '@store/cart';
 
 import CheckoutForm from './form';
@@ -30,6 +32,15 @@ const CheckoutPage = () => {
     },
     [cartStore]
   );
+
+  if (cartStore.items.length === 0) {
+    return (
+      <div className='flex justify-center gap-y-2 flex-col items-center h-52'>
+        <h1 className='text-2xl font-bold'>No items in cart</h1>
+        <Button href='/shop'>Shop Now</Button>
+      </div>
+    );
+  }
 
   return (
     <div className='bg-gray-50'>
