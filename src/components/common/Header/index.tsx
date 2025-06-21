@@ -27,6 +27,7 @@ import {
   DropdownShortcut,
 } from '@ui/dropdown';
 import { Link } from '@ui/link';
+import Logo from '@ui/logo';
 
 import useCartStore from '@store/cart';
 
@@ -34,7 +35,7 @@ import { useSession } from '@lib/session/provider';
 
 import StringUtils from '@utils/string';
 
-import { CURRENCIES, NAVIGATION } from '@globals/constant';
+import { APP_DESCRIPTION, CURRENCIES, NAVIGATION } from '@globals/constant';
 
 import MobileNavigation from './MobileNavigation';
 
@@ -48,7 +49,7 @@ const Header: FC = () => {
   return (
     <header className='relative bg-white'>
       <p className='flex h-10 items-center justify-center text-center bg-indigo-600 px-4 text-sm font-medium text-white sm:px-6 lg:px-8'>
-        E-Commerce Shop
+        {APP_DESCRIPTION}
       </p>
 
       <MobileNavigation isOpen={mobileMenuOpen} setIsOpen={setMobileMenuOpen} />
@@ -68,17 +69,10 @@ const Header: FC = () => {
             </Button>
 
             {/* Logo */}
-            <div className='ml-4 flex lg:ml-0'>
+            <div className='ml-0 flex lg:ml-0'>
               <Link href='/'>
-                <span className='sr-only'>Your Company</span>
-                <Image
-                  width={0}
-                  height={0}
-                  sizes='100vw'
-                  alt=''
-                  src='https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600'
-                  className='h-8 w-auto'
-                />
+                <span className='sr-only'>BuildAStore</span>
+                <Logo size='xs' isDark />
               </Link>
             </div>
 

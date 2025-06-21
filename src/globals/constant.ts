@@ -1,5 +1,87 @@
-export const APP_NAME = 'E-Commerce Shop';
-export const APP_DESCRIPTION = 'E-Commerce Shop';
+export const APP_NAME = 'BuildAStore';
+export const APP_DESCRIPTION = 'BuildAStore - Modern E-Commerce Platform';
+
+// SEO Constants
+export const SEO = {
+  title: 'BuildAStore - Create Your Online Store in Minutes',
+  description:
+    'BuildAStore is a modern ecommerce platform that helps entrepreneurs create beautiful online stores. Start selling online with our powerful, user-friendly platform built with Next.js, Prisma, and tRPC.',
+  keywords: [
+    'ecommerce platform',
+    'online store builder',
+    'shopify alternative',
+    'digital commerce',
+    'online retail',
+    'ecommerce solution',
+    'store builder',
+    'online marketplace',
+    'digital storefront',
+    'ecommerce software',
+    'online business',
+    'digital entrepreneurship',
+    'web store',
+    'online shop',
+    'ecommerce website',
+  ],
+  author: 'BuildAStore Team',
+  creator: 'BuildAStore',
+  publisher: 'BuildAStore',
+  robots: 'index, follow',
+  viewport: 'width=device-width, initial-scale=1',
+  themeColor: '#3B82F6',
+  colorScheme: 'light dark',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'BuildAStore',
+    title: 'BuildAStore - Create Your Online Store in Minutes',
+    description:
+      'BuildAStore is a modern ecommerce platform that helps entrepreneurs create beautiful online stores. Start selling online with our powerful, user-friendly platform.',
+    url: process.env.SITE_BASE_URL || 'https://buildastore.com',
+    image: '/og-image.jpg',
+    imageWidth: 1200,
+    imageHeight: 630,
+    imageAlt: 'BuildAStore - Modern Ecommerce Platform',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    site: '@buildastore',
+    creator: '@buildastore',
+    title: 'BuildAStore - Create Your Online Store in Minutes',
+    description:
+      'BuildAStore is a modern ecommerce platform that helps entrepreneurs create beautiful online stores.',
+    image: '/twitter-image.jpg',
+  },
+  structuredData: {
+    organization: {
+      '@context': 'https://schema.org',
+      '@type': 'Organization',
+      name: 'BuildAStore',
+      url: process.env.SITE_BASE_URL || 'https://buildastore.com',
+      logo:
+        (process.env.SITE_BASE_URL || 'https://buildastore.com') + '/logo.png',
+      description: 'Modern ecommerce platform for creating online stores',
+      sameAs: [
+        'https://twitter.com/buildastore',
+        'https://facebook.com/buildastore',
+        'https://linkedin.com/company/buildastore',
+      ],
+    },
+    softwareApplication: {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'BuildAStore',
+      description: 'Modern ecommerce platform for creating online stores',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web Browser',
+      offers: {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+      },
+    },
+  },
+};
 
 export const SORT_OPTIONS = [
   {
@@ -45,7 +127,7 @@ export const NAVIGATION = {
           name: 'New Arrivals',
           href: '#',
           imageSrc:
-            'https://tailwindcss.com/plus-assets/img/ecommerce-images/mega-menu-category-01.jpg',
+            'https://images.unsplash.com/photo-1562157873-818bc0726f68?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
           imageAlt:
             'Models sitting back to back, wearing Basic Tee in black and bone.',
         },

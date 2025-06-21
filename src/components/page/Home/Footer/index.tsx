@@ -2,6 +2,7 @@ import { FC } from 'react';
 
 import { Button } from '@ui/button';
 import { Link } from '@ui/link';
+import Logo from '@ui/logo';
 
 import { APP_NAME } from '@globals/constant';
 
@@ -85,6 +86,11 @@ const Footer: FC = () => {
             </div>
           </div>
           <div className='mt-12 md:mt-16 xl:mt-0'>
+            <div className='mb-6'>
+              <Link href='/'>
+                <Logo size='md' />
+              </Link>
+            </div>
             <h3 className='text-sm font-medium text-white'>
               Sign up for our newsletter
             </h3>
@@ -111,7 +117,8 @@ const Footer: FC = () => {
 
         <div className='border-t border-gray-800 py-10'>
           <p className='text-sm text-gray-400 text-center'>
-            Copyright &copy; {new Date().getFullYear()} {APP_NAME}
+            Copyright &copy; {new Date().getFullYear()} {APP_NAME}. All rights
+            reserved.
           </p>
         </div>
       </div>

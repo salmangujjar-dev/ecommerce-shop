@@ -8,6 +8,7 @@ import { X } from 'lucide-react';
 import { Button } from '@ui/button';
 import { Dialog } from '@ui/dialog';
 import { Link } from '@ui/link';
+import Logo from '@ui/logo';
 
 import { NAVIGATION } from '@globals/constant';
 
@@ -25,7 +26,10 @@ const MobileNavigation = ({ isOpen, setIsOpen }: IMobileNavigation) => {
       className='relative !rounded-none flex w-full max-w-xs data-closed:!translate-y-none data-closed:data-enter:!scale-100 transform flex-col overflow-y-auto bg-white pb-12 shadow-xl transition duration-300 ease-in-out data-closed:-translate-x-full'
       classNames={{ backdrop: 'relative z-40 lg:hidden' }}
     >
-      <div className='flex px-4 pt-5 pb-2'>
+      <div className='flex px-4 pt-5 pb-2 items-center justify-between'>
+        <Link href='/' onClick={() => setIsOpen(false)}>
+          <Logo size='xs' isDark />
+        </Link>
         <Button
           type='button'
           color='transparent'

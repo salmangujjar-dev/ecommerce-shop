@@ -196,7 +196,7 @@ const Product = ({ product }: ProductProps) => {
                     <button
                       key={size.id}
                       className={cn(
-                        'px-2 py-1 rounded border text-xs z-2 flex-1 size-10',
+                        'px-2 py-1 rounded border text-xs flex-1 size-10',
                         size.isAvailable
                           ? 'cursor-pointer'
                           : 'cursor-not-allowed opacity-50',
@@ -223,7 +223,7 @@ const Product = ({ product }: ProductProps) => {
                     <button
                       key={color.id}
                       className={cn(
-                        'w-6 h-6 rounded-full border-2 z-2 size-12',
+                        'w-6 h-6 rounded-full border-2 size-12',
                         color.isAvailable
                           ? 'cursor-pointer'
                           : 'cursor-not-allowed opacity-50',
