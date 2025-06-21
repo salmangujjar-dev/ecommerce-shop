@@ -38,12 +38,14 @@ export const productRouter = createTRPCRouter({
           category: true,
           gender: true,
           images: true,
-          colors: {
+          colors: { include: { color: true } },
+          sizes: true,
+          variants: {
             include: {
               color: true,
+              size: true,
             },
           },
-          sizes: true,
           reviews: {
             include: {
               user: {
@@ -57,19 +59,24 @@ export const productRouter = createTRPCRouter({
           },
         },
       });
-      return product
-        ? {
-            ...product,
-            price: Number(product.price) || 0,
-            rating:
-              product.reviews.length > 0
-                ? product.reviews.reduce(
-                    (acc, review) => acc + review.rating,
-                    0
-                  ) / product.reviews.length
-                : 0,
-          }
-        : null;
+      if (!product) return null;
+      return {
+        ...product,
+        price: Number(product.price) || 0,
+        rating:
+          product.reviews.length > 0
+            ? product.reviews.reduce((acc, review) => acc + review.rating, 0) /
+              product.reviews.length
+            : 0,
+        sizes: product.sizes.map((size) => ({
+          ...size,
+          price: size.price != null ? Number(size.price) : null,
+        })),
+        variants: product.variants.map((variant) => ({
+          ...variant,
+          price: variant.price != null ? Number(variant.price) : null,
+        })),
+      };
     }),
 
   getByIds: publicProcedure
@@ -104,6 +111,10 @@ export const productRouter = createTRPCRouter({
         ? products.map((product) => ({
             ...product,
             price: Number(product.price),
+            sizes: product.sizes.map((size) => ({
+              ...size,
+              price: size.price != null ? Number(size.price) : null,
+            })),
           }))
         : null;
     }),
@@ -132,7 +143,15 @@ export const productRouter = createTRPCRouter({
           },
         },
       });
-      return product ? { ...product, price: Number(product.price) || 0 } : null;
+      if (!product) return null;
+      return {
+        ...product,
+        price: Number(product.price) || 0,
+        sizes: product.sizes.map((size) => ({
+          ...size,
+          price: size.price != null ? Number(size.price) : null,
+        })),
+      };
     }),
 
   getByFilter: publicProcedure
@@ -168,12 +187,32 @@ export const productRouter = createTRPCRouter({
       const skip = (page - 1) * limit;
 
       const where: Prisma.ProductWhereInput = {
-        ...(categoryId && { categoryId }),
+        ...(categoryId && {
+          OR: [
+            { categoryId },
+            {
+              category: {
+                parentId: categoryId,
+              },
+            },
+          ],
+        }),
         ...(genderId && { genderId }),
         ...(categorySlug && {
-          category: {
-            slug: categorySlug,
-          },
+          OR: [
+            {
+              category: {
+                slug: categorySlug,
+              },
+            },
+            {
+              category: {
+                parent: {
+                  slug: categorySlug,
+                },
+              },
+            },
+          ],
         }),
         ...(genderSlug && {
           gender: {
@@ -220,11 +259,16 @@ export const productRouter = createTRPCRouter({
             category: true,
             gender: true,
             images: true,
-            colors: true,
+            colors: { include: { color: true } },
             sizes: true,
-            _count: {
-              select: { reviews: true },
+            variants: {
+              include: {
+                color: true,
+                size: true,
+              },
             },
+            _count: { select: { reviews: true } },
+            reviews: true,
           },
           orderBy,
           skip,
@@ -237,6 +281,21 @@ export const productRouter = createTRPCRouter({
         products: products.map((product) => ({
           ...product,
           price: Number(product.price),
+          rating:
+            product.reviews.length > 0
+              ? product.reviews.reduce(
+                  (acc, review) => acc + review.rating,
+                  0
+                ) / product.reviews.length
+              : 0,
+          sizes: product.sizes.map((size) => ({
+            ...size,
+            price: size.price != null ? Number(size.price) : null,
+          })),
+          variants: product.variants.map((variant) => ({
+            ...variant,
+            price: variant.price != null ? Number(variant.price) : null,
+          })),
         })),
         total,
         page,
@@ -266,6 +325,7 @@ export const productRouter = createTRPCRouter({
           z.object({
             name: z.string(),
             inStock: z.boolean().optional(),
+            price: z.number().optional(),
           })
         ),
       })
@@ -273,7 +333,7 @@ export const productRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const { images, colors, sizes, ...productData } = input;
 
-      return prisma.product.create({
+      const product = await prisma.product.create({
         data: {
           ...productData,
           images: {
@@ -287,7 +347,11 @@ export const productRouter = createTRPCRouter({
             })),
           },
           sizes: {
-            create: sizes,
+            create: sizes.map((size) => ({
+              name: size.name,
+              inStock: size.inStock,
+              price: size.price,
+            })),
           },
         },
         include: {
@@ -302,6 +366,30 @@ export const productRouter = createTRPCRouter({
           sizes: true,
         },
       });
+
+      // Create ProductVariant entries for all valid color/size combinations
+      if (
+        Array.isArray(colors) &&
+        Array.isArray(sizes) &&
+        colors.length &&
+        sizes.length
+      ) {
+        for (const color of colors) {
+          for (const size of sizes) {
+            await prisma.productVariant.create({
+              data: {
+                productId: product.id,
+                colorId: color,
+                sizeId: size.name,
+                price: size.price,
+                inStock: size.inStock,
+              },
+            });
+          }
+        }
+      }
+
+      return product;
     }),
 
   update: protectedProcedure
@@ -332,6 +420,7 @@ export const productRouter = createTRPCRouter({
               id: z.string().optional(),
               name: z.string(),
               inStock: z.boolean().optional(),
+              price: z.number().optional(),
             })
           )
           .optional(),
@@ -371,11 +460,12 @@ export const productRouter = createTRPCRouter({
           create: sizes.map((size) => ({
             name: size.name,
             inStock: size.inStock,
+            price: size.price,
           })),
         };
       }
 
-      return prisma.product.update({
+      const product = await prisma.product.update({
         where: { id },
         data: updateData,
         include: {
@@ -390,6 +480,30 @@ export const productRouter = createTRPCRouter({
           sizes: true,
         },
       });
+
+      // Create ProductVariant entries for all valid color/size combinations
+      if (
+        Array.isArray(colors) &&
+        Array.isArray(sizes) &&
+        colors.length &&
+        sizes.length
+      ) {
+        for (const color of colors) {
+          for (const size of sizes) {
+            await prisma.productVariant.create({
+              data: {
+                productId: product.id,
+                colorId: color,
+                sizeId: size.name,
+                price: size.price,
+                inStock: size.inStock,
+              },
+            });
+          }
+        }
+      }
+
+      return product;
     }),
 
   delete: protectedProcedure
@@ -398,5 +512,26 @@ export const productRouter = createTRPCRouter({
       return prisma.product.delete({
         where: { id: input.id },
       });
+    }),
+
+  getVariantsByIds: publicProcedure
+    .input(z.object({ ids: z.array(z.string()) }))
+    .query(async ({ input }) => {
+      const variants = await prisma.productVariant.findMany({
+        where: { id: { in: input.ids } },
+        include: {
+          product: {
+            include: {
+              images: true,
+            },
+          },
+          color: true,
+          size: true,
+        },
+      });
+      return variants.map((variant) => ({
+        ...variant,
+        price: variant.price != null ? Number(variant.price) : null,
+      }));
     }),
 });

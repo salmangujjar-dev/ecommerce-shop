@@ -25,14 +25,20 @@ type AddToCartBtnProps = Omit<
     >,
     'id' | 'name'
   >;
+  selectedVariantId?: string;
 };
 
-const AddToCartBtn = ({ product, className, ...props }: AddToCartBtnProps) => {
+const AddToCartBtn = ({
+  product,
+  selectedVariantId,
+  className,
+  ...props
+}: AddToCartBtnProps) => {
   const cartStore = useCartStore();
 
   const isItemAlreadyInCart = useMemo(
-    () => cartStore.items.find((item) => item.id === product.id),
-    [cartStore.items, product.id]
+    () => cartStore.items.find((item) => item.variantId === selectedVariantId),
+    [cartStore.items, selectedVariantId]
   );
 
   return (
@@ -43,12 +49,12 @@ const AddToCartBtn = ({ product, className, ...props }: AddToCartBtnProps) => {
             className='items-center justify-center w-15'
             onClick={() => {
               if (isItemAlreadyInCart.quantity - 1 === 0) {
-                cartStore.removeItem(product.id);
+                cartStore.removeItem(selectedVariantId!);
                 toast.success('Item Removed Successfully');
                 return;
               }
               cartStore.updateQuantity(
-                product.id,
+                selectedVariantId!,
                 isItemAlreadyInCart.quantity - 1
               );
               toast.success('Item Quantity Updated Successfully');
@@ -66,7 +72,7 @@ const AddToCartBtn = ({ product, className, ...props }: AddToCartBtnProps) => {
             className='items-center justify-center w-15'
             onClick={() => {
               cartStore.updateQuantity(
-                product.id,
+                selectedVariantId!,
                 isItemAlreadyInCart.quantity + 1
               );
               toast.success('Item Quantity Updated Successfully');
@@ -79,7 +85,7 @@ const AddToCartBtn = ({ product, className, ...props }: AddToCartBtnProps) => {
         <Button
           className={cn('w-full bg-transparent', className)}
           onClick={() => {
-            cartStore.addItem(product.id);
+            cartStore.addItem(selectedVariantId!);
             toast.success('Added to Cart Successfully');
           }}
           {...(props as typeof Button)}

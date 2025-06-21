@@ -4,15 +4,7 @@ import Image from 'next/image';
 
 import { useState } from 'react';
 
-import {
-  Radio,
-  RadioGroup,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from '@headlessui/react';
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react';
 import { DollarSign, Globe } from 'lucide-react';
 
 import Breadcrumb from '@ui/breadcrumb';
@@ -45,10 +37,87 @@ interface ProductProps {
   product: NonNullable<Awaited<ReturnType<typeof productRouter.getById>>>;
 }
 
+// Helper to get all sizes with availability info
+function getAllSizesWithAvailability(
+  product: ProductProps['product'],
+  variants: ProductProps['product']['variants'],
+  selectedColorId: string
+) {
+  return product.sizes.map((size) => {
+    const isAvailable = variants.some(
+      (v) => v.colorId === selectedColorId && v.sizeId === size.id && v.inStock
+    );
+    return { ...size, isAvailable };
+  });
+}
+
+// Helper to get all colors with availability info
+function getAllColorsWithAvailability(
+  product: ProductProps['product'],
+  variants: ProductProps['product']['variants'],
+  selectedSizeId: string
+) {
+  return product.colors.map((c) => {
+    const color = c.color;
+    const isAvailable = variants.some(
+      (v) => v.sizeId === selectedSizeId && v.colorId === color.id && v.inStock
+    );
+    return { ...color, isAvailable };
+  });
+}
+
 const Product = ({ product }: ProductProps) => {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.sizes[2]);
-  console.log({ product });
+  const variants = product.variants || [];
+  // Find min/max price from variants
+  const prices = variants
+    .filter((v) => v.inStock && v.price != null)
+    .map((v) => Number(v.price));
+  const minPrice = prices.length ? Math.min(...prices) : Number(product.price);
+  const maxPrice = prices.length ? Math.max(...prices) : Number(product.price);
+
+  // Find first available variant to get default selections
+  const firstAvailableVariant = variants.find((v) => v.inStock);
+
+  // Default selections - ensure they are available
+  const [selectedColor, setSelectedColor] = useState(() => {
+    if (firstAvailableVariant) {
+      const availableColor = product.colors.find(
+        (c) => c.color.id === firstAvailableVariant.colorId
+      );
+      return availableColor?.color || product.colors[0]?.color || null;
+    }
+    return product.colors[0]?.color || null;
+  });
+
+  const [selectedSize, setSelectedSize] = useState(() => {
+    if (firstAvailableVariant) {
+      const availableSize = product.sizes.find(
+        (s) => s.id === firstAvailableVariant.sizeId
+      );
+      return availableSize || product.sizes[0] || null;
+    }
+    return product.sizes[0] || null;
+  });
+
+  // Find the selected variant
+  const selectedVariant = variants.find(
+    (v) =>
+      v.colorId === selectedColor?.id &&
+      v.sizeId === selectedSize?.id &&
+      v.inStock
+  );
+
+  // Get all sizes and colors with availability info for display
+  const allSizesWithAvailability = selectedColor
+    ? getAllSizesWithAvailability(product, variants, selectedColor.id)
+    : [];
+  const allColorsWithAvailability = selectedSize
+    ? getAllColorsWithAvailability(product, variants, selectedSize.id)
+    : [];
+
+  const displayPrice =
+    selectedVariant?.price != null ? selectedVariant.price : product.price;
+
   return (
     <div className='bg-white'>
       <div className='pt-6'>
@@ -70,8 +139,8 @@ const Product = ({ product }: ProductProps) => {
                 <h1 className='text-xl font-medium text-gray-900'>
                   {product.name}
                 </h1>
-                <p className='text-xl font-medium text-gray-900'>
-                  {CommonUtils.asCurrency({ amount: Number(product.price) })}
+                <p className='text-xl font-bold text-indigo-600'>
+                  {CommonUtils.asCurrency({ amount: Number(displayPrice) })}
                 </p>
               </div>
               {/* Reviews */}
@@ -79,7 +148,7 @@ const Product = ({ product }: ProductProps) => {
                 <h2 className='sr-only'>Reviews</h2>
                 <div className='flex items-center'>
                   <p className='text-sm text-gray-700'>
-                    {product.rating}
+                    {product.rating.toFixed(1)}
                     <span className='sr-only'> out of 5 stars</span>
                   </p>
                   <div
@@ -113,6 +182,71 @@ const Product = ({ product }: ProductProps) => {
                   )}
                 </div>
               </div>
+              <p className='mt-4 text-base font-medium text-gray-900'>
+                {minPrice === maxPrice
+                  ? CommonUtils.asCurrency({ amount: minPrice })
+                  : `${CommonUtils.asCurrency({
+                      amount: minPrice,
+                    })} - ${CommonUtils.asCurrency({ amount: maxPrice })}`}
+              </p>
+              {/* Sizes */}
+              {allSizesWithAvailability.length > 0 && (
+                <div className='mt-2 flex flex-wrap gap-2'>
+                  {allSizesWithAvailability.map((size) => (
+                    <button
+                      key={size.id}
+                      className={cn(
+                        'px-2 py-1 rounded border text-xs z-2 flex-1 size-10',
+                        size.isAvailable
+                          ? 'cursor-pointer'
+                          : 'cursor-not-allowed opacity-50',
+                        selectedSize?.id === size.id && size.isAvailable
+                          ? 'bg-indigo-600 text-white border-indigo-600'
+                          : size.isAvailable
+                          ? 'bg-white text-gray-900 border-gray-200 hover:bg-gray-50'
+                          : 'bg-gray-100 text-gray-400 border-gray-300'
+                      )}
+                      onClick={() => size.isAvailable && setSelectedSize(size)}
+                      type='button'
+                      disabled={!size.isAvailable}
+                      title={!size.isAvailable ? 'Out of stock' : undefined}
+                    >
+                      {size.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {/* Colors */}
+              {allColorsWithAvailability.length > 0 && (
+                <div className='mt-4 flex flex-wrap gap-2'>
+                  {allColorsWithAvailability.map((color) => (
+                    <button
+                      key={color.id}
+                      className={cn(
+                        'w-6 h-6 rounded-full border-2 z-2 size-12',
+                        color.isAvailable
+                          ? 'cursor-pointer'
+                          : 'cursor-not-allowed opacity-50',
+                        selectedColor?.id === color.id && color.isAvailable
+                          ? 'border-indigo-600'
+                          : color.isAvailable
+                          ? 'border-gray-200 hover:border-gray-300'
+                          : 'border-gray-300'
+                      )}
+                      style={{ backgroundColor: color.bgColor }}
+                      onClick={() =>
+                        color.isAvailable && setSelectedColor(color)
+                      }
+                      type='button'
+                      disabled={!color.isAvailable}
+                      aria-label={`${color.name}${
+                        !color.isAvailable ? ' (Out of stock)' : ''
+                      }`}
+                      title={!color.isAvailable ? 'Out of stock' : color.name}
+                    />
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Image gallery */}
@@ -166,171 +300,104 @@ const Product = ({ product }: ProductProps) => {
 
             <div className='mt-8 lg:col-span-5'>
               <form>
-                {/* Color picker */}
-                <div>
-                  <h2 className='text-sm font-medium text-gray-900'>Color</h2>
-
-                  <fieldset aria-label='Choose a color' className='mt-2'>
-                    <RadioGroup
-                      value={selectedColor}
-                      onChange={setSelectedColor}
-                      className='flex items-center gap-x-3'
-                    >
-                      {product.colors.map((color) => (
-                        <Radio
-                          key={color.color.name}
-                          value={color}
-                          aria-label={color.color.name}
-                          className={cn(
-                            color.color.selectedColor,
-                            'relative -m-0.5 flex cursor-pointer items-center justify-center rounded-full p-0.5 focus:outline-hidden data-checked:ring-2 data-focus:data-checked:ring-3 data-focus:data-checked:ring-offset-1'
-                          )}
-                        >
-                          <span
-                            aria-hidden='true'
-                            className={cn(
-                              color.color.bgColor,
-                              'size-8 rounded-full border border-black/10'
-                            )}
-                          />
-                        </Radio>
-                      ))}
-                    </RadioGroup>
-                  </fieldset>
-                </div>
-
-                {/* Size picker */}
-                <div className='mt-8'>
-                  <div className='flex items-center justify-between'>
-                    <h2 className='text-sm font-medium text-gray-900'>Size</h2>
-                    <Link
-                      href='#'
-                      className='text-sm font-medium text-indigo-600 hover:text-indigo-500'
-                    >
-                      See sizing chart
-                    </Link>
-                  </div>
-
-                  <fieldset aria-label='Choose a size' className='mt-2'>
-                    <RadioGroup
-                      value={selectedSize}
-                      onChange={setSelectedSize}
-                      className='grid grid-cols-3 gap-3 sm:grid-cols-6'
-                    >
-                      {product.sizes.map((size) => (
-                        <Radio
-                          key={size.name}
-                          value={size}
-                          disabled={!size.inStock}
-                          className={cn(
-                            size.inStock
-                              ? 'cursor-pointer focus:outline-hidden'
-                              : 'cursor-not-allowed opacity-25',
-                            'flex items-center justify-center rounded-md border border-gray-200 bg-white px-3 py-3 text-sm font-medium text-gray-900 uppercase hover:bg-gray-50 data-checked:border-transparent data-checked:bg-indigo-600 data-checked:text-white data-checked:hover:bg-indigo-700 data-focus:ring-2 data-focus:ring-indigo-500 data-focus:ring-offset-2 sm:flex-1'
-                          )}
-                        >
-                          {size.name}
-                        </Radio>
-                      ))}
-                    </RadioGroup>
-                  </fieldset>
-                </div>
-
-                <AddToCartBtn product={product} className='mt-8' />
-              </form>
-
-              {/* Product details */}
-              <div className='mt-10'>
-                <h2 className='text-sm font-medium text-gray-900'>
-                  Description
-                </h2>
-
-                <div
-                  dangerouslySetInnerHTML={{ __html: product.description }}
-                  className='mt-4 space-y-4 text-sm/6 text-gray-500'
+                <AddToCartBtn
+                  product={product}
+                  selectedVariantId={selectedVariant?.id}
                 />
-              </div>
 
-              <div className='mt-8 border-t border-gray-200 pt-8'>
-                <h2 className='text-sm font-medium text-gray-900'>
-                  Fabric &amp; Care
-                </h2>
+                {/* Product details */}
+                <div className='mt-10'>
+                  <h2 className='text-sm font-medium text-gray-900'>
+                    Description
+                  </h2>
 
-                <div className='mt-4'>
-                  <ul
-                    role='list'
-                    className='list-disc space-y-1 pl-5 text-sm/6 text-gray-500 marker:text-gray-300'
-                  >
-                    {product.details.map((item) => (
-                      <li key={item} className='pl-2'>
-                        {item}
-                      </li>
+                  <div
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                    className='mt-4 space-y-4 text-sm/6 text-gray-500'
+                  />
+                </div>
+
+                <div className='mt-8 border-t border-gray-200 pt-8'>
+                  <h2 className='text-sm font-medium text-gray-900'>
+                    Fabric &amp; Care
+                  </h2>
+
+                  <div className='mt-4'>
+                    <ul
+                      role='list'
+                      className='list-disc space-y-1 pl-5 text-sm/6 text-gray-500 marker:text-gray-300'
+                    >
+                      {product.details.map((item) => (
+                        <li key={item} className='pl-2'>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                {/* Policies */}
+                <section aria-labelledby='policies-heading' className='mt-10'>
+                  <h2 id='policies-heading' className='sr-only'>
+                    Our Policies
+                  </h2>
+
+                  <dl className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2'>
+                    {policies.map((policy) => (
+                      <div
+                        key={policy.name}
+                        className='rounded-lg border border-gray-200 bg-gray-50 p-6 text-center'
+                      >
+                        <dt>
+                          <policy.icon
+                            aria-hidden='true'
+                            className='mx-auto size-6 shrink-0 text-gray-400'
+                          />
+                          <span className='mt-4 text-sm font-medium text-gray-900'>
+                            {policy.name}
+                          </span>
+                        </dt>
+                        <dd className='mt-1 text-sm text-gray-500'>
+                          {policy.description}
+                        </dd>
+                      </div>
                     ))}
+                  </dl>
+                </section>
+
+                <div className='mt-10 border-t border-gray-200 pt-10'>
+                  <h3 className='text-sm font-medium text-gray-900'>Share</h3>
+                  <ul role='list' className='mt-4 flex items-center space-x-6'>
+                    <li>
+                      <Link
+                        href='#'
+                        className='flex size-6 items-center justify-center text-gray-400 hover:text-gray-500'
+                      >
+                        <span className='sr-only'>Share on Facebook</span>
+                        <FacebookIcon fill='currentColor' className='size-5' />
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href='#'
+                        className='flex size-6 items-center justify-center text-gray-400 hover:text-gray-500'
+                      >
+                        <span className='sr-only'>Share on Instagram</span>
+                        <InstagramIcon fill='currentColor' className='size-5' />
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        href='#'
+                        className='flex size-6 items-center justify-center text-gray-400 hover:text-gray-500'
+                      >
+                        <span className='sr-only'>Share on X</span>
+                        <XIcon fill='currentColor' className='size-5' />
+                      </Link>
+                    </li>
                   </ul>
                 </div>
-              </div>
-
-              {/* Policies */}
-              <section aria-labelledby='policies-heading' className='mt-10'>
-                <h2 id='policies-heading' className='sr-only'>
-                  Our Policies
-                </h2>
-
-                <dl className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2'>
-                  {policies.map((policy) => (
-                    <div
-                      key={policy.name}
-                      className='rounded-lg border border-gray-200 bg-gray-50 p-6 text-center'
-                    >
-                      <dt>
-                        <policy.icon
-                          aria-hidden='true'
-                          className='mx-auto size-6 shrink-0 text-gray-400'
-                        />
-                        <span className='mt-4 text-sm font-medium text-gray-900'>
-                          {policy.name}
-                        </span>
-                      </dt>
-                      <dd className='mt-1 text-sm text-gray-500'>
-                        {policy.description}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-
-              <div className='mt-10 border-t border-gray-200 pt-10'>
-                <h3 className='text-sm font-medium text-gray-900'>Share</h3>
-                <ul role='list' className='mt-4 flex items-center space-x-6'>
-                  <li>
-                    <Link
-                      href='#'
-                      className='flex size-6 items-center justify-center text-gray-400 hover:text-gray-500'
-                    >
-                      <span className='sr-only'>Share on Facebook</span>
-                      <FacebookIcon fill='currentColor' className='size-5' />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href='#'
-                      className='flex size-6 items-center justify-center text-gray-400 hover:text-gray-500'
-                    >
-                      <span className='sr-only'>Share on Instagram</span>
-                      <InstagramIcon fill='currentColor' className='size-5' />
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href='#'
-                      className='flex size-6 items-center justify-center text-gray-400 hover:text-gray-500'
-                    >
-                      <span className='sr-only'>Share on X</span>
-                      <XIcon fill='currentColor' className='size-5' />
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+              </form>
             </div>
           </div>
         </div>

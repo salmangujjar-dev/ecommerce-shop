@@ -1,7 +1,3 @@
-import Image from 'next/image';
-
-import { Button } from '@ui/button';
-import { Link } from '@ui/link';
 import {
   Pagination,
   PaginationList,
@@ -10,16 +6,12 @@ import {
   PaginationPrevious,
 } from '@ui/pagination';
 
-import AddToCartBtn from '@common/AddToCartBtn';
 import Filters from '@common/Filters';
-import ProductQuickView from '@common/ProductQuickView';
-import Rating from '@common/Rating';
 
 import { api } from '~trpc/server';
 
-import CommonUtils from '@utils/common';
-
 import { FILTERS, SORT_OPTIONS } from './constant';
+import ProductCard from './ProductCard';
 
 interface CategoryPageProps {
   params: Promise<{ 'gender-category': string }>;
@@ -61,6 +53,8 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
     sort: sortParam,
   });
 
+  console.log({ products });
+
   return (
     <>
       {/* Filters */}
@@ -86,65 +80,9 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
         )}
 
         <div className='-mx-px grid grid-cols-2 border-l border-gray-200 sm:mx-0 md:grid-cols-3 lg:grid-cols-4'>
-          {products.map((product) => {
-            const mainImage = product.images[0];
-            return (
-              <div
-                key={product.id}
-                className='flex flex-col border-r border-b border-gray-200 p-4 sm:p-6'
-              >
-                <div className='group relative'>
-                  <div className='relative'>
-                    <Image
-                      width={0}
-                      height={0}
-                      sizes='100vw'
-                      alt={mainImage?.alt || product.name}
-                      src={mainImage?.src || '/placeholder.png'}
-                      className='aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75'
-                    />
-                    <div className='absolute inset-0 flex items-end p-4'>
-                      <ProductQuickView productId={product.id as string}>
-                        <Button
-                          type='button'
-                          color='white'
-                          className='z-2 w-full bg-white/75 px-4 py-2 opacity-0 group-hover:opacity-100'
-                        >
-                          Quick View
-                          <span className='sr-only'>, {product.name}</span>
-                        </Button>
-                      </ProductQuickView>
-                    </div>
-                  </div>
-                  <div className='pt-10 pb-4 text-center'>
-                    <h3 className='text-sm font-medium text-gray-900'>
-                      <Link href={`/product/${product.id}`}>
-                        <span aria-hidden='true' className='absolute inset-0' />
-                        {product.name}
-                      </Link>
-                    </h3>
-                    <div className='mt-3 flex flex-col items-center'>
-                      <p className='sr-only'>
-                        {product.rating ?? 0} out of 5 stars
-                      </p>
-                      <Rating rating={3.5} />
-                      <p className='mt-1 text-sm text-gray-500'>
-                        {product._count?.reviews ?? 0} reviews
-                      </p>
-                    </div>
-                    <p className='mt-4 text-base font-medium text-gray-900'>
-                      {CommonUtils.asCurrency({
-                        amount: Number(product.price),
-                      })}
-                    </p>
-                  </div>
-                </div>
-                <div className='mt-2'>
-                  <AddToCartBtn product={product} />
-                </div>
-              </div>
-            );
-          })}
+          {products.map((product) => (
+            <ProductCard key={product.id} product={product} />
+          ))}
         </div>
       </section>
 

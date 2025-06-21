@@ -101,25 +101,26 @@ model Category {
 }
 
 model Product {
-  id          String         @id @default(cuid())
+  id          String           @id @default(cuid())
   name        String
-  slug        String         @unique
-  description String         @db.Text
-  price       Decimal        @db.Decimal(10, 2)
-  rating      Float          @default(0)
-  reviewCount Int            @default(0)
+  slug        String           @unique
+  description String           @db.Text
+  price       Decimal          @db.Decimal(10, 2)
+  rating      Float            @default(0)
+  reviewCount Int              @default(0)
   genderId    String
-  gender      Gender         @relation(fields: [genderId], references: [id])
+  gender      Gender           @relation(fields: [genderId], references: [id])
   categoryId  String
-  category    Category       @relation(fields: [categoryId], references: [id])
+  category    Category         @relation(fields: [categoryId], references: [id])
   images      ProductImage[]
   colors      ProductColor[]
   sizes       ProductSize[]
   reviews     Review[]
-  details     String[]       @db.Text
-  orders      Order[]        @relation("OrderToProduct")
-  createdAt   DateTime       @default(now()) @map("created_at")
-  updatedAt   DateTime       @updatedAt @map("updated_at")
+  details     String[]         @db.Text
+  orders      Order[]          @relation("OrderToProduct")
+  createdAt   DateTime         @default(now()) @map("created_at")
+  updatedAt   DateTime         @updatedAt @map("updated_at")
+  variants    ProductVariant[]
 
   @@map("products")
 }
@@ -139,14 +140,15 @@ model ProductImage {
 }
 
 model Color {
-  id            String         @id @default(cuid())
-  name          String         @unique
-  slug          String         @unique
-  bgColor       String
-  selectedColor String
-  createdAt     DateTime       @default(now()) @map("created_at")
-  updatedAt     DateTime       @updatedAt @map("updated_at")
-  products      ProductColor[]
+  id             String           @id @default(cuid())
+  name           String           @unique
+  slug           String           @unique
+  bgColor        String
+  selectedColor  String
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  products       ProductColor[]
+  ProductVariant ProductVariant[]
 
   @@map("colors")
 }
@@ -164,15 +166,34 @@ model ProductColor {
 }
 
 model ProductSize {
-  id        String   @id @default(cuid())
-  productId String
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
-  name      String
-  inStock   Boolean  @default(true)
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  id             String           @id @default(cuid())
+  productId      String
+  product        Product          @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name           String
+  price          Decimal?         @db.Decimal(10, 2) // Optional price for this size
+  inStock        Boolean          @default(true)
+  createdAt      DateTime         @default(now()) @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  ProductVariant ProductVariant[]
 
   @@map("product_sizes")
+}
+
+model ProductVariant {
+  id        String      @id @default(cuid())
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  color     Color       @relation(fields: [colorId], references: [id])
+  colorId   String
+  size      ProductSize @relation(fields: [sizeId], references: [id])
+  sizeId    String
+  price     Decimal?    @db.Decimal(10, 2)
+  inStock   Boolean     @default(true)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt @map("updated_at")
+
+  @@unique([productId, colorId, sizeId])
+  @@map("product_variants")
 }
 
 model Review {

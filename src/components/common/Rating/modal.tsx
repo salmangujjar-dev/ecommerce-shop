@@ -5,6 +5,7 @@ import {
   isValidElement,
   ReactElement,
   useCallback,
+  useEffect,
   useState,
 } from 'react';
 
@@ -24,6 +25,10 @@ const RatingModal = ({ children, rate }: RatingModalProps) => {
   const [_rate, _setRating] = useState(rate);
 
   const handleClose = useCallback(() => setIsOpen(false), []);
+
+  useEffect(() => {
+    _setRating(rate);
+  }, [rate]);
 
   return (
     <>
