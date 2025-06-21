@@ -5,6 +5,8 @@ import { ZodError } from 'zod';
 
 import { JWTService } from '@services/JWT';
 
+import prisma from './prisma';
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const token = opts.headers.get('cookie')?.split('token=')[1]?.split(';')[0];
   const user = token ? await JWTService.decrypt(token) : undefined;
@@ -86,4 +88,28 @@ const isAuthed = t.middleware(({ next, ctx }) => {
   });
 });
 
+const isAdminAuthed = t.middleware(async ({ next, ctx }) => {
+  console.log('woowowowowo');
+  if (!ctx.user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+  // Fetch user from db to ensure latest isAdmin status
+  const user = await prisma.user.findUnique({
+    where: { id: ctx.user.id },
+  });
+  if (!user?.isAdmin) {
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Admin access required',
+    });
+  }
+
+  return next({
+    ctx: {
+      user: ctx.user,
+    },
+  });
+});
+
 export const protectedProcedure = t.procedure.use(isAuthed);
+export const adminProcedure = t.procedure.use(isAdminAuthed);

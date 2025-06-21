@@ -1,3 +1,5 @@
+import { hash } from 'bcrypt-ts';
+
 import { PrismaClient } from '../prisma/generated';
 
 const prisma = new PrismaClient();
@@ -189,8 +191,9 @@ async function seedUser() {
       name: 'John Doe',
       email: 'john.doe@example.com',
       username: 'johndoe',
-      password: 'test',
+      password: await hash('Test@1234', 10),
       isActive: true,
+      isAdmin: true,
     },
   });
 

@@ -1,13 +1,13 @@
 import { z } from 'zod';
 
 import prisma from '@lib/prisma';
-import { createTRPCRouter, protectedProcedure } from '@lib/trpc';
+import { createTRPCRouter, adminProcedure } from '@lib/trpc';
 
 import type { Prisma } from '../../../prisma/generated';
 
 export const adminRouter = createTRPCRouter({
   // Dashboard Stats
-  getDashboardStats: protectedProcedure.query(async () => {
+  getDashboardStats: adminProcedure.query(async () => {
     const [
       totalProducts,
       totalCategories,
@@ -49,13 +49,19 @@ export const adminRouter = createTRPCRouter({
       totalCategories,
       totalOrders,
       totalUsers,
-      recentOrders,
-      lowStockProducts,
+      recentOrders: recentOrders.map((order) => ({
+        ...order,
+        total: Number(order.total),
+      })),
+      lowStockProducts: lowStockProducts.map((product) => ({
+        ...product,
+        price: Number(product.price),
+      })),
     };
   }),
 
   // Product Management
-  getAllProducts: protectedProcedure
+  getAllProducts: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -104,13 +110,17 @@ export const adminRouter = createTRPCRouter({
         products: products.map((product) => ({
           ...product,
           price: Number(product.price),
+          sizes: product.sizes.map((size) => ({
+            ...size,
+            price: size.price ? Number(size.price) : null,
+          })),
         })),
         total,
         pages: Math.ceil(total / limit),
       };
     }),
 
-  createProduct: protectedProcedure
+  createProduct: adminProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -144,7 +154,7 @@ export const adminRouter = createTRPCRouter({
     .mutation(async ({ input }) => {
       const { images = [], variants = [], ...productData } = input;
 
-      return prisma.product.create({
+      const result = await prisma.product.create({
         data: {
           ...productData,
           price: productData.price,
@@ -172,9 +182,18 @@ export const adminRouter = createTRPCRouter({
           },
         },
       });
+
+      return {
+        ...result,
+        price: Number(result.price),
+        variants: result.variants.map((variant) => ({
+          ...variant,
+          price: variant.price ? Number(variant.price) : null,
+        })),
+      };
     }),
 
-  updateProduct: protectedProcedure
+  updateProduct: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -188,7 +207,7 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input: { id, ...data } }) => {
-      return prisma.product.update({
+      const result = await prisma.product.update({
         where: { id },
         data: {
           ...data,
@@ -202,9 +221,14 @@ export const adminRouter = createTRPCRouter({
           sizes: true,
         },
       });
+
+      return {
+        ...result,
+        price: Number(result.price),
+      };
     }),
 
-  deleteProduct: protectedProcedure
+  deleteProduct: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.product.delete({
@@ -213,7 +237,7 @@ export const adminRouter = createTRPCRouter({
     }),
 
   // Product Variant Management
-  getAllVariants: protectedProcedure
+  getAllVariants: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -264,7 +288,7 @@ export const adminRouter = createTRPCRouter({
       };
     }),
 
-  createVariant: protectedProcedure
+  createVariant: adminProcedure
     .input(
       z.object({
         productId: z.string(),
@@ -275,7 +299,7 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      return prisma.productVariant.create({
+      const result = await prisma.productVariant.create({
         data: {
           ...input,
           ...(input.price && { price: input.price }),
@@ -288,12 +312,17 @@ export const adminRouter = createTRPCRouter({
           size: true,
         },
       });
+
+      return {
+        ...result,
+        price: result.price ? Number(result.price) : null,
+      };
     }),
 
-  getVariantById: protectedProcedure
+  getVariantById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
-      return prisma.productVariant.findUnique({
+      const result = await prisma.productVariant.findUnique({
         where: { id: input.id },
         include: {
           product: {
@@ -303,9 +332,16 @@ export const adminRouter = createTRPCRouter({
           size: true,
         },
       });
+
+      if (!result) return null;
+
+      return {
+        ...result,
+        price: result.price ? Number(result.price) : null,
+      };
     }),
 
-  updateVariant: protectedProcedure
+  updateVariant: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -316,7 +352,7 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input: { id, ...data } }) => {
-      return prisma.productVariant.update({
+      const result = await prisma.productVariant.update({
         where: { id },
         data: {
           ...data,
@@ -330,9 +366,14 @@ export const adminRouter = createTRPCRouter({
           size: true,
         },
       });
+
+      return {
+        ...result,
+        price: result.price ? Number(result.price) : null,
+      };
     }),
 
-  deleteVariant: protectedProcedure
+  deleteVariant: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.productVariant.delete({
@@ -341,7 +382,7 @@ export const adminRouter = createTRPCRouter({
     }),
 
   // Category Management
-  getAllCategories: protectedProcedure
+  getAllCategories: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -386,7 +427,7 @@ export const adminRouter = createTRPCRouter({
       };
     }),
 
-  createCategory: protectedProcedure
+  createCategory: adminProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -405,7 +446,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  getCategoryById: protectedProcedure
+  getCategoryById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return prisma.category.findUnique({
@@ -417,7 +458,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  updateCategory: protectedProcedure
+  updateCategory: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -438,7 +479,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  deleteCategory: protectedProcedure
+  deleteCategory: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.category.delete({
@@ -447,7 +488,7 @@ export const adminRouter = createTRPCRouter({
     }),
 
   // Color Management
-  getAllColors: protectedProcedure
+  getAllColors: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -487,7 +528,7 @@ export const adminRouter = createTRPCRouter({
       };
     }),
 
-  createColor: protectedProcedure
+  createColor: adminProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -502,7 +543,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  getColorById: protectedProcedure
+  getColorById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return prisma.color.findUnique({
@@ -510,7 +551,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  updateColor: protectedProcedure
+  updateColor: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -527,7 +568,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  deleteColor: protectedProcedure
+  deleteColor: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.color.delete({
@@ -536,7 +577,7 @@ export const adminRouter = createTRPCRouter({
     }),
 
   // Size Management
-  getAllSizes: protectedProcedure
+  getAllSizes: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -577,7 +618,7 @@ export const adminRouter = createTRPCRouter({
       };
     }),
 
-  createSize: protectedProcedure
+  createSize: adminProcedure
     .input(
       z.object({
         productId: z.string(),
@@ -587,7 +628,7 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input }) => {
-      return prisma.productSize.create({
+      const result = await prisma.productSize.create({
         data: {
           ...input,
           ...(input.price && { price: input.price }),
@@ -598,12 +639,17 @@ export const adminRouter = createTRPCRouter({
           },
         },
       });
+
+      return {
+        ...result,
+        price: result.price ? Number(result.price) : null,
+      };
     }),
 
-  getSizeById: protectedProcedure
+  getSizeById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
-      return prisma.productSize.findUnique({
+      const result = await prisma.productSize.findUnique({
         where: { id: input.id },
         include: {
           product: {
@@ -611,9 +657,16 @@ export const adminRouter = createTRPCRouter({
           },
         },
       });
+
+      if (!result) return null;
+
+      return {
+        ...result,
+        price: result.price ? Number(result.price) : null,
+      };
     }),
 
-  updateSize: protectedProcedure
+  updateSize: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -623,7 +676,7 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input: { id, ...data } }) => {
-      return prisma.productSize.update({
+      const result = await prisma.productSize.update({
         where: { id },
         data: {
           ...data,
@@ -635,9 +688,14 @@ export const adminRouter = createTRPCRouter({
           },
         },
       });
+
+      return {
+        ...result,
+        price: result.price ? Number(result.price) : null,
+      };
     }),
 
-  deleteSize: protectedProcedure
+  deleteSize: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.productSize.delete({
@@ -646,7 +704,7 @@ export const adminRouter = createTRPCRouter({
     }),
 
   // Gender Management
-  getAllGenders: protectedProcedure.query(async () => {
+  getAllGenders: adminProcedure.query(async () => {
     return prisma.gender.findMany({
       include: {
         _count: {
@@ -656,7 +714,7 @@ export const adminRouter = createTRPCRouter({
     });
   }),
 
-  createGender: protectedProcedure
+  createGender: adminProcedure
     .input(
       z.object({
         name: z.string().min(1),
@@ -669,7 +727,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  updateGender: protectedProcedure
+  updateGender: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -684,7 +742,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  deleteGender: protectedProcedure
+  deleteGender: adminProcedure
     .input(z.object({ id: z.string() }))
     .mutation(async ({ input }) => {
       return prisma.gender.delete({
@@ -693,7 +751,7 @@ export const adminRouter = createTRPCRouter({
     }),
 
   // Order Management
-  getAllOrders: protectedProcedure
+  getAllOrders: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -742,7 +800,7 @@ export const adminRouter = createTRPCRouter({
       };
     }),
 
-  updateOrderStatus: protectedProcedure
+  updateOrderStatus: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -756,7 +814,7 @@ export const adminRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input: { id, status } }) => {
-      return prisma.order.update({
+      const result = await prisma.order.update({
         where: { id },
         data: { status },
         include: {
@@ -771,10 +829,15 @@ export const adminRouter = createTRPCRouter({
           },
         },
       });
+
+      return {
+        ...result,
+        total: Number(result.total),
+      };
     }),
 
   // User Management
-  getAllUsers: protectedProcedure
+  getAllUsers: adminProcedure
     .input(
       z.object({
         page: z.number().min(1).default(1),
@@ -825,7 +888,7 @@ export const adminRouter = createTRPCRouter({
       };
     }),
 
-  getUserById: protectedProcedure
+  getUserById: adminProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ input }) => {
       return prisma.user.findUnique({
@@ -845,7 +908,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  updateUser: protectedProcedure
+  updateUser: adminProcedure
     .input(
       z.object({
         id: z.string(),
@@ -874,7 +937,7 @@ export const adminRouter = createTRPCRouter({
       });
     }),
 
-  updateUserStatus: protectedProcedure
+  updateUserStatus: adminProcedure
     .input(
       z.object({
         id: z.string(),
