@@ -1,5 +1,6 @@
 import { createCallerFactory, createTRPCRouter } from '@lib/trpc';
 
+import { adminRouter } from './admin';
 import { authRouter } from './auth';
 import { categoryRouter } from './category';
 import { productRouter } from './product';
@@ -12,6 +13,7 @@ export const appRouter = createTRPCRouter({
   categories: categoryRouter,
   products: productRouter,
   reviews: reviewRouter,
+  admin: adminRouter,
 });
 
 export type AppRouter = typeof appRouter;
