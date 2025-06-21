@@ -14,11 +14,7 @@ import { protectedRoutes } from '../../../middleware';
 import { loginSchema, registerSchema } from './validation';
 
 export async function registerAction(data: z.infer<typeof registerSchema>) {
-  const response = await api.auth.register(data);
-
-  if (response.success) {
-    redirect('/login');
-  }
+  await api.auth.register(data);
 }
 
 export async function loginAction(data: z.infer<typeof loginSchema>) {
@@ -30,7 +26,6 @@ export async function loginAction(data: z.infer<typeof loginSchema>) {
       accessToken: response.accessToken,
       rememberMe: data.rememberMe,
     });
-    redirect('/dashboard');
   }
 }
 

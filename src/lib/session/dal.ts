@@ -1,8 +1,13 @@
 import 'server-only';
 
+import { redirect } from 'next/navigation';
+
 import { cache } from 'react';
 
 import { api } from '~trpc/server';
+
+import CommonUtils from '@utils/common';
+import { isTRPCError } from '@utils/error';
 
 import { getSession } from '.';
 
@@ -25,6 +30,12 @@ export const getUser = cache(async () => {
 
     return user;
   } catch (error) {
+    if (
+      isTRPCError(error) &&
+      (error.code === 'UNAUTHORIZED' || error.code === 'FORBIDDEN')
+    ) {
+      redirect(`${CommonUtils.getBaseUrl()}/api/logout`);
+    }
     console.log('Failed to fetch user', error);
     return null;
   }

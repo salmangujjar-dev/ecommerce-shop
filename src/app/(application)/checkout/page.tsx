@@ -31,16 +31,16 @@ const CheckoutPage = () => {
   }, []);
 
   const updateItem = useCallback(
-    (id: string, quantity: number) => {
-      cartStore.updateQuantity(id, quantity);
+    (item: { variantId?: string; productId?: string }, quantity: number) => {
+      cartStore.updateQuantity(item, quantity);
       toast.success('Item quantity updated Successfully.');
     },
     [cartStore]
   );
 
   const removeItem = useCallback(
-    (id: string) => {
-      cartStore.removeItem(id);
+    (item: { variantId?: string; productId?: string }) => {
+      cartStore.removeItem(item);
       toast.success('Item removed Successfully.');
     },
     [cartStore]

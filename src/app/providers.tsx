@@ -7,6 +7,7 @@ import ClientProviders from './client-providers';
 
 const Providers = async ({ children }: { children: React.ReactNode }) => {
   const user = await getUser();
+
   return (
     <TRPCReactProvider>
       <SessionProvider user={user}>

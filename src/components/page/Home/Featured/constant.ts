@@ -3,10 +3,10 @@ import { Feature } from './types';
 export const FEATURED_ITEMS: Feature[] = [
   {
     id: 'social-impact',
-    heading: 'Level up your desk',
+    heading: 'Elevate Your Style',
     description:
-      'Make your desk beautiful and organized. Post a picture to social media and watch it get more likes than life-changing announcements. Reflect on the shallow nature of existence. At least you have a really nice desk setup.',
-    link: { text: 'Shop Workspace', to: '#' },
+      'Discover clothing that blends comfort, quality, and modern design. Express yourself with our curated collection, crafted to help you stand out and feel confident every day. Refresh your wardrobe and make every outfit count.',
+    link: { text: 'Shop Clothing', to: '/shop' },
     coverImg:
       'https://tailwindcss.com/plus-assets/img/ecommerce-images/home-page-01-feature-section-01.jpg',
   },

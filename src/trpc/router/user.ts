@@ -1,10 +1,14 @@
 import { z } from 'zod';
 
 import prisma from '@lib/prisma';
-import { createTRPCRouter, protectedProcedure } from '@lib/trpc';
+import {
+  adminProcedure,
+  createTRPCRouter,
+  protectedProcedure,
+} from '@lib/trpc';
 
 export const userRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(async () => {
+  getAll: adminProcedure.query(async () => {
     const users = await prisma.user.findMany();
     return users;
   }),
@@ -18,6 +22,8 @@ export const userRouter = createTRPCRouter({
         name: true,
         username: true,
         email: true,
+        isAdmin: true,
+        isActive: true,
       },
     });
     return user;

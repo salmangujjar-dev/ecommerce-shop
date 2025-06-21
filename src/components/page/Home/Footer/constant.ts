@@ -1,16 +1,9 @@
 export const FOOTER_NAVIGATION = {
-  shop: [
-    { name: 'Bags', href: '#' },
-    { name: 'Tees', href: '#' },
-    { name: 'Objects', href: '#' },
-    { name: 'Home Goods', href: '#' },
-    { name: 'Accessories', href: '#' },
-  ],
   company: [
-    { name: 'Who we are', href: '#' },
-    { name: 'Sustainability', href: '#' },
-    { name: 'Press', href: '#' },
-    { name: 'Careers', href: '#' },
+    // { name: 'Who we are', href: '#' },
+    // { name: 'Sustainability', href: '#' },
+    // { name: 'Press', href: '#' },
+    // { name: 'Careers', href: '#' },
     { name: 'Terms & Conditions', href: '/terms' },
     { name: 'Privacy', href: '/privacy-policy' },
   ],
@@ -20,7 +13,7 @@ export const FOOTER_NAVIGATION = {
   //   { name: 'Redeem a Gift Card', href: '#' },
   // ],
   connect: [
-    { name: 'Contact Us', href: '#' },
+    { name: 'Contact Us', href: 'mailto:isalmandev@gmail.com' },
     { name: 'Facebook', href: '#' },
     { name: 'Instagram', href: '#' },
     { name: 'Pinterest', href: '#' },

@@ -199,9 +199,10 @@ export default function ProductsPage() {
                   const primaryImage =
                     product.images.find((img) => img.primary) ||
                     product.images[0];
-                  const inStockSizes = product.sizes.filter(
-                    (size) => size.inStock
-                  ).length;
+                  const inStockSizes =
+                    product.sizes.length === 0
+                      ? 1
+                      : product.sizes.filter((size) => size.inStock).length;
 
                   return (
                     <tr key={product.id} className='hover:bg-gray-50'>
@@ -262,12 +263,17 @@ export default function ProductsPage() {
                               : 'bg-red-100 text-red-800'
                           }`}
                         >
-                          {inStockSizes}/{product.sizes.length} in stock
+                          {inStockSizes}/
+                          {product.sizes.length === 0
+                            ? 1
+                            : product.sizes.length}{' '}
+                          in stock
                         </span>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
                         <div className='flex space-x-2'>
                           <Link
+                            target='_blank'
                             href={`/product/${product.id}`}
                             className='text-indigo-600 hover:text-indigo-900'
                           >

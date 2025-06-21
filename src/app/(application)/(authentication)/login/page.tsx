@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -18,6 +19,7 @@ import { loginAction } from '../action';
 import { loginSchema } from '../validation';
 
 const Login = () => {
+  const { push } = useRouter();
   const {
     register,
     handleSubmit,
@@ -34,7 +36,9 @@ const Login = () => {
   const onSubmit = handleSubmit(async (data: z.infer<typeof loginSchema>) => {
     try {
       await loginAction(data);
+      push('/dashboard');
     } catch (error) {
+      console.log(error);
       const errorMessage =
         error instanceof Error ? error?.message : 'Something went wrong';
       toast.error(errorMessage);

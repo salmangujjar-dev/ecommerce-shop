@@ -93,9 +93,6 @@ export default function SizesPage() {
                     Product
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Price
-                  </th>
-                  <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                     Stock Status
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
@@ -127,15 +124,6 @@ export default function SizesPage() {
                       <div className='text-sm text-gray-500'>
                         {size.product.slug}
                       </div>
-                    </td>
-                    <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                      {size.price ? (
-                        <span className='font-medium'>
-                          ${size.price.toFixed(2)}
-                        </span>
-                      ) : (
-                        <span className='text-gray-400'>—</span>
-                      )}
                     </td>
                     <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
                       <span

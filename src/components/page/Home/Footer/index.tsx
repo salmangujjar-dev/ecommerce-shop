@@ -21,7 +21,7 @@ const Footer: FC = () => {
         <div className='py-20 xl:grid xl:grid-cols-3 xl:gap-8'>
           <div className='grid grid-cols-2 gap-8 xl:col-span-2'>
             <div className='space-y-12 md:grid md:grid-cols-2 md:gap-8 md:space-y-0'>
-              <div>
+              {/* <div>
                 <h3 className='text-sm font-medium text-white'>Shop</h3>
                 <ul role='list' className='mt-6 space-y-6'>
                   {FOOTER_NAVIGATION.shop.map((item) => (
@@ -35,7 +35,7 @@ const Footer: FC = () => {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </div> */}
               <div>
                 <h3 className='text-sm font-medium text-white'>Company</h3>
                 <ul role='list' className='mt-6 space-y-6'>

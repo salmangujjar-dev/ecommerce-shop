@@ -36,7 +36,7 @@ const RatingModal = ({ children, rate }: RatingModalProps) => {
         cloneElement(children, { onClick: () => setIsOpen(true) })}
       {isOpen && (
         <Dialog open={isOpen} onClose={handleClose}>
-          <DialogTitle>Review</DialogTitle>
+          <DialogTitle className='sm:text-xl'>Review</DialogTitle>
           <DialogBody>
             <div className='flex items-center'>
               <Rating

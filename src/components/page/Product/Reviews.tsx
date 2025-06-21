@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import { StarIcon } from 'lucide-react';
 
-import { Link } from '@ui/link';
+import RatingModal from '@common/Rating/modal';
 
 import { cn } from '@utils/cn';
 
@@ -127,12 +127,11 @@ const Reviews = () => {
               customers
             </p>
 
-            <Link
-              href='#'
-              className='mt-6 inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full'
-            >
-              Write a review
-            </Link>
+            <RatingModal rate={5}>
+              <span className='mt-6 cursor-pointer inline-flex w-full items-center justify-center rounded-md border border-gray-300 bg-white px-8 py-2 text-sm font-medium text-gray-900 hover:bg-gray-50 sm:w-auto lg:w-full'>
+                Write a review
+              </span>
+            </RatingModal>
           </div>
         </div>
 

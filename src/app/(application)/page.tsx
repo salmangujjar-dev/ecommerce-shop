@@ -1,4 +1,4 @@
-import Category from '@components/page/Home/Category';
+// import Category from '@components/page/Home/Category';
 import Featured from '@components/page/Home/Featured';
 import Hero from '@components/page/Home/Hero';
 import Perks from '@components/page/Home/Perks';
@@ -11,7 +11,7 @@ const App = () => {
 
       <main>
         {/* Category section */}
-        <Category />
+        {/* <Category /> */}
 
         {/* Featured section */}
         <Featured index={0} />

@@ -36,10 +36,41 @@ const AddToCartBtn = ({
 }: AddToCartBtnProps) => {
   const cartStore = useCartStore();
 
-  const isItemAlreadyInCart = useMemo(
-    () => cartStore.items.find((item) => item.variantId === selectedVariantId),
-    [cartStore.items, selectedVariantId]
-  );
+  const isItemAlreadyInCart = useMemo(() => {
+    if (selectedVariantId) {
+      return cartStore.items.find(
+        (item) => item.variantId === selectedVariantId
+      );
+    }
+    return cartStore.items.find((item) => item.productId === product.id);
+  }, [cartStore.items, selectedVariantId, product.id]);
+
+  const handleAddToCart = () => {
+    if (selectedVariantId) {
+      cartStore.addItem({ variantId: selectedVariantId });
+    } else {
+      cartStore.addItem({ productId: product.id });
+    }
+    toast.success('Added to Cart Successfully');
+  };
+
+  const handleRemoveFromCart = () => {
+    if (selectedVariantId) {
+      cartStore.removeItem({ variantId: selectedVariantId });
+    } else {
+      cartStore.removeItem({ productId: product.id });
+    }
+    toast.success('Item Removed Successfully');
+  };
+
+  const handleUpdateQuantity = (newQuantity: number) => {
+    if (selectedVariantId) {
+      cartStore.updateQuantity({ variantId: selectedVariantId }, newQuantity);
+    } else {
+      cartStore.updateQuantity({ productId: product.id }, newQuantity);
+    }
+    toast.success('Item Quantity Updated Successfully');
+  };
 
   return (
     <>
@@ -49,15 +80,10 @@ const AddToCartBtn = ({
             className='items-center justify-center w-15'
             onClick={() => {
               if (isItemAlreadyInCart.quantity - 1 === 0) {
-                cartStore.removeItem(selectedVariantId!);
-                toast.success('Item Removed Successfully');
+                handleRemoveFromCart();
                 return;
               }
-              cartStore.updateQuantity(
-                selectedVariantId!,
-                isItemAlreadyInCart.quantity - 1
-              );
-              toast.success('Item Quantity Updated Successfully');
+              handleUpdateQuantity(isItemAlreadyInCart.quantity - 1);
             }}
           >
             <Minus />
@@ -71,11 +97,7 @@ const AddToCartBtn = ({
           <Button
             className='items-center justify-center w-15'
             onClick={() => {
-              cartStore.updateQuantity(
-                selectedVariantId!,
-                isItemAlreadyInCart.quantity + 1
-              );
-              toast.success('Item Quantity Updated Successfully');
+              handleUpdateQuantity(isItemAlreadyInCart.quantity + 1);
             }}
           >
             <Plus />
@@ -84,10 +106,7 @@ const AddToCartBtn = ({
       ) : (
         <Button
           className={cn('w-full bg-transparent', className)}
-          onClick={() => {
-            cartStore.addItem(selectedVariantId!);
-            toast.success('Added to Cart Successfully');
-          }}
+          onClick={handleAddToCart}
           {...(props as typeof Button)}
         >
           Add to cart<span className='sr-only'>, {product.name}</span>

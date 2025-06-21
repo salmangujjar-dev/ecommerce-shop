@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { redirect, usePathname } from 'next/navigation';
 
 import {
   BarChart3,
@@ -17,6 +17,8 @@ import {
 
 import Logo from '@ui/logo';
 
+import { useSession } from '@lib/session/provider';
+
 const navigation = [
   { name: 'Dashboard', href: '/admin', icon: Home },
   { name: 'Products', href: '/admin/products', icon: Package },
@@ -31,6 +33,11 @@ const navigation = [
 
 export function AdminSidebar() {
   const pathname = usePathname();
+
+  const { user } = useSession();
+  if (!user?.isAdmin) {
+    redirect('/dashboard');
+  }
 
   return (
     <div className='flex w-64 flex-col bg-white shadow-lg'>

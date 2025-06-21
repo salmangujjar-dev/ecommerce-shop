@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -20,6 +21,8 @@ import { registerAction } from '../action';
 import { registerSchema } from '../validation';
 
 const Register = () => {
+  const { push } = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -37,6 +40,7 @@ const Register = () => {
     async (data: z.infer<typeof registerSchema>) => {
       try {
         await registerAction(data);
+        push('/login');
       } catch (error) {
         const errorMessage =
           error instanceof Error ? error.message : 'Something went wrong';

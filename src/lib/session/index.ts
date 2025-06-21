@@ -20,7 +20,7 @@ export async function createSession(response: {
 
   cookieStore.set('token', response.accessToken, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
     expires: new Date(
@@ -56,7 +56,7 @@ export async function updateSession() {
   const cookieStore = await cookies();
   cookieStore.set('token', token, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     expires: new Date(
       Date.now() + CommonUtils.numberToMilliseconds(JWT_EXPIRATION_TIME)
     ),

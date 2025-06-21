@@ -76,9 +76,17 @@ export const createCallerFactory = t.createCallerFactory;
 export const createTRPCRouter = t.router;
 export const publicProcedure = t.procedure;
 
-const isAuthed = t.middleware(({ next, ctx }) => {
+const isAuthed = t.middleware(async ({ next, ctx }) => {
   if (!ctx.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: ctx.user.id },
+  });
+
+  if (!user) {
+    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not found' });
   }
 
   return next({
@@ -89,14 +97,14 @@ const isAuthed = t.middleware(({ next, ctx }) => {
 });
 
 const isAdminAuthed = t.middleware(async ({ next, ctx }) => {
-  console.log('woowowowowo');
   if (!ctx.user) {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
-  // Fetch user from db to ensure latest isAdmin status
+
   const user = await prisma.user.findUnique({
     where: { id: ctx.user.id },
   });
+
   if (!user?.isAdmin) {
     throw new TRPCError({
       code: 'FORBIDDEN',

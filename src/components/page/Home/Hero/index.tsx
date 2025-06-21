@@ -12,7 +12,7 @@ const Hero = () => {
           height={0}
           sizes='100vw'
           alt=''
-          src='https://tailwindcss.com/plus-assets/img/ecommerce-images/home-page-01-hero-full-width.jpg'
+          src='https://images.unsplash.com/photo-1608739872077-21ddc15dc152?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80'
           className='size-full object-cover'
         />
       </div>
@@ -31,7 +31,7 @@ const Hero = () => {
           stock.
         </p>
         <Link
-          href='#'
+          href='/shop'
           className='mt-8 inline-block rounded-md border border-transparent bg-white px-8 py-3 text-base font-medium text-gray-900 hover:bg-gray-100'
         >
           Shop New Arrivals

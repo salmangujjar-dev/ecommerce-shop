@@ -110,10 +110,6 @@ export const adminRouter = createTRPCRouter({
         products: products.map((product) => ({
           ...product,
           price: Number(product.price),
-          sizes: product.sizes.map((size) => ({
-            ...size,
-            price: size.price ? Number(size.price) : null,
-          })),
         })),
         total,
         pages: Math.ceil(total / limit),
@@ -609,10 +605,7 @@ export const adminRouter = createTRPCRouter({
       ]);
 
       return {
-        sizes: sizes.map((size) => ({
-          ...size,
-          price: size.price ? Number(size.price) : null,
-        })),
+        sizes,
         total,
         pages: Math.ceil(total / limit),
       };
@@ -640,10 +633,7 @@ export const adminRouter = createTRPCRouter({
         },
       });
 
-      return {
-        ...result,
-        price: result.price ? Number(result.price) : null,
-      };
+      return result;
     }),
 
   getSizeById: adminProcedure
@@ -660,10 +650,7 @@ export const adminRouter = createTRPCRouter({
 
       if (!result) return null;
 
-      return {
-        ...result,
-        price: result.price ? Number(result.price) : null,
-      };
+      return result;
     }),
 
   updateSize: adminProcedure
@@ -689,10 +676,7 @@ export const adminRouter = createTRPCRouter({
         },
       });
 
-      return {
-        ...result,
-        price: result.price ? Number(result.price) : null,
-      };
+      return result;
     }),
 
   deleteSize: adminProcedure
