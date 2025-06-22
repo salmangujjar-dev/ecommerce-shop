@@ -26,7 +26,7 @@ const Dashboard: FC = () => {
   }
 
   return (
-    <div className='max-w-2xl mx-auto py-10 px-4'>
+    <div className='max-w-2xl w-full mx-auto py-10 px-4'>
       <h1 className='text-3xl font-bold mb-2'>
         Welcome, {user?.name || 'User'}!
       </h1>
@@ -43,7 +43,22 @@ const Dashboard: FC = () => {
         <div className='flex items-center'>
           <Calendar className='h-5 w-5 text-gray-400 mr-2' />
           <span className='text-gray-700'>
-            Joined: {/* TODO: Format join date if available */}
+            Joined:{' '}
+            {user?.createdAt
+              ? (() => {
+                  const date =
+                    typeof user.createdAt === 'string'
+                      ? new Date(user.createdAt)
+                      : user.createdAt;
+                  return date instanceof Date && !isNaN(date.getTime())
+                    ? date.toLocaleDateString(undefined, {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })
+                    : 'Unknown';
+                })()
+              : 'Unknown'}
           </span>
         </div>
       </div>

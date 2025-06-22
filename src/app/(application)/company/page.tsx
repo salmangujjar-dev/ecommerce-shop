@@ -290,10 +290,10 @@ export default function CompanyPage() {
                     {person.role}
                   </p>
                   <p className='mt-6 text-base leading-7 text-gray-600'>
-                    Quia illum aut in beatae. Possimus dolores aliquid
-                    accusantium aut in ut non assumenda. Enim iusto molestias
-                    aut deleniti eos aliquid magnam molestiae. Qui maxime
-                    praesentium nobis.
+                    Driven by curiosity and a passion for innovation, our team
+                    member brings unique expertise and energy to every project.
+                    Their dedication helps us deliver exceptional results and
+                    shape the future of ecommerce together.
                   </p>
                 </div>
               </li>

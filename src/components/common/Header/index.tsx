@@ -278,9 +278,11 @@ const Header: FC = () => {
                   <DropdownMenu modal={false} anchor='bottom end'>
                     <DropdownItem href='/dashboard'>
                       <DropdownLabel>Dashboard</DropdownLabel>
+                      <DropdownShortcut keys={['⌘', 'D']} />
                     </DropdownItem>
                     <DropdownItem href='/orders'>
                       <DropdownLabel>My Orders</DropdownLabel>
+                      <DropdownShortcut keys={['⌘', 'O']} />
                     </DropdownItem>
                     <DropdownItem href='/settings'>
                       <DropdownLabel>Settings</DropdownLabel>
@@ -293,7 +295,7 @@ const Header: FC = () => {
                       </DropdownLabel>
                       <DropdownShortcut
                         classNames={{ kbd: 'text-red-500' }}
-                        keys={['⌘', 'Q']}
+                        keys={['^', 'Q']}
                       />
                     </DropdownItem>
                   </DropdownMenu>

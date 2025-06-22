@@ -24,6 +24,7 @@ export const userRouter = createTRPCRouter({
         email: true,
         isAdmin: true,
         isActive: true,
+        createdAt: true,
       },
     });
     return user;

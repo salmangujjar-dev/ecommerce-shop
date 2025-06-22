@@ -247,3 +247,12 @@ model Review {
 
   @@map("reviews")
 }
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("newsletter_subscribers")
+}

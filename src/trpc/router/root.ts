@@ -5,6 +5,7 @@ import { authRouter } from './auth';
 import { cartRouter } from './cart';
 import { categoryRouter } from './category';
 import { genderRouter } from './gender';
+import { newsletterRouter } from './newsletter';
 import { orderRouter } from './order';
 import { productRouter } from './product';
 import { reviewRouter } from './review';
@@ -20,6 +21,7 @@ export const appRouter = createTRPCRouter({
   admin: adminRouter,
   cart: cartRouter,
   orders: orderRouter,
+  newsletter: newsletterRouter,
 });
 
 export type AppRouter = typeof appRouter;
