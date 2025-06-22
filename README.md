@@ -1,6 +1,6 @@
 # BuildAStore
 
-> **Disclaimer:** BuildAStore is a personal side project inspired by the idea: _What if someone wants to create an online store completely free of cost?_ This project is not affiliated with any company and is intended as an open, no-cost solution for anyone interested in launching their own ecommerce platform.
+> **Disclaimer:** BuildAStore is a personal side project to see the capability of building with AI inspired by the idea: _What if someone wants to create an online store completely free of cost?_ This project is not affiliated with any company and is intended as an open, no-cost solution for anyone interested in launching their own ecommerce platform.
 
 A modern, full-stack ecommerce platform built with Next.js, Prisma, tRPC, and TypeScript. BuildAStore provides everything you need to create and manage your online store with a beautiful, responsive interface and powerful backend capabilities.
 
