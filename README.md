@@ -171,10 +171,8 @@ Configure your `.env.local` with:
 
 ```env
 DATABASE_URL="postgresql://username:password@localhost:5432/buildastore"
-JWT_SECRET="your-secret-key"
-NEXTAUTH_SECRET="your-nextauth-secret"
-NEXTAUTH_URL="http://localhost:3000"
-SESSION_SECRET="your-session-secret"
+SESSION_SECRET="your-secret-key"
+SITE_BASE_URL="http://localhost:3000"
 ```
 
 4. **Set up the database**
@@ -437,10 +435,8 @@ The easiest way to deploy your BuildAStore app is to use the [Vercel Platform](h
 Make sure to configure all required environment variables in your deployment platform:
 
 - `DATABASE_URL`: PostgreSQL connection string
-- `JWT_SECRET`: JWT signing secret
-- `NEXTAUTH_SECRET`: NextAuth.js secret
-- `NEXTAUTH_URL`: Your application URL
-- `SESSION_SECRET`: Session encryption secret
+- `SESSION_SECRET`: JWT signing secret
+- `SITE_BASE_URL`: Your application URL
 
 ## Contributing
 
