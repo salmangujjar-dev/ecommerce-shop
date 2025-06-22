@@ -5,6 +5,8 @@ import type React from 'react';
 import * as Headless from '@headlessui/react';
 import clsx from 'clsx';
 
+import { cn } from '@utils/cn';
+
 import { Button } from './button';
 import { Link } from './link';
 
@@ -195,27 +197,27 @@ export function DropdownDescription({
 export function DropdownShortcut({
   keys,
   className,
+  classNames,
   ...props
-}: { keys: string | string[]; className?: string } & Omit<
-  Headless.DescriptionProps<'kbd'>,
-  'as' | 'className'
->) {
+}: {
+  keys: string | string[];
+  className?: string;
+  classNames?: { kbd?: string };
+} & Omit<Headless.DescriptionProps<'kbd'>, 'as' | 'className'>) {
   return (
     <Headless.Description
       as='kbd'
       {...props}
-      className={clsx(
-        className,
-        'col-start-5 row-start-1 flex justify-self-end'
-      )}
+      className={cn('col-start-5 row-start-1 flex justify-self-end', className)}
     >
       {(Array.isArray(keys) ? keys : keys.split('')).map((char, index) => (
         <kbd
           key={index}
-          className={clsx([
+          className={cn([
             'min-w-[2ch] text-center font-sans text-zinc-400 capitalize group-data-focus:text-white forced-colors:group-data-focus:text-[HighlightText]',
             // Make sure key names that are longer than one character (like "Tab") have extra space
             index > 0 && char.length > 1 && 'pl-1',
+            classNames?.kbd,
           ])}
         >
           {char}

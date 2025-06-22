@@ -22,7 +22,6 @@ import {
   DropdownMenu,
   DropdownItem,
   DropdownLabel,
-  DropdownDescription,
   DropdownDivider,
   DropdownShortcut,
 } from '@ui/dropdown';
@@ -277,20 +276,25 @@ const Header: FC = () => {
                     <Avatar initials={StringUtils.getInitials(user?.name)} />
                   </DropdownButton>
                   <DropdownMenu modal={false} anchor='bottom end'>
-                    <DropdownItem>
-                      <DropdownLabel>Profile</DropdownLabel>
-                      <DropdownDescription>
-                        Manage your account settings
-                      </DropdownDescription>
+                    <DropdownItem href='/dashboard'>
+                      <DropdownLabel>Dashboard</DropdownLabel>
                     </DropdownItem>
-                    <DropdownDivider />
-                    <DropdownItem>
+                    <DropdownItem href='/orders'>
+                      <DropdownLabel>My Orders</DropdownLabel>
+                    </DropdownItem>
+                    <DropdownItem href='/settings'>
                       <DropdownLabel>Settings</DropdownLabel>
                       <DropdownShortcut keys={['⌘', 'S']} />
                     </DropdownItem>
+                    <DropdownDivider />
                     <DropdownItem onClick={logoutAction}>
-                      <DropdownLabel>Logout</DropdownLabel>
-                      <DropdownShortcut keys={['⌘', 'Q']} />
+                      <DropdownLabel className='text-red-500'>
+                        Logout
+                      </DropdownLabel>
+                      <DropdownShortcut
+                        classNames={{ kbd: 'text-red-500' }}
+                        keys={['⌘', 'Q']}
+                      />
                     </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>

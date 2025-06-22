@@ -193,4 +193,126 @@ export const orderRouter = createTRPCRouter({
 
       return order;
     }),
+
+  getMyOrders: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.user.id;
+    const orders = await prisma.order.findMany({
+      where: { userId },
+      orderBy: { createdAt: 'desc' },
+      include: {
+        items: true,
+      },
+    });
+
+    // Fetch product and variant information for all order items
+    const ordersWithProductInfo = await Promise.all(
+      orders.map(async (order) => {
+        const itemsWithProductInfo = await Promise.all(
+          order.items.map(async (item) => {
+            let productInfo = null;
+            let variantInfo = null;
+
+            if (item.variantId) {
+              const variant = await prisma.productVariant.findUnique({
+                where: { id: item.variantId },
+                include: {
+                  product: {
+                    select: {
+                      id: true,
+                      name: true,
+                      slug: true,
+                      images: true,
+                    },
+                  },
+                  color: true,
+                  size: true,
+                },
+              });
+              if (variant) {
+                variantInfo = variant;
+                productInfo = variant.product;
+              }
+            } else if (item.productId) {
+              const product = await prisma.product.findUnique({
+                where: { id: item.productId },
+                select: { id: true, name: true, slug: true, images: true },
+              });
+              if (product) {
+                productInfo = product;
+              }
+            }
+
+            return {
+              ...item,
+              product: productInfo,
+              variant: variantInfo,
+            };
+          })
+        );
+
+        return {
+          ...order,
+          items: itemsWithProductInfo,
+          total: Number(order.total),
+        };
+      })
+    );
+
+    return {
+      orders: ordersWithProductInfo,
+    };
+  }),
+
+  getMyOrderById: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const userId = ctx.user.id;
+      const order = await prisma.order.findUnique({
+        where: { id: input.id, userId },
+        include: { items: true },
+      });
+      if (!order) return null;
+      // Fetch product and variant information for order items
+      const itemsWithProductInfo = await Promise.all(
+        order.items.map(async (item) => {
+          let productInfo = null;
+          let variantInfo = null;
+          if (item.variantId) {
+            const variant = await prisma.productVariant.findUnique({
+              where: { id: item.variantId },
+              include: {
+                product: {
+                  select: { id: true, name: true, slug: true, images: true },
+                },
+                color: true,
+                size: true,
+              },
+            });
+            if (variant) {
+              variantInfo = variant;
+              productInfo = variant.product;
+            }
+          } else if (item.productId) {
+            const product = await prisma.product.findUnique({
+              where: { id: item.productId },
+              select: { id: true, name: true, slug: true, images: true },
+            });
+            if (product) {
+              productInfo = product;
+            }
+          }
+          return {
+            ...item,
+            product: productInfo,
+            variant: variantInfo,
+          };
+        })
+      );
+      return {
+        ...order,
+        items: itemsWithProductInfo,
+        total: Number(order.total),
+        shippingAddress: order.shippingAddress,
+      };
+    }),
 });
