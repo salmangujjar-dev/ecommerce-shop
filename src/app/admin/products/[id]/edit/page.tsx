@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 
@@ -394,7 +395,10 @@ export default function EditProductPage() {
                   <div className='grid grid-cols-2 gap-2'>
                     {formData.images.map((image, index) => (
                       <div key={index} className='relative group'>
-                        <img
+                        <Image
+                          width={0}
+                          height={0}
+                          sizes='100vw'
                           src={image.src}
                           alt={image.alt}
                           className={`w-full h-24 object-cover rounded-md border-2 ${

@@ -245,7 +245,7 @@ const Header: FC = () => {
               {/* Search */}
               <div className='flex lg:ml-6'>
                 <Link
-                  href='#'
+                  href='/shop'
                   className='p-2 text-gray-400 hover:text-gray-500'
                 >
                   <span className='sr-only'>Search</span>

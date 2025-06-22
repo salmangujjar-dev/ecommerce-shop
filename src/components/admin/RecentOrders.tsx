@@ -9,7 +9,7 @@ interface Order {
   user: {
     name: string;
     email: string;
-  };
+  } | null;
 }
 
 interface RecentOrdersProps {
@@ -51,7 +51,7 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
             <div className='flex-1'>
               <div className='flex items-center justify-between'>
                 <p className='text-sm font-medium text-gray-900'>
-                  {order.user.name}
+                  {order.user?.name || 'Guest User'}
                 </p>
                 <span
                   className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${
@@ -62,7 +62,9 @@ export function RecentOrders({ orders }: RecentOrdersProps) {
                   {order.status}
                 </span>
               </div>
-              <p className='text-sm text-gray-500'>{order.user.email}</p>
+              <p className='text-sm text-gray-500'>
+                {order.user?.email || 'No email'}
+              </p>
               <p className='text-xs text-gray-400'>
                 {formatDistanceToNow(createdAt, {
                   addSuffix: true,

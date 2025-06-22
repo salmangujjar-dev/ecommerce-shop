@@ -148,7 +148,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
       v.sizeId === selectedSize?.id &&
       v.inStock
   );
-  console.log(product);
+
   return (
     <div className='flex flex-col border-r border-b border-gray-200 p-4 sm:p-6'>
       <div className='h-full relative'>

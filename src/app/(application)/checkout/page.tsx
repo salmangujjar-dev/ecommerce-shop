@@ -1,5 +1,7 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
+
 import { useCallback } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,11 +14,19 @@ import Spinner from '@ui/Spinner';
 
 import useCartStore from '@store/cart';
 
+import { useSession } from '@lib/session/provider';
+
+import { trpc } from '~trpc/client';
+
 import CheckoutForm from './form';
 import CheckoutSummary from './summary';
 import { checkoutSchema } from './validation';
 
 const CheckoutPage = () => {
+  const router = useRouter();
+  const { isAuthenticated } = useSession();
+  const cartStore = useCartStore();
+
   const formMethods = useForm<z.infer<typeof checkoutSchema>>({
     defaultValues: {
       paymentType: 'card',
@@ -24,11 +34,101 @@ const CheckoutPage = () => {
     resolver: zodResolver(checkoutSchema),
   });
 
-  const cartStore = useCartStore();
+  // TRPC mutations for order creation
+  const createOrder = trpc.orders.createOrder.useMutation();
+  const createGuestOrder = trpc.orders.createGuestOrder.useMutation();
 
-  const _handleSubmit = useCallback((data: unknown) => {
-    console.log(data);
-  }, []);
+  const handleSubmit = useCallback(
+    async (data: z.infer<typeof checkoutSchema>) => {
+      try {
+        if (cartStore.items.length === 0) {
+          toast.error('Your cart is empty');
+          return;
+        }
+
+        if (isAuthenticated) {
+          // Create order for authenticated user
+          const shippingAddress = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: data.address,
+            apartment: data.apartment,
+            city: data.city,
+            country: data.country,
+            region: data.region,
+            postalCode: data.postalCode,
+          };
+
+          const paymentInfo = {
+            paymentType: data.paymentType,
+            cardNumber: data.cardNumber,
+            nameOnCard: data.nameOnCard,
+            expirationDate: data.expirationDate,
+            cvc: data.cvc,
+          };
+
+          const order = await createOrder.mutateAsync({
+            items: cartStore.items,
+            shippingAddress,
+            paymentInfo,
+          });
+          toast.success('Order placed successfully!');
+
+          // Clear cart after successful order
+          cartStore.clearCart();
+
+          // Redirect to success page with order ID
+          router.push(`/order-success?orderId=${order.id}`);
+        } else {
+          // Create order for guest user
+          const guestInfo = {
+            name: `${data.firstName} ${data.lastName || ''}`.trim(),
+            email: data.email,
+            phone: data.phone,
+          };
+
+          const shippingAddress = {
+            firstName: data.firstName,
+            lastName: data.lastName,
+            address: data.address,
+            apartment: data.apartment,
+            city: data.city,
+            country: data.country,
+            region: data.region,
+            postalCode: data.postalCode,
+          };
+
+          const paymentInfo = {
+            paymentType: data.paymentType,
+            cardNumber: data.cardNumber,
+            nameOnCard: data.nameOnCard,
+            expirationDate: data.expirationDate,
+            cvc: data.cvc,
+          };
+
+          const order = await createGuestOrder.mutateAsync({
+            items: cartStore.items,
+            guestInfo,
+            shippingAddress,
+            paymentInfo,
+          });
+          toast.success('Order placed successfully!');
+
+          // Clear cart after successful order
+          cartStore.clearCart();
+
+          // Redirect to success page with order ID
+          router.push(`/order-success?orderId=${order.id}`);
+        }
+      } catch (error) {
+        console.error('Order creation failed:', error);
+        toast.error(
+          error instanceof Error ? error.message : 'Failed to place order'
+        );
+      }
+    },
+    [cartStore, isAuthenticated, createOrder, createGuestOrder, router]
+  );
 
   const updateItem = useCallback(
     (item: { variantId?: string; productId?: string }, quantity: number) => {
@@ -69,7 +169,7 @@ const CheckoutPage = () => {
         <h2 className='sr-only'>Checkout</h2>
         <FormProvider {...formMethods}>
           <form
-            onSubmit={formMethods.handleSubmit(_handleSubmit)}
+            onSubmit={formMethods.handleSubmit(handleSubmit)}
             className='lg:grid lg:grid-cols-2 lg:gap-x-12 xl:gap-x-16'
           >
             <CheckoutForm />
@@ -79,6 +179,7 @@ const CheckoutPage = () => {
               items={cartStore.items}
               updateItem={updateItem}
               removeItem={removeItem}
+              isSubmitting={createOrder.isPending || createGuestOrder.isPending}
             />
           </form>
         </FormProvider>

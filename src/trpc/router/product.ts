@@ -127,6 +127,8 @@ export const productRouter = createTRPCRouter({
         minPrice: z.number().optional(),
         maxPrice: z.number().optional(),
         search: z.string().optional(),
+        colors: z.array(z.string()).optional(),
+        sizes: z.array(z.string()).optional(),
         sort: z
           .enum(['popularity', 'newest', 'price_asc', 'price_desc', 'rating'])
           .optional(),
@@ -143,6 +145,8 @@ export const productRouter = createTRPCRouter({
         minPrice,
         maxPrice,
         search,
+        colors,
+        sizes,
         sort,
         page,
         limit,
@@ -190,6 +194,26 @@ export const productRouter = createTRPCRouter({
             { description: { contains: search, mode: 'insensitive' as const } },
           ],
         }),
+        ...(colors &&
+          colors.length > 0 && {
+            colors: {
+              some: {
+                color: {
+                  slug: { in: colors },
+                },
+              },
+            },
+          }),
+        ...(sizes &&
+          sizes.length > 0 && {
+            sizes: {
+              some: {
+                name: {
+                  in: sizes.map((size) => size.toUpperCase()),
+                },
+              },
+            },
+          }),
       };
 
       // Determine sort order based on the sort parameter

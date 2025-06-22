@@ -4,10 +4,68 @@ import Link from 'next/link';
 
 import { useState } from 'react';
 
+import type { Decimal, JsonValue } from '@prisma/client/runtime/library';
 import { formatDistanceToNow } from 'date-fns';
-import { Edit, Eye, Package, Calendar, DollarSign } from 'lucide-react';
+import {
+  Eye,
+  Package,
+  Calendar,
+  DollarSign,
+  Search,
+  Trash2,
+} from 'lucide-react';
+import { toast } from 'sonner';
+
+import { Button } from '@ui/button';
 
 import { trpc } from '~trpc/client';
+
+interface OrderItem {
+  id: string;
+  productId: string | null;
+  variantId: string | null;
+  quantity: number;
+  price: Decimal | number;
+  createdAt: Date;
+  updatedAt: Date;
+  orderId: string;
+  product?: {
+    id: string;
+    name: string;
+    slug: string;
+    images: Array<{
+      id: string;
+      src: string;
+      alt: string;
+      primary: boolean;
+    }>;
+  } | null;
+  variant?: {
+    id: string;
+    price: Decimal | number | null;
+    color: {
+      id: string;
+      name: string;
+      bgColor: string;
+      selectedColor: string;
+    };
+    size: {
+      id: string;
+      name: string;
+    };
+    product: {
+      id: string;
+      name: string;
+      slug: string;
+      images: Array<{
+        id: string;
+        src: string;
+        alt: string;
+        primary: boolean;
+      }>;
+    };
+  } | null;
+}
 
 interface Order {
   id: string;
@@ -18,19 +76,13 @@ interface Order {
     id: string;
     name: string;
     email: string;
-  };
+  } | null;
   payment: {
     id: string;
     status: string;
   } | null;
-  products: Array<{
-    id: string;
-    name: string;
-    images: Array<{
-      src: string;
-      alt: string;
-    }>;
-  }>;
+  items: OrderItem[];
+  shippingAddress: JsonValue | null;
 }
 
 const statusColors = {
@@ -44,6 +96,7 @@ const statusColors = {
 export default function OrdersPage() {
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
 
   const {
     data: ordersData,
@@ -59,11 +112,26 @@ export default function OrdersPage() {
         | 'CANCELED'
         | 'IN_PROCESS'
         | 'DELIVERED') || undefined,
+    search: searchQuery || undefined,
   });
 
   const updateOrderStatusMutation = trpc.admin.updateOrderStatus.useMutation({
     onSuccess: () => {
       refetch();
+      toast.success('Order status updated successfully');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update order status');
+    },
+  });
+
+  const deleteOrderMutation = trpc.admin.deleteOrder.useMutation({
+    onSuccess: () => {
+      refetch();
+      toast.success('Order deleted successfully');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to delete order');
     },
   });
 
@@ -77,6 +145,16 @@ export default function OrdersPage() {
         | 'IN_PROCESS'
         | 'DELIVERED',
     });
+  };
+
+  const handleDeleteOrder = (orderId: string) => {
+    if (
+      confirm(
+        'Are you sure you want to delete this order? This action cannot be undone.'
+      )
+    ) {
+      deleteOrderMutation.mutate({ id: orderId });
+    }
   };
 
   const orders = ordersData?.orders || [];
@@ -96,7 +174,19 @@ export default function OrdersPage() {
 
       {/* Filters */}
       <div className='rounded-lg bg-white p-6 shadow'>
-        <div className='flex gap-4'>
+        <div className='flex gap-4 flex-wrap'>
+          <div className='flex-1 min-w-64'>
+            <div className='relative'>
+              <Search className='absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400' />
+              <input
+                type='text'
+                placeholder='Search by customer name, email, or order ID...'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className='w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500'
+              />
+            </div>
+          </div>
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
@@ -109,12 +199,15 @@ export default function OrdersPage() {
             <option value='DELIVERED'>Delivered</option>
             <option value='CANCELED'>Canceled</option>
           </select>
-          <button
-            onClick={() => setStatusFilter('')}
-            className='rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2'
+          <Button
+            onClick={() => {
+              setStatusFilter('');
+              setSearchQuery('');
+            }}
+            plain
           >
-            Clear Filter
-          </button>
+            Clear Filters
+          </Button>
         </div>
       </div>
 
@@ -140,7 +233,7 @@ export default function OrdersPage() {
                     Customer
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
-                    Products
+                    Items
                   </th>
                   <th className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'>
                     Total
@@ -181,30 +274,126 @@ export default function OrdersPage() {
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap'>
                         <div className='text-sm font-medium text-gray-900'>
-                          {order.user.name}
+                          {order.user?.name ||
+                            (order.shippingAddress &&
+                            typeof order.shippingAddress === 'object' &&
+                            order.shippingAddress !== null &&
+                            'guestInfo' in order.shippingAddress &&
+                            typeof (
+                              order.shippingAddress as Record<string, unknown>
+                            ).guestInfo === 'object' &&
+                            (order.shippingAddress as Record<string, unknown>)
+                              .guestInfo !== null &&
+                            'name' in
+                              ((
+                                order.shippingAddress as Record<string, unknown>
+                              ).guestInfo as Record<string, unknown>)
+                              ? ((
+                                  (
+                                    order.shippingAddress as Record<
+                                      string,
+                                      unknown
+                                    >
+                                  ).guestInfo as Record<string, unknown>
+                                ).name as string)
+                              : order.shippingAddress &&
+                                typeof order.shippingAddress === 'object' &&
+                                order.shippingAddress !== null &&
+                                'shippingAddress' in order.shippingAddress &&
+                                typeof (
+                                  order.shippingAddress as Record<
+                                    string,
+                                    unknown
+                                  >
+                                ).shippingAddress === 'object' &&
+                                (
+                                  order.shippingAddress as Record<
+                                    string,
+                                    unknown
+                                  >
+                                ).shippingAddress !== null &&
+                                'firstName' in
+                                  ((
+                                    order.shippingAddress as Record<
+                                      string,
+                                      unknown
+                                    >
+                                  ).shippingAddress as Record<string, unknown>)
+                              ? `${
+                                  (
+                                    (
+                                      order.shippingAddress as Record<
+                                        string,
+                                        unknown
+                                      >
+                                    ).shippingAddress as Record<string, unknown>
+                                  ).firstName
+                                } ${
+                                  (
+                                    (
+                                      order.shippingAddress as Record<
+                                        string,
+                                        unknown
+                                      >
+                                    ).shippingAddress as Record<string, unknown>
+                                  ).lastName || ''
+                                }`.trim()
+                              : 'Guest User')}
                         </div>
                         <div className='text-sm text-gray-500'>
-                          {order.user.email}
+                          {order.user?.email ||
+                            (order.shippingAddress &&
+                            typeof order.shippingAddress === 'object' &&
+                            order.shippingAddress !== null &&
+                            'guestInfo' in order.shippingAddress &&
+                            typeof (
+                              order.shippingAddress as Record<string, unknown>
+                            ).guestInfo === 'object' &&
+                            (order.shippingAddress as Record<string, unknown>)
+                              .guestInfo !== null &&
+                            'email' in
+                              ((
+                                order.shippingAddress as Record<string, unknown>
+                              ).guestInfo as Record<string, unknown>)
+                              ? ((
+                                  (
+                                    order.shippingAddress as Record<
+                                      string,
+                                      unknown
+                                    >
+                                  ).guestInfo as Record<string, unknown>
+                                ).email as string)
+                              : 'No email')}
                         </div>
                       </td>
                       <td className='px-6 py-4 whitespace-nowrap text-sm text-gray-900'>
-                        <div className='flex -space-x-2'>
-                          {order.products.slice(0, 3).map((product) => (
-                            <div
-                              key={product.id}
-                              className='h-8 w-8 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center'
-                              title={product.name}
-                            >
-                              <span className='text-xs font-medium text-gray-600'>
-                                {product.name.charAt(0).toUpperCase()}
-                              </span>
-                            </div>
-                          ))}
-                          {order.products.length > 3 && (
-                            <div className='h-8 w-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center'>
-                              <span className='text-xs font-medium text-gray-600'>
-                                +{order.products.length - 3}
-                              </span>
+                        <div className='flex items-center'>
+                          <span className='text-sm font-medium'>
+                            {order.items.length} item
+                            {order.items.length !== 1 ? 's' : ''}
+                          </span>
+                        </div>
+                        <div className='text-xs text-gray-500 mt-1'>
+                          {order.items.slice(0, 2).map((item, index) => {
+                            const product =
+                              item.variant?.product || item.product;
+                            const productName =
+                              product?.name || 'Unknown Product';
+                            const variantInfo = item.variant
+                              ? ` (${item.variant.color.name}/${item.variant.size.name})`
+                              : '';
+                            return (
+                              <div key={item.id}>
+                                {productName}
+                                {variantInfo}
+                                {index < Math.min(2, order.items.length - 1) &&
+                                  ', '}
+                              </div>
+                            );
+                          })}
+                          {order.items.length > 2 && (
+                            <div className='text-gray-400'>
+                              +{order.items.length - 2} more
                             </div>
                           )}
                         </div>
@@ -221,6 +410,7 @@ export default function OrdersPage() {
                           onChange={(e) =>
                             handleStatusUpdate(order.id, e.target.value)
                           }
+                          disabled={updateOrderStatusMutation.isPending}
                           className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium border-0 ${
                             statusColors[
                               order.status as keyof typeof statusColors
@@ -245,15 +435,18 @@ export default function OrdersPage() {
                           <Link
                             href={`/admin/orders/${order.id}`}
                             className='text-indigo-600 hover:text-indigo-900'
+                            title='View Details'
                           >
                             <Eye className='h-4 w-4' />
                           </Link>
-                          <Link
-                            href={`/admin/orders/${order.id}/edit`}
-                            className='text-blue-600 hover:text-blue-900'
+                          <button
+                            onClick={() => handleDeleteOrder(order.id)}
+                            disabled={deleteOrderMutation.isPending}
+                            className='text-red-600 hover:text-red-900'
+                            title='Delete Order'
                           >
-                            <Edit className='h-4 w-4' />
-                          </Link>
+                            <Trash2 className='h-4 w-4' />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -268,20 +461,20 @@ export default function OrdersPage() {
         {totalPages > 1 && (
           <div className='bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6'>
             <div className='flex-1 flex justify-between sm:hidden'>
-              <button
+              <Button
                 onClick={() => setPage(Math.max(1, page - 1))}
                 disabled={page === 1}
-                className='relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+                plain
               >
                 Previous
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setPage(Math.min(totalPages, page + 1))}
                 disabled={page === totalPages}
-                className='ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+                plain
               >
                 Next
-              </button>
+              </Button>
             </div>
             <div className='hidden sm:flex-1 sm:flex sm:items-center sm:justify-between'>
               <div>
@@ -292,20 +485,20 @@ export default function OrdersPage() {
               </div>
               <div>
                 <nav className='relative z-0 inline-flex rounded-md shadow-sm -space-x-px'>
-                  <button
+                  <Button
                     onClick={() => setPage(Math.max(1, page - 1))}
                     disabled={page === 1}
-                    className='relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+                    plain
                   >
                     Previous
-                  </button>
-                  <button
+                  </Button>
+                  <Button
                     onClick={() => setPage(Math.min(totalPages, page + 1))}
                     disabled={page === totalPages}
-                    className='relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed'
+                    plain
                   >
                     Next
-                  </button>
+                  </Button>
                 </nav>
               </div>
             </div>

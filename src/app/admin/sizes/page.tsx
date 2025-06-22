@@ -11,7 +11,6 @@ import { trpc } from '~trpc/client';
 interface Size {
   id: string;
   name: string;
-  price: number | null;
   inStock: boolean;
   product: {
     id: string;

@@ -22,6 +22,7 @@ interface CheckoutSummaryProps {
     quantity: number
   ) => void;
   removeItem: (item: { variantId?: string; productId?: string }) => void;
+  isSubmitting?: boolean;
 }
 
 type Variant = {
@@ -47,6 +48,7 @@ const CheckoutSummary = ({
   items,
   updateItem,
   removeItem,
+  isSubmitting = false,
 }: CheckoutSummaryProps) => {
   // Get variant IDs and product IDs from cart items
   const variantIds = items
@@ -304,10 +306,10 @@ const CheckoutSummary = ({
         <div className='border-t border-gray-200 px-4 py-6 sm:px-6'>
           <Button
             type='submit'
-            disabled={items.length === 0}
+            disabled={items.length === 0 || isSubmitting}
             className='w-full text-4xl'
           >
-            Confirm order
+            {isSubmitting ? 'Processing...' : 'Confirm order'}
           </Button>
         </div>
       </div>

@@ -29,8 +29,6 @@ interface FiltersProps {
 }
 
 const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
-  console.log({ filters });
-  console.log({ currentSort });
   return (
     <Disclosure
       as='section'

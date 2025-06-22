@@ -98,7 +98,7 @@ export const adminRouter = createTRPCRouter({
             colors: { include: { color: true } },
             sizes: true,
             _count: {
-              select: { reviews: true, orders: true },
+              select: { reviews: true },
             },
           },
           orderBy: { createdAt: 'desc' },
@@ -743,14 +743,22 @@ export const adminRouter = createTRPCRouter({
         status: z
           .enum(['PENDING', 'CONFIRMED', 'CANCELED', 'IN_PROCESS', 'DELIVERED'])
           .optional(),
+        search: z.string().optional(),
       })
     )
     .query(async ({ input }) => {
-      const { page, limit, status } = input;
+      const { page, limit, status, search } = input;
       const skip = (page - 1) * limit;
 
       const where: Prisma.OrderWhereInput = {
         ...(status && { status }),
+        ...(search && {
+          OR: [
+            { user: { name: { contains: search, mode: 'insensitive' } } },
+            { user: { email: { contains: search, mode: 'insensitive' } } },
+            { id: { contains: search, mode: 'insensitive' } },
+          ],
+        }),
       };
 
       const [orders, total] = await Promise.all([
@@ -763,24 +771,135 @@ export const adminRouter = createTRPCRouter({
               select: { id: true, name: true, email: true },
             },
             payment: true,
-            products: {
-              include: {
-                images: true,
-              },
-            },
+            items: true,
           },
           orderBy: { createdAt: 'desc' },
         }),
         prisma.order.count({ where }),
       ]);
 
+      // Fetch product and variant information for all order items
+      const ordersWithProductInfo = await Promise.all(
+        orders.map(async (order) => {
+          const itemsWithProductInfo = await Promise.all(
+            order.items.map(async (item) => {
+              let productInfo = null;
+              let variantInfo = null;
+
+              if (item.variantId) {
+                const variant = await prisma.productVariant.findUnique({
+                  where: { id: item.variantId },
+                  include: {
+                    product: {
+                      select: {
+                        id: true,
+                        name: true,
+                        slug: true,
+                        images: true,
+                      },
+                    },
+                    color: true,
+                    size: true,
+                  },
+                });
+                if (variant) {
+                  variantInfo = variant;
+                  productInfo = variant.product;
+                }
+              } else if (item.productId) {
+                const product = await prisma.product.findUnique({
+                  where: { id: item.productId },
+                  select: { id: true, name: true, slug: true, images: true },
+                });
+                if (product) {
+                  productInfo = product;
+                }
+              }
+
+              return {
+                ...item,
+                product: productInfo,
+                variant: variantInfo,
+              };
+            })
+          );
+
+          return {
+            ...order,
+            items: itemsWithProductInfo,
+            total: Number(order.total),
+          };
+        })
+      );
+
       return {
-        orders: orders.map((order) => ({
-          ...order,
-          total: Number(order.total),
-        })),
+        orders: ordersWithProductInfo,
         total,
         pages: Math.ceil(total / limit),
+      };
+    }),
+
+  getOrderById: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const order = await prisma.order.findUnique({
+        where: { id: input.id },
+        include: {
+          user: {
+            select: { id: true, name: true, email: true },
+          },
+          payment: true,
+          items: true,
+        },
+      });
+
+      if (!order) {
+        throw new Error('Order not found');
+      }
+
+      // Fetch product and variant information for order items
+      const itemsWithProductInfo = await Promise.all(
+        order.items.map(async (item) => {
+          let productInfo = null;
+          let variantInfo = null;
+
+          if (item.variantId) {
+            const variant = await prisma.productVariant.findUnique({
+              where: { id: item.variantId },
+              include: {
+                product: {
+                  select: { id: true, name: true, slug: true, images: true },
+                },
+                color: true,
+                size: true,
+              },
+            });
+            if (variant) {
+              variantInfo = variant;
+              productInfo = variant.product;
+            }
+          } else if (item.productId) {
+            const product = await prisma.product.findUnique({
+              where: { id: item.productId },
+              select: { id: true, name: true, slug: true, images: true },
+            });
+            if (product) {
+              productInfo = product;
+            }
+          }
+
+          return {
+            ...item,
+            product: productInfo,
+            variant: variantInfo,
+          };
+        })
+      );
+
+      return {
+        ...order,
+        items: itemsWithProductInfo,
+        total: Number(order.total),
       };
     }),
 
@@ -806,11 +925,7 @@ export const adminRouter = createTRPCRouter({
             select: { id: true, name: true, email: true },
           },
           payment: true,
-          products: {
-            include: {
-              images: true,
-            },
-          },
+          items: true,
         },
       });
 
@@ -818,6 +933,21 @@ export const adminRouter = createTRPCRouter({
         ...result,
         total: Number(result.total),
       };
+    }),
+
+  deleteOrder: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ input }) => {
+      // Delete order items first, then the order
+      await prisma.orderItem.deleteMany({
+        where: { orderId: input.id },
+      });
+
+      await prisma.order.delete({
+        where: { id: input.id },
+      });
+
+      return { success: true };
     }),
 
   // User Management
@@ -857,7 +987,7 @@ export const adminRouter = createTRPCRouter({
             createdAt: true,
             updatedAt: true,
             _count: {
-              select: { orders: true, reviews: true },
+              select: { reviews: true, orders: true },
             },
           },
           orderBy: { createdAt: 'desc' },
@@ -883,10 +1013,11 @@ export const adminRouter = createTRPCRouter({
           username: true,
           email: true,
           isActive: true,
+          isAdmin: true,
           createdAt: true,
           updatedAt: true,
           _count: {
-            select: { orders: true, reviews: true },
+            select: { reviews: true, orders: true },
           },
         },
       });
@@ -900,6 +1031,7 @@ export const adminRouter = createTRPCRouter({
         username: z.string().min(1).optional(),
         email: z.string().email().optional(),
         isActive: z.boolean().optional(),
+        isAdmin: z.boolean().optional(),
       })
     )
     .mutation(async ({ input: { id, ...data } }) => {
@@ -912,10 +1044,11 @@ export const adminRouter = createTRPCRouter({
           username: true,
           email: true,
           isActive: true,
+          isAdmin: true,
           createdAt: true,
           updatedAt: true,
           _count: {
-            select: { orders: true, reviews: true },
+            select: { reviews: true, orders: true },
           },
         },
       });
@@ -942,5 +1075,33 @@ export const adminRouter = createTRPCRouter({
           updatedAt: true,
         },
       });
+    }),
+
+  getProductById: adminProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input }) => {
+      const product = await prisma.product.findUnique({
+        where: { id: input.id },
+        include: {
+          category: true,
+          gender: true,
+          images: true,
+          variants: {
+            include: {
+              color: true,
+              size: true,
+            },
+          },
+        },
+      });
+      if (!product) throw new Error('Product not found');
+      return {
+        ...product,
+        price: Number(product.price),
+        variants: product.variants.map((variant) => ({
+          ...variant,
+          price: variant.price ? Number(variant.price) : null,
+        })),
+      };
     }),
 });

@@ -8,6 +8,11 @@ import { JWTPayload } from './../../../node_modules/jose/dist/types/types.d';
 export const JWT_EXPIRATION_TIME = '6h';
 export const JWT_REMEMBER_ME_EXPIRATION_TIME = '1d';
 
+// Define the UserJWTPayload type
+interface UserJWTPayload {
+  id: string;
+}
+
 class JWTClient {
   private static instance: JWTClient;
 

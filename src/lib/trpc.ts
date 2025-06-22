@@ -7,6 +7,11 @@ import { JWTService } from '@services/JWT';
 
 import prisma from './prisma';
 
+// Define the UserJWTPayload type
+interface UserJWTPayload {
+  id: string;
+}
+
 export const createTRPCContext = async (opts: { headers: Headers }) => {
   const token = opts.headers.get('cookie')?.split('token=')[1]?.split(';')[0];
   const user = token ? await JWTService.decrypt(token) : undefined;
@@ -81,19 +86,27 @@ const isAuthed = t.middleware(async ({ next, ctx }) => {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: ctx.user.id },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: ctx.user.id },
+    });
 
-  if (!user) {
-    throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not found' });
+    if (!user) {
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: 'User not found' });
+    }
+
+    return next({
+      ctx: {
+        user: ctx.user,
+      },
+    });
+  } catch (error) {
+    console.error('Auth middleware error:', error);
+    throw new TRPCError({
+      code: 'UNAUTHORIZED',
+      message: 'Authentication failed',
+    });
   }
-
-  return next({
-    ctx: {
-      user: ctx.user,
-    },
-  });
 });
 
 const isAdminAuthed = t.middleware(async ({ next, ctx }) => {
@@ -101,22 +114,30 @@ const isAdminAuthed = t.middleware(async ({ next, ctx }) => {
     throw new TRPCError({ code: 'UNAUTHORIZED' });
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: ctx.user.id },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: ctx.user.id },
+    });
 
-  if (!user?.isAdmin) {
+    if (!user?.isAdmin) {
+      throw new TRPCError({
+        code: 'FORBIDDEN',
+        message: 'Admin access required',
+      });
+    }
+
+    return next({
+      ctx: {
+        user: ctx.user,
+      },
+    });
+  } catch (error) {
+    console.error('Admin auth middleware error:', error);
     throw new TRPCError({
-      code: 'FORBIDDEN',
-      message: 'Admin access required',
+      code: 'UNAUTHORIZED',
+      message: 'Authentication failed',
     });
   }
-
-  return next({
-    ctx: {
-      user: ctx.user,
-    },
-  });
 });
 
 export const protectedProcedure = t.procedure.use(isAuthed);

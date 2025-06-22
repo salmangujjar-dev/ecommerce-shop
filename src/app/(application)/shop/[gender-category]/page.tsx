@@ -53,8 +53,6 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
     sort: sortParam,
   });
 
-  console.log({ products });
-
   return (
     <>
       {/* Filters */}

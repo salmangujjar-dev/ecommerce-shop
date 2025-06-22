@@ -1,10 +1,10 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Lock } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import z from 'zod';
@@ -38,7 +38,6 @@ const Login = () => {
       await loginAction(data);
       push('/dashboard');
     } catch (error) {
-      console.log(error);
       const errorMessage =
         error instanceof Error ? error?.message : 'Something went wrong';
       toast.error(errorMessage);
@@ -53,14 +52,7 @@ const Login = () => {
     <>
       <div className='flex min-h-full flex-1 flex-col justify-center py-12 sm:px-6 lg:px-8'>
         <div className='sm:mx-auto sm:w-full sm:max-w-md'>
-          <Image
-            width={0}
-            height={0}
-            sizes='100vw'
-            alt='Your Company'
-            src='https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600'
-            className='mx-auto h-10 w-auto'
-          />
+          <Lock className='mx-auto h-10 w-auto text-indigo-600' />
           <h2 className='mt-6 text-center text-2xl/9 font-bold tracking-tight text-gray-900'>
             Login to your account
           </h2>

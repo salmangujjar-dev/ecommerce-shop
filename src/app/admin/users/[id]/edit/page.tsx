@@ -20,6 +20,7 @@ export default function EditUserPage() {
     username: '',
     email: '',
     isActive: true,
+    isAdmin: false,
   });
 
   const { data: user, isLoading } = trpc.admin.getUserById.useQuery({
@@ -40,6 +41,7 @@ export default function EditUserPage() {
         username: user.username,
         email: user.email,
         isActive: user.isActive,
+        isAdmin: user.isAdmin,
       });
     }
   }, [user]);
@@ -162,6 +164,22 @@ export default function EditUserPage() {
                   >
                     <option value='true'>Active</option>
                     <option value='false'>Inactive</option>
+                  </select>
+                </div>
+
+                <div className='sm:col-span-2'>
+                  <label className='block text-sm font-medium text-gray-700'>
+                    isAdmin
+                  </label>
+                  <select
+                    value={formData.isAdmin ? 'true' : 'false'}
+                    onChange={(e) =>
+                      handleInputChange('isAdmin', e.target.value === 'true')
+                    }
+                    className='mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500'
+                  >
+                    <option value='true'>True</option>
+                    <option value='false'>False</option>
                   </select>
                 </div>
               </div>

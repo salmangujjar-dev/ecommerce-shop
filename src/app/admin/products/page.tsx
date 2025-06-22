@@ -5,49 +5,9 @@ import Link from 'next/link';
 
 import { useState } from 'react';
 
-import type { Decimal } from '@prisma/client/runtime/library';
 import { Plus, Search, Edit, Trash2, Eye } from 'lucide-react';
 
 import { trpc } from '~trpc/client';
-
-interface Product {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  price: Decimal | number;
-  rating: number;
-  reviewCount: number;
-  category: {
-    id: string;
-    name: string;
-  };
-  gender: {
-    id: string;
-    name: string;
-  };
-  images: Array<{
-    id: string;
-    src: string;
-    alt: string;
-    primary: boolean;
-  }>;
-  colors: Array<{
-    color: {
-      id: string;
-      name: string;
-    };
-  }>;
-  sizes: Array<{
-    id: string;
-    name: string;
-    inStock: boolean;
-  }>;
-  _count: {
-    reviews: number;
-    orders: number;
-  };
-}
 
 export default function ProductsPage() {
   const [page, setPage] = useState(1);
@@ -191,7 +151,7 @@ export default function ProductsPage() {
                 </tr>
               </thead>
               <tbody className='bg-white divide-y divide-gray-200'>
-                {products.map((product: Product) => {
+                {products.map((product) => {
                   const price =
                     typeof product.price === 'number'
                       ? product.price
@@ -273,8 +233,7 @@ export default function ProductsPage() {
                       <td className='px-6 py-4 whitespace-nowrap text-sm font-medium'>
                         <div className='flex space-x-2'>
                           <Link
-                            target='_blank'
-                            href={`/product/${product.id}`}
+                            href={`/admin/products/${product.id}`}
                             className='text-indigo-600 hover:text-indigo-900'
                           >
                             <Eye className='h-4 w-4' />
