@@ -20,6 +20,10 @@ interface CategoryPageProps {
     page?: string;
     limit?: string;
     sort?: string;
+    color?: string[];
+    size?: string[];
+    category?: string[];
+    price?: string[];
   }>;
 }
 
@@ -39,6 +43,34 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
       | 'price_desc'
       | 'rating') ?? 'newest';
 
+  // Parse filters from query params (support multi-select)
+  const getArray = (v: unknown): string[] =>
+    Array.isArray(v) ? v : v ? [v as string] : [];
+  const colors = getArray(searchParam?.color);
+  const sizes = getArray(searchParam?.size);
+  const prices = getArray(searchParam?.price);
+
+  // Map price filter values to minPrice/maxPrice
+  let minPrice: number | undefined = undefined;
+  let maxPrice: number | undefined = undefined;
+  if (prices.length > 0) {
+    // Assume only one price range is selected for simplicity
+    const priceVal = prices[0];
+    if (priceVal === '0') {
+      minPrice = 0;
+      maxPrice = 25;
+    } else if (priceVal === '25') {
+      minPrice = 25;
+      maxPrice = 50;
+    } else if (priceVal === '50') {
+      minPrice = 50;
+      maxPrice = 75;
+    } else if (priceVal === '75') {
+      minPrice = 75;
+      maxPrice = undefined;
+    }
+  }
+
   const {
     products,
     page: currentPage,
@@ -51,6 +83,10 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
     page: Number(pageParam),
     limit: Number(limitParam),
     sort: sortParam,
+    colors,
+    sizes,
+    minPrice,
+    maxPrice,
   });
 
   return (

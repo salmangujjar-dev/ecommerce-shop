@@ -1,3 +1,7 @@
+'use client';
+
+import { useRouter, useSearchParams } from 'next/navigation';
+
 import {
   Disclosure,
   DisclosureButton,
@@ -16,11 +20,10 @@ import {
 
 import { Button } from '@ui/button';
 import { Checkbox } from '@ui/checkbox';
-import { Link } from '@ui/link';
 
 import { cn } from '@utils/cn';
 
-import { clearAllFilters } from './AddToCartBtn/actions';
+import { trpc } from '../../trpc/client';
 
 interface FiltersProps {
   filters: typeof FILTERS;
@@ -29,6 +32,68 @@ interface FiltersProps {
 }
 
 const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Fetch dynamic color and size options
+  const { data: colorOptions, isLoading: colorsLoading } =
+    trpc.products.getAllColors.useQuery();
+  const { data: sizeOptions, isLoading: sizesLoading } =
+    trpc.products.getAllSizes.useQuery();
+
+  // Helper to get current filter values from URL
+  const getFilterValues = (name: string): string[] => {
+    const values = searchParams.getAll(name);
+    if (values.length > 0) return values;
+    const single = searchParams.get(name);
+    return single ? [single] : [];
+  };
+
+  const selectedColors = getFilterValues('color');
+  const selectedSizes = getFilterValues('size');
+  // const selectedCategories = getFilterValues('category');
+  const selectedPrices = getFilterValues('price');
+
+  // Count active filters
+  const activeCount =
+    selectedColors.length +
+    selectedSizes.length +
+    // selectedCategories.length +
+    selectedPrices.length;
+
+  // Helper to update query params
+  const updateFilter = (name: string, value: string, checked: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    let values = params.getAll(name);
+    if (checked) {
+      if (!values.includes(value)) values.push(value);
+    } else {
+      values = values.filter((v) => v !== value);
+    }
+    params.delete(name);
+    values.forEach((v) => params.append(name, v));
+    params.set('page', '1'); // Reset to first page on filter change
+    router.push('?' + params.toString());
+  };
+
+  // Clear all filters
+  const clearAll = () => {
+    const params = new URLSearchParams(searchParams.toString());
+    ['color', 'size', 'category', 'price'].forEach((name) =>
+      params.delete(name)
+    );
+    params.set('page', '1');
+    router.push('?' + params.toString());
+  };
+
+  // Handle sort change
+  const handleSortChange = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set('sort', value);
+    params.set('page', '1');
+    router.push('?' + params.toString());
+  };
+
   return (
     <Disclosure
       as='section'
@@ -46,14 +111,14 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                 aria-hidden='true'
                 className='mr-2 size-5 flex-none text-gray-400 group-hover:text-gray-500 group-hover:fill-gray-500'
               />
-              2 Filters
+              {activeCount} Filter{activeCount !== 1 ? 's' : ''}
             </DisclosureButton>
             <div className='pl-6'>
               <Button
                 type='button'
                 color='transparent'
                 className='text-gray-500'
-                onClick={clearAllFilters}
+                onClick={clearAll}
               >
                 Clear all
               </Button>
@@ -80,17 +145,17 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                 <div className='py-1'>
                   {sortOptions.map((option) => (
                     <MenuItem key={option.value}>
-                      <Link
-                        href={`?sort=${option.value}`}
+                      <button
                         className={cn(
-                          'block px-4 py-2 text-sm',
+                          'block w-full text-left px-4 py-2 text-sm',
                           currentSort === option.value
                             ? 'font-medium text-gray-900'
                             : 'text-gray-500'
                         )}
+                        onClick={() => handleSortChange(option.value)}
                       >
                         {option.label}
-                      </Link>
+                      </button>
                     </MenuItem>
                   ))}
                 </div>
@@ -104,17 +169,20 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
           <div className='grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6'>
             <fieldset>
               <legend className='block font-medium'>Price</legend>
-              <div className='space-y-6 pt-6 sm:space-y-4 sm:pt-4'>
+              <div className='space-y-6 pt-6 max-h-52 overflow-auto sm:space-y-4 sm:pt-4'>
                 {filters.price.map((option, optionIdx) => (
                   <div key={option.value} className='flex gap-3'>
                     <div className='flex h-5 shrink-0 items-center'>
                       <div className='group grid size-4 grid-cols-1'>
                         <Checkbox
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
+                          value={option.value}
+                          checked={selectedPrices.includes(option.value)}
                           id={`price-${optionIdx}`}
                           name='price[]'
                           color='indigo'
+                          onChange={(checked: boolean) =>
+                            updateFilter('price', option.value, checked)
+                          }
                         />
                       </div>
                     </div>
@@ -130,59 +198,84 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
             </fieldset>
             <fieldset>
               <legend className='block font-medium'>Color</legend>
-              <div className='space-y-6 pt-6 sm:space-y-4 sm:pt-4'>
-                {filters.color.map((option, optionIdx) => (
-                  <div key={option.value} className='flex gap-3'>
-                    <div className='flex h-5 shrink-0 items-center'>
-                      <div className='group grid size-4 grid-cols-1'>
-                        <Checkbox
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
-                          id={`color-${optionIdx}`}
-                          name='color[]'
-                          color='indigo'
-                        />
+              <div className='space-y-6 pt-6 max-h-52 overflow-auto  sm:space-y-4 sm:pt-4'>
+                {colorsLoading ? (
+                  <div>Loading colors...</div>
+                ) : colorOptions && colorOptions.length > 0 ? (
+                  colorOptions.map(
+                    (
+                      option: { slug: string; name: string },
+                      optionIdx: number
+                    ) => (
+                      <div key={option.slug} className='flex gap-3'>
+                        <div className='flex h-5 shrink-0 items-center'>
+                          <div className='group grid size-4 grid-cols-1'>
+                            <Checkbox
+                              value={option.slug}
+                              checked={selectedColors.includes(option.slug)}
+                              id={`color-${optionIdx}`}
+                              name='color[]'
+                              color='indigo'
+                              onChange={(checked: boolean) =>
+                                updateFilter('color', option.slug, checked)
+                              }
+                            />
+                          </div>
+                        </div>
+                        <label
+                          htmlFor={`color-${optionIdx}`}
+                          className='text-base text-gray-600 sm:text-sm'
+                        >
+                          {option.name}
+                        </label>
                       </div>
-                    </div>
-                    <label
-                      htmlFor={`color-${optionIdx}`}
-                      className='text-base text-gray-600 sm:text-sm'
-                    >
-                      {option.label}
-                    </label>
-                  </div>
-                ))}
+                    )
+                  )
+                ) : (
+                  <div>No colors found.</div>
+                )}
               </div>
             </fieldset>
           </div>
           <div className='grid auto-rows-min grid-cols-1 gap-y-10 md:grid-cols-2 md:gap-x-6'>
             <fieldset>
               <legend className='block font-medium'>Size</legend>
-              <div className='space-y-6 pt-6 sm:space-y-4 sm:pt-4'>
-                {filters.size.map((option, optionIdx) => (
-                  <div key={option.value} className='flex gap-3'>
-                    <div className='flex h-5 shrink-0 items-center'>
-                      <div className='group grid size-4 grid-cols-1'>
-                        <Checkbox
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
-                          id={`size-${optionIdx}`}
-                          name='size[]'
-                          color='indigo'
-                        />
+              <div className='space-y-6 pt-6 sm:space-y-4 sm:pt-4 max-h-52 overflow-auto'>
+                {sizesLoading ? (
+                  <div>Loading sizes...</div>
+                ) : sizeOptions && sizeOptions.length > 0 ? (
+                  (sizeOptions as string[]).map(
+                    (size: string, optionIdx: number) => (
+                      <div key={size} className='flex gap-3'>
+                        <div className='flex h-5 shrink-0 items-center'>
+                          <div className='group grid size-4 grid-cols-1'>
+                            <Checkbox
+                              value={size}
+                              checked={selectedSizes.includes(size)}
+                              id={`size-${optionIdx}`}
+                              name='size[]'
+                              color='indigo'
+                              onChange={(checked: boolean) =>
+                                updateFilter('size', size, checked)
+                              }
+                            />
+                          </div>
+                        </div>
+                        <label
+                          htmlFor={`size-${optionIdx}`}
+                          className='text-base text-gray-600 sm:text-sm'
+                        >
+                          {size}
+                        </label>
                       </div>
-                    </div>
-                    <label
-                      htmlFor={`size-${optionIdx}`}
-                      className='text-base text-gray-600 sm:text-sm'
-                    >
-                      {option.label}
-                    </label>
-                  </div>
-                ))}
+                    )
+                  )
+                ) : (
+                  <div>No sizes found.</div>
+                )}
               </div>
             </fieldset>
-            <fieldset>
+            {/* <fieldset>
               <legend className='block font-medium'>Category</legend>
               <div className='space-y-6 pt-6 sm:space-y-4 sm:pt-4'>
                 {filters.category.map((option, optionIdx) => (
@@ -190,11 +283,14 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                     <div className='flex h-5 shrink-0 items-center'>
                       <div className='group grid size-4 grid-cols-1'>
                         <Checkbox
-                          defaultValue={option.value}
-                          defaultChecked={option.checked}
+                          value={option.value}
+                          checked={selectedCategories.includes(option.value)}
                           id={`category-${optionIdx}`}
                           name='category[]'
                           color='indigo'
+                          onChange={(checked: boolean) =>
+                            updateFilter('category', option.value, checked)
+                          }
                         />
                       </div>
                     </div>
@@ -207,7 +303,7 @@ const Filters = ({ filters, sortOptions, currentSort }: FiltersProps) => {
                   </div>
                 ))}
               </div>
-            </fieldset>
+            </fieldset> */}
           </div>
         </div>
       </DisclosurePanel>

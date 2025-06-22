@@ -21,13 +21,13 @@ export const FILTERS = {
     { value: 'xl', label: 'XL', checked: false },
     { value: '2xl', label: '2XL', checked: false },
   ],
-  category: [
-    { value: 'all-new-arrivals', label: 'All New Arrivals', checked: false },
-    { value: 'tees', label: 'Tees', checked: false },
-    { value: 'objects', label: 'Objects', checked: false },
-    { value: 'sweatshirts', label: 'Sweatshirts', checked: false },
-    { value: 'pants-and-shorts', label: 'Pants & Shorts', checked: false },
-  ],
+  // category: [
+  //   { value: 'all-new-arrivals', label: 'All New Arrivals', checked: false },
+  //   { value: 'tees', label: 'Tees', checked: false },
+  //   { value: 'objects', label: 'Objects', checked: false },
+  //   { value: 'sweatshirts', label: 'Sweatshirts', checked: false },
+  //   { value: 'pants-and-shorts', label: 'Pants & Shorts', checked: false },
+  // ],
 };
 
 export const SORT_OPTIONS = [

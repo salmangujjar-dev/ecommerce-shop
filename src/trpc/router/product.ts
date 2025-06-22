@@ -306,4 +306,29 @@ export const productRouter = createTRPCRouter({
         price: variant.price != null ? Number(variant.price) : null,
       }));
     }),
+
+  getAllColors: publicProcedure.query(async () => {
+    const colors = await prisma.color.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        bgColor: true,
+        selectedColor: true,
+      },
+      orderBy: { name: 'asc' },
+    });
+    return colors;
+  }),
+
+  getAllSizes: publicProcedure.query(async () => {
+    const sizes = await prisma.productSize.findMany({
+      select: { name: true },
+    });
+    // Return unique, uppercase, sorted size names
+    const unique = Array.from(
+      new Set(sizes.map((s) => s.name.toUpperCase()))
+    ).sort();
+    return unique;
+  }),
 });
