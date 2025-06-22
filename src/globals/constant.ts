@@ -108,12 +108,12 @@ export const SORT_OPTIONS = [
 
 export const CURRENCIES = [
   {
-    label: 'PKR',
-    code: 'pk',
-  },
-  {
     label: 'USD',
     code: 'us',
+  },
+  {
+    label: 'PKR',
+    code: 'pk',
   },
 ];
 export const NAVIGATION = {
@@ -173,6 +173,12 @@ export const NAVIGATION = {
             { name: 'Belts', href: '/shop/women-belts' },
           ],
         },
+        {
+          id: 'browse-all-women',
+          name: 'Browse All',
+          href: '/shop/women',
+          items: [],
+        },
       ],
     },
     {
@@ -224,6 +230,12 @@ export const NAVIGATION = {
             { name: 'Hats', href: '/shop/men-hats' },
             { name: 'Belts', href: '/shop/men-belts' },
           ],
+        },
+        {
+          id: 'browse-all-men',
+          name: 'Browse All',
+          href: '/shop/men',
+          items: [],
         },
       ],
     },
