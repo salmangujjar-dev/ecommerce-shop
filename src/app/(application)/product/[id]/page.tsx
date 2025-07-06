@@ -11,9 +11,9 @@ import {
 } from '../../../../components/seo/page-seo';
 
 interface ProductPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({

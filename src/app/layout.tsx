@@ -1,6 +1,10 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 
+import { Suspense } from 'react';
+
+import Spinner from '@ui/Spinner';
+
 import { cn } from '@utils/cn';
 
 import { APP_NAME, SEO } from '@globals/constant';
@@ -117,7 +121,9 @@ export default function RootLayout({
           'antialiased flex flex-col min-h-screen'
         )}
       >
-        <Loader />
+        <Suspense fallback={<Spinner />}>
+          <Loader />
+        </Suspense>
         <Providers>{children}</Providers>
       </body>
     </html>

@@ -1,3 +1,5 @@
+import { Suspense } from 'react';
+
 import {
   Pagination,
   PaginationList,
@@ -5,6 +7,7 @@ import {
   PaginationPage,
   PaginationPrevious,
 } from '@ui/pagination';
+import Spinner from '@ui/Spinner';
 
 import Filters from '@common/Filters';
 
@@ -92,11 +95,13 @@ const ProductsPage = async ({ params, searchParams }: CategoryPageProps) => {
   return (
     <>
       {/* Filters */}
-      <Filters
-        filters={FILTERS}
-        sortOptions={SORT_OPTIONS}
-        currentSort={sortParam}
-      />
+      <Suspense fallback={<Spinner />}>
+        <Filters
+          filters={FILTERS}
+          sortOptions={SORT_OPTIONS}
+          currentSort={sortParam}
+        />
+      </Suspense>
 
       {/* Product grid */}
       <section
