@@ -10,6 +10,8 @@ import {
   AlertTriangle,
 } from 'lucide-react';
 
+import { Link } from '@ui/link';
+
 import { trpc } from '~trpc/client';
 
 import { DashboardStats } from '../../components/admin/DashboardStats';
@@ -88,7 +90,7 @@ export default function AdminDashboard() {
           Quick Actions
         </h2>
         <div className='grid grid-cols-2 gap-4 sm:grid-cols-4'>
-          <a
+          <Link
             href='/admin/products/new'
             className='flex flex-col items-center rounded-lg border border-gray-200 p-4 text-center hover:bg-gray-50'
           >
@@ -96,8 +98,8 @@ export default function AdminDashboard() {
             <span className='text-sm font-medium text-gray-900'>
               Add Product
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href='/admin/categories/new'
             className='flex flex-col items-center rounded-lg border border-gray-200 p-4 text-center hover:bg-gray-50'
           >
@@ -105,8 +107,8 @@ export default function AdminDashboard() {
             <span className='text-sm font-medium text-gray-900'>
               Add Category
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href='/admin/orders'
             className='flex flex-col items-center rounded-lg border border-gray-200 p-4 text-center hover:bg-gray-50'
           >
@@ -114,8 +116,8 @@ export default function AdminDashboard() {
             <span className='text-sm font-medium text-gray-900'>
               View Orders
             </span>
-          </a>
-          <a
+          </Link>
+          <Link
             href='/admin/users'
             className='flex flex-col items-center rounded-lg border border-gray-200 p-4 text-center hover:bg-gray-50'
           >
@@ -123,7 +125,7 @@ export default function AdminDashboard() {
             <span className='text-sm font-medium text-gray-900'>
               Manage Users
             </span>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
