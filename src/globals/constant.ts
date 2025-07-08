@@ -240,5 +240,8 @@ export const NAVIGATION = {
       ],
     },
   ],
-  pages: [{ name: 'Company', href: '/company' }],
+  pages: [
+    { name: 'Company', href: '/company' },
+    { name: 'Brand Demo', href: '/brand-demo' },
+  ],
 };

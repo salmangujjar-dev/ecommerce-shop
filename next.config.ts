@@ -31,7 +31,12 @@ const nextConfig: NextConfig = {
     return config;
   },
   images: {
-    domains: ['tailwindcss.com', 'images.unsplash.com', 'flagcdn.com'],
+    domains: [
+      'tailwindcss.com',
+      'images.unsplash.com',
+      'flagcdn.com',
+      'vercel.com',
+    ],
   },
 };
 

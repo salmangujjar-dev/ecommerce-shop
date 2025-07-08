@@ -185,6 +185,22 @@ const Header: FC = () => {
             </PopoverGroup>
 
             <div className='ml-auto flex items-center'>
+              <Link
+                href='https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fhello-world&env=DATABASE_URL,SESSION_SECRET,SITE_BASE_URL&envDescription=DATABASE_URL%3DYOUR%20POSTGRESQL%20URL%2C%20SESSION_SECRET%3D%22String%20will%20be%20used%20for%20encryption%22%2C%20SITE_BASE_URL%3D%22Place%20your%20site%20url%20after%20deployment%20for%20Metadata%22&project-name=buildastore-ecommerce&repository-name=ecommerce-shop'
+                className='mr-2'
+                target='_blank'
+              >
+                <Image
+                  width={0}
+                  height={0}
+                  sizes='100vw'
+                  src='https://vercel.com/button'
+                  alt='Deploy with Vercel'
+                  className='w-full h-full'
+                  unoptimized
+                />
+              </Link>
+
               {!isAuthenticated && (
                 <div className='hidden lg:flex lg:flex-1 lg:items-center lg:justify-end lg:space-x-6'>
                   <Link
